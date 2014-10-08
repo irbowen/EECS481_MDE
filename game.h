@@ -1,15 +1,17 @@
 //Isaac Bowen
 //eecs481 fall2014
-//Base class for running the game
+
 #include <iostream>
 
 class Game {
 	const int NUM_ROUNDS = 10;
 	const int INCREASE_FACTOR = 2;
-	int num_locations;
+	const int BREAK_FACTOR = 20;
+	bool error;
 public:
-	Game(int);
+	Game();
 	void run(int);
 	void startGame();
 	bool createRandomLocation();
+	bool successfulExit();
 };
