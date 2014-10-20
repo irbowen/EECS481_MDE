@@ -1,0 +1,338 @@
+#include <gl\glew.h>
+#include <Windows.h>
+#include <cmath>
+
+#define PI 3.14159265
+
+#define XRES 1600
+#define YRES 900
+
+HGLRC hRC = NULL;
+HDC hDC = NULL;
+HWND hWnd = NULL;
+HINSTANCE hInstance;
+
+
+bool active = TRUE;
+bool keys[256];
+bool fullscreen = TRUE;
+
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+int InitGL(GLvoid){
+	glShadeModel(GL_SMOOTH);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glClearDepth(1.0f);
+	glDisable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	return TRUE;
+}
+
+GLvoid KillGLWindow(GLvoid){
+	if (fullscreen){
+		ChangeDisplaySettings(NULL, 0);
+		ShowCursor(TRUE);
+	}
+
+	if (hRC){
+		if (!wglMakeCurrent(NULL, NULL)){
+			MessageBox(NULL, "Release of DC and RC Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
+		}
+		if (!wglDeleteContext(hRC)){
+			MessageBox(NULL, "Release Rendering Context Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
+		}
+		hRC = NULL;
+	}
+
+	if (hDC && !ReleaseDC(hWnd, hDC)){
+		MessageBox(NULL, "Release Device Context Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
+		hDC = NULL;
+	}
+
+	if (hWnd && !DestroyWindow(hWnd)){
+		MessageBox(NULL, "Could Not Release hWnd.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
+		hWnd = NULL;
+	}
+
+	if (!UnregisterClass("OpenGL", hInstance)){
+		MessageBox(NULL, "Could Not Unregister Class.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
+		hInstance = NULL;
+	}
+}
+
+
+GLvoid ReSizeGLScene(GLsizei width, GLsizei height){
+	if (height == 0)
+		height = 1;
+
+	glViewport(0, 0, width, height);
+}
+
+BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag){
+	GLuint PixelFormat;
+
+	WNDCLASS wc;
+
+	DWORD dwExStyle;
+	DWORD dwStyle;
+
+	RECT WindowRect;
+	WindowRect.left = (long)0;
+	WindowRect.right = (long)width;
+	WindowRect.top = (long)0;
+	WindowRect.bottom = (long)height;
+
+	fullscreen = fullscreenflag;
+
+	hInstance = GetModuleHandle(NULL);
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wc.lpfnWndProc = (WNDPROC)WndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = NULL;
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "OpenGL";
+
+	if (!RegisterClass(&wc)){
+		MessageBox(NULL, "Failed to register the window class.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	if (fullscreen){
+		DEVMODE dmScreenSettings;
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth = width;
+		dmScreenSettings.dmPelsHeight = height;
+		dmScreenSettings.dmBitsPerPel = bits;
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL){
+			if (MessageBox(NULL, "The requested fullscreen mode is not supported by\n your video card. use windowed mode instead?", "NeHe GL", MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
+				fullscreen = false;
+			else{
+				MessageBox(NULL, "Program will now close.", "ERROR", MB_OK | MB_ICONSTOP);
+				return FALSE;
+			}
+		}
+	}
+
+	if (fullscreen){
+		dwExStyle = WS_EX_APPWINDOW;
+		dwStyle = WS_POPUP;
+		ShowCursor(FALSE);
+	}
+	else {
+		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+		dwStyle = WS_OVERLAPPEDWINDOW;
+	}
+
+	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
+
+
+	if (!(hWnd = CreateWindowExA(dwExStyle,
+		"OpenGL",
+		title,
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
+		dwStyle,
+		0, 0,
+		WindowRect.right - WindowRect.left,
+		WindowRect.bottom - WindowRect.top,
+		NULL,
+		NULL,
+		hInstance,
+		NULL))){
+
+		KillGLWindow();
+		MessageBox(NULL, "Window creation error.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	static PIXELFORMATDESCRIPTOR pfd = {
+		sizeof(PIXELFORMATDESCRIPTOR),
+		1,
+		PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+		PFD_TYPE_RGBA,
+		bits,
+		0, 0, 0, 0, 0, 0,
+		0,
+		0,
+		0,
+		0, 0, 0, 0,
+		16,
+		0,
+		0,
+		PFD_MAIN_PLANE, 
+		0,
+		0, 0, 0
+	};
+
+	if (!(hDC = GetDC(hWnd))){
+		KillGLWindow();
+		MessageBox(NULL, "Can't create a gl device context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	if (!(PixelFormat = ChoosePixelFormat(hDC, &pfd))){
+		KillGLWindow();
+		MessageBox(NULL, "Can't fiend a suitable pixel format.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	if (!SetPixelFormat(hDC, PixelFormat, &pfd)){
+		KillGLWindow();
+		MessageBox(NULL, "Can't set the pixel format", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	if (!(hRC = wglCreateContext(hDC))){
+		KillGLWindow();
+		MessageBox(NULL, "Can't create a GL rendering context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	if (!wglMakeCurrent(hDC, hRC)){
+		KillGLWindow();
+		MessageBox(NULL, "Can't activate the GL rendering context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	ShowWindow(hWnd, SW_SHOW);
+	SetForegroundWindow(hWnd);
+	SetFocus(hWnd);
+	ReSizeGLScene(width, height);
+
+	if (!InitGL()){
+		KillGLWindow();
+		MessageBox(NULL, "Initialization failed.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
+	}
+
+	return TRUE;
+
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam){
+
+	switch (uMsg){
+	case WM_ACTIVATE: {
+		if (!HIWORD(wParam))
+			active = TRUE;
+		else
+			active = FALSE;
+
+		return 0;
+	}
+	case WM_SYSCOMMAND: {
+		switch (wParam){
+		case SC_SCREENSAVE:
+		case SC_MONITORPOWER:
+			return 0;
+		}
+		break;
+	}
+	case WM_CLOSE: {
+		PostQuitMessage(0);
+		return 0;
+	}
+	case WM_KEYDOWN: {
+		keys[wParam] = TRUE;
+		return 0;
+	}
+	case WM_KEYUP: {
+		keys[wParam] = FALSE;
+		return 0;
+	}
+	case WM_SIZE: {
+		ReSizeGLScene(LOWORD(lParam), HIWORD(lParam));
+		return 0;
+	}
+
+	}
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void DrawCircle(int x, int y, int r){
+
+	glBegin(GL_TRIANGLE_FAN);
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	glVertex2f(x, y);
+
+	for (int angle = 0; angle <= 360; angle += 1){
+		glVertex2f(x + sin(angle * PI / 180) * r,
+			y + cos(angle * PI / 180) * r);
+	}
+
+	glEnd();
+}
+
+
+int DrawGLScene(GLvoid){
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	const int xSize = XRES, ySize = YRES;
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glOrtho(0, xSize, ySize, 0, 0, 1);
+
+	glMatrixMode(GL_MODELVIEW);
+
+	// DO DRAWING
+
+	DrawCircle(250, 250, 100);
+
+	return TRUE;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine,
+	int nCmdShow){
+
+	MSG msg;
+	BOOL done = FALSE;
+
+	fullscreen = TRUE;
+
+	if (!CreateGLWindow("OpenGL framework", XRES, YRES, 16, fullscreen))
+		return 0;
+
+	while (!done){
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
+			if (msg.message == WM_QUIT)
+				done = TRUE;
+			else {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+		else{
+			if (active){
+
+				if (keys[VK_ESCAPE])
+					done = TRUE;
+				else {
+					DrawGLScene();
+					SwapBuffers(hDC);
+				}
+
+			}
+		}
+	}
+
+	KillGLWindow();
+	return (msg.wParam);
+}
