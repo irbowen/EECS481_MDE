@@ -420,6 +420,8 @@ void CDepthBasics::ProcessDepth()
 	size_t newsize = strlen(orig) + 1;
 	//USHORT vIn = 0;
 	
+	
+	
 	////////////////////////////////////////////    UNDER CONSTRUCTION       //////////////////////
 	//convert ushort to string
 	char vOut[6];
