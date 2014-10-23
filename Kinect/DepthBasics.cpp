@@ -419,6 +419,7 @@ void CDepthBasics::ProcessDepth()
 	char *orig = "Hello, World!";
 	size_t newsize = strlen(orig) + 1;
 	
+	
 	////////////////////////////////////////////    UNDER CONSTRUCTION       //////////////////////
 	//convert ushort to string
 	USHORT vIn = 0;
@@ -433,6 +434,8 @@ void CDepthBasics::ProcessDepth()
 
 	SetStatusMessage(wcstring);
 	//////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     // We're done with the texture so unlock it
     pTexture->UnlockRect(0);
