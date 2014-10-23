@@ -415,19 +415,16 @@ void CDepthBasics::ProcessDepth()
 
 	//SetStatusMessage(L"Hellooooooooooooooooooooooooooooooooooooooooo");
 	//SetStatusMessage(L"Goodbye");
-	//workzone
-
-
+	//testing coverting string into wchar_t
+	char *orig = "Hello, World!";
+	size_t newsize = strlen(orig) + 1;
+	
+	////////////////////////////////////////////    UNDER CONSTRUCTION       //////////////////////
 	//convert ushort to string
 	USHORT vIn = 0;
 	char vOut[6];
 	_ultoa_s(display_depth, vOut, sizeof(vOut), 10);
 	size_t _newsize = strlen(vOut) + 1;
-
-	
-	//testing coverting string into wchar_t
-	char *orig = "Hello, World!";
-	size_t newsize = strlen(orig) + 1;
 
 	//test wchar here
 	wchar_t * wcstring = new wchar_t[_newsize];
@@ -435,7 +432,7 @@ void CDepthBasics::ProcessDepth()
 	mbstowcs_s(&convertedChars, wcstring, _newsize, vOut, _TRUNCATE);
 
 	SetStatusMessage(wcstring);
-
+	//////////////////////////////////////////////////////////////////////////////////////////////
 
     // We're done with the texture so unlock it
     pTexture->UnlockRect(0);
