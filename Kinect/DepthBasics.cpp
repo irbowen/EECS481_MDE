@@ -418,11 +418,10 @@ void CDepthBasics::ProcessDepth()
 	//testing coverting string into wchar_t
 	char *orig = "Hello, World!";
 	size_t newsize = strlen(orig) + 1;
-	
+	//USHORT vIn = 0;
 	
 	////////////////////////////////////////////    UNDER CONSTRUCTION       //////////////////////
 	//convert ushort to string
-	USHORT vIn = 0;
 	char vOut[6];
 	_ultoa_s(display_depth, vOut, sizeof(vOut), 10);
 	size_t _newsize = strlen(vOut) + 1;
