@@ -64,9 +64,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\app\EECS481_Project.cpp" />
     <ClCompile Include="..\..\app\game.cpp" />
     <ClCompile Include="..\..\app\location.cpp" />
+    <ClCompile Include="..\..\app\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\app\game.h" />
