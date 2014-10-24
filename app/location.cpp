@@ -6,21 +6,27 @@
 
 void Location::draw() {}
 
-Location::Location(double x, double y, double r) : 
-	center_x{ x }, center_y{ y }, radius{ r } {}
+Location::Location(double x_in, double y_in, double r_in) : x{ x_in }, y{ y_in }, r{ r_in } {}
 
 void Location::makeBigger(double increase) {
-	radius += increase;
+	r += increase;
 }
 
 void Location::makeSmaller(double decrease) {
-	radius -= decrease;
+	r -= decrease;
 }
 
-bool Location::contains(double x, double y) {
-	double distance = sqrt(pow(x - center_x, 2) + pow(y - center_y, 2));
-	if (distance > radius) {
+bool Location::contains(double x_in, double y_in) {
+	if (distance(x_in, y_in) > r) {
 		return false;
 	}
 	return true;
+}
+bool Location::withinPressure(double input) {
+	return true;//for now
+	//TODO
+}
+
+double Location::distance(double x_in, double y_in) {
+	return sqrt(pow(x - loc.x, 2) + pow(y - loc.y, 2));
 }
