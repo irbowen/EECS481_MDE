@@ -1,11 +1,16 @@
 #include <gl\glew.h>
 #include <Windows.h>
-#include <cmath>
+#include <chrono>
+#include "graphics.h"
 
-#define PI 3.14159265
+using namespace std::chrono;
+
+using std::milli;
 
 #define XRES 1600
 #define YRES 900
+
+#define FPS 30
 
 HGLRC hRC = NULL;
 HDC hDC = NULL;
@@ -261,22 +266,30 @@ LRESULT CALLBACK WndProc(HWND hWnd,
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-void DrawCircle(int x, int y, int r){
 
-	glBegin(GL_TRIANGLE_FAN);
 
-	glColor3f(1.0f, 0.0f, 0.0f);
 
-	glVertex2f(x, y);
-
-	for (int angle = 0; angle <= 360; angle += 1){
-		glVertex2f(x + sin(angle * PI / 180) * r,
-			y + cos(angle * PI / 180) * r);
+// Regulate fps using timer
+class FPSregulator {
+	high_resolution_clock::time_point last;
+	double millsPerFrame;
+public:
+	FPSregulator(int fps) {
+		last = high_resolution_clock::now(); 
+		millsPerFrame = 1.0 / fps * 1000;
 	}
+	// Milliseconds since last frame (or construction)
+	inline bool frameReady() {
+		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - last).count();
+		if (elapsed >= millsPerFrame){
+			last = high_resolution_clock::now();
+			return true;
+		}
+		return false;
+	}
+};
 
-	glEnd();
-}
-
+Scene scene;
 
 int DrawGLScene(GLvoid){
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -292,10 +305,11 @@ int DrawGLScene(GLvoid){
 
 	// DO DRAWING
 
-	DrawCircle(250, 250, 100);
+	scene.draw();
 
 	return TRUE;
 }
+
 
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -309,6 +323,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	if (!CreateGLWindow("OpenGL framework", XRES, YRES, 16, fullscreen))
 		return 0;
+
+	FPSregulator timer(FPS);
+
+	scene.startPath(500, 500, 50, GREEN);
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -324,7 +342,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 				if (keys[VK_ESCAPE])
 					done = TRUE;
-				else {
+				else if (timer.frameReady()) {
+					if (keys[VK_UP])
+						scene.paths[0].addCircle();
+					if (keys[VK_DOWN])
+						scene.paths[0].removeCircle();
 					DrawGLScene();
 					SwapBuffers(hDC);
 				}

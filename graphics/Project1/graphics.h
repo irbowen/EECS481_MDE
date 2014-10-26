@@ -1,6 +1,15 @@
 #include <vector>
+#include <deque>
 
 using std::vector;
+using std::deque;
+
+struct Color;
+
+#define RED Color{1.0f, 0.0f, 0.0f}
+#define BLUE Color{0.0f, 1.0f, 0.0f}
+#define GREEN Color{0.0f, 0.0f, 1.0f}
+
 
 class Target {
 	int x, y;
@@ -17,8 +26,44 @@ public:
 	bool hitTarget(); // Is pressure close enough to targetPressure?
 };
 
-class Scene {
-	vector<Target> targets;
+struct Color {
+	double r, b, g;
+	Color(double rr, double bb, double gg) : r{ rr }, b{ bb }, g{ gg } {}
+};
+
+bool operator==(Color& a, Color& b);
+
+class Circle {
+	double x, y;
+	double r;
+	Color color;
+	friend class CirclePath;
 public:
-	Scene(); // initialize size and location of fixed targets
+	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color { cc } {}
+	void draw();
+};
+
+class CirclePath {
+	deque<Circle> circles;
+public:
+	CirclePath(double x, double y, double r, Color c) { circles.push_front({ x, y, r, c }); }
+	void draw() { for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); } }
+
+	// Add different sized circle to path in random direction
+	void addCircle();
+
+	inline void removeCircle() { if (circles.size() > 1) circles.pop_front(); }
+};
+
+class Scene {
+public:
+	vector<Target> targets;
+	vector<CirclePath> paths;
+
+
+	Scene() {} // initialize size and location of fixed targets
+	void draw() { for (CirclePath cp : paths) { cp.draw(); } }
+
+	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
+
 };
