@@ -3,13 +3,12 @@
 
 #include <iostream>
 class Location {
-	double x, y;
-	double r, rStart;
-	double pressure, targetPressure;
+	int x, y;
+	int r, rStart;
+	int pressure, targetPressure;
 	bool on;
 public:
 	Location(double, double, double, double);
-	~Location();
 	void draw();
 	void makeBigger(double);
 	void makeSmaller(double);
