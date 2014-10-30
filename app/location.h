@@ -8,17 +8,17 @@ class Location {
 	int pressure, targetPressure;
 	bool on;
 public:
-	Location(double, double, double, double);
+	Location(int, int, int, int);
 	void draw();
-	void makeBigger(double);
-	void makeSmaller(double);
-	bool contains(double, double);
-	bool withinPressure(double);
-	double distance(double, double);
+	void makeBigger(int);
+	void makeSmaller(int);
+	bool contains(int, int);
+	bool withinPressure(int);
+	int distance(int, int);
 	void turnOn() { on = true; };
 	void turnOff() { on = false; };
 	bool isOn() { return on; };
-	void setPressure(double); // Also adjust r so it scales down as pressure->targetPressure
+	void setPressure(int); // Also adjust r so it scales down as pressure->targetPressure
 	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
-	double getRadius() { return r; };
+	int getRadius() { return r; };
 };
