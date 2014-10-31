@@ -7,8 +7,8 @@ using std::deque;
 struct Color;
 
 #define RED Color{1.0f, 0.0f, 0.0f}
-#define BLUE Color{0.0f, 1.0f, 0.0f}
-#define GREEN Color{0.0f, 0.0f, 1.0f}
+#define BLUE Color{0.0f, 0.0f, 1.0f}
+#define GREEN Color{0.0f, 1.0f, 0.0f}
 
 
 class Target {
@@ -27,8 +27,8 @@ public:
 };
 
 struct Color {
-	double r, b, g;
-	Color(double rr, double bb, double gg) : r{ rr }, b{ bb }, g{ gg } {}
+	double r, g, b;
+	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {}
 };
 
 bool operator==(Color& a, Color& b);
@@ -54,7 +54,7 @@ public:
 	void draw() { for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); } }
 
 	// Add different sized circle to path in random direction
-	virtual void addCircle();
+	virtual void addCircle(int);
 
 	inline void removeCircle() { if (circles.size() > 1) circles.pop_front(); }
 };
@@ -63,7 +63,7 @@ class CircleSpiral : public CirclePath {
 	using CirclePath::CirclePath;
 public:
 	CircleSpiral(double x, double y, double r, Color c) : CirclePath{ x, y, r, c } {}
-	void addCircle();
+	void addCircle(int);
 };
 
 class Scene {

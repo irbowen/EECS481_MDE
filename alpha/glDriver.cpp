@@ -20,10 +20,12 @@ condition_variable depth_cv;
 #define XRES 1600
 #define YRES 900
 
-#define FPS 20
+#define FPS 10
 
 int thisDepth = 0;
 int lastDepth = 0;
+
+int debugDepth = 1100;
 
 
 
@@ -354,10 +356,29 @@ int glDriver(){
 				if (keys[VK_ESCAPE])
 					done = TRUE;
 				else if (timer.frameReady()) {
+					/*
 					if (thisDepth < lastDepth || keys[VK_UP]){
 						scene.paths[0].addCircle();
 						scene.spirals[0].addCircle();
 					}
+					*/
+	
+					if (keys[VK_CONTROL]){
+						if (keys[VK_UP])
+							debugDepth += 10;
+						else if (keys[VK_DOWN])
+							debugDepth -= 10;
+
+						thisDepth = debugDepth;
+					}
+
+
+					if (thisDepth <= 1600 && thisDepth >= 1100)
+					{
+						scene.paths[0].addCircle(thisDepth);
+						scene.spirals[0].addCircle(thisDepth);
+					}
+
 					else{
 						scene.paths[0].removeCircle();
 						scene.spirals[0].removeCircle();
@@ -373,6 +394,8 @@ int glDriver(){
 	KillGLWindow();
 	return (msg.wParam);
 }
+
+
 /*
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
