@@ -25,7 +25,7 @@ void Game::run() {
 				for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 					if (loc_it->contains(x, y) && loc_it->withinPressure(z)) {
 						num_active_spots--;
-						loc_it->visible = false;
+						loc_it->turnOff();
 						num_points += POINTS_PER_CORRECT;
 						//LIGHTS, SOUNDS, POINTS
 					}
@@ -58,16 +58,16 @@ Location Game::createRandomLocation() {
 		y_location = rand() % MAX_Y;
 		std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
-			if (loc_it->visible) {
+			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if (distance < radius || distance < loc_it->r) {
+				if (distance < radius || distance < loc_it->getRadius()) {
 					//std::cout << "Overlap with previous location" << std::endl;
 					continue;
 				}
 			}
 		}
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	Location randomLoc(x_location, y_location, radius);
+	Location randomLoc(x_location, y_location, radius, 5);
 	return randomLoc;
 }
 
