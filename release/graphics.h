@@ -6,6 +6,10 @@ using std::deque;
 
 struct Color;
 
+struct Color {
+	double r, g, b;
+	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {}
+};
 #define RED Color{1.0f, 0.0f, 0.0f}
 #define BLUE Color{0.0f, 0.0f, 1.0f}
 #define GREEN Color{0.0f, 1.0f, 0.0f}
@@ -30,10 +34,10 @@ public:
 	bool isOn() { return on; };
 	void setPressure(double); // Also adjust r so it scales down as pressure->targetPressure
 	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
-	int getRadius() { return r; };
+	double getRadius() { return r; };
 };
 
-
+/*
 class Target {
 	int x, y;
 	int r, rStart;
@@ -48,11 +52,7 @@ public:
 	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
 	bool hitTarget(); // Is pressure close enough to targetPressure?
 };
-
-struct Color {
-	double r, g, b;
-	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {}
-};
+*/
 
 bool operator==(Color& a, Color& b);
 
@@ -88,7 +88,7 @@ public:
 	CircleSpiral(double x, double y, double r, Color c) : CirclePath{ x, y, r, c } {}
 	void addCircle(int);
 };
-
+/*
 class Scene {
 public:
 	vector<Target> targets;
@@ -101,4 +101,4 @@ public:
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
-};
+};*/

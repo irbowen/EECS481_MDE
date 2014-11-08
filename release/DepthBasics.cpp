@@ -40,8 +40,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	thread glThread(glDriver);
 	CDepthBasics application;
 	application.Run(hInstance, nCmdShow);
-}
-*/
+}*/
+
 
 /// <summary>
 /// Constructor
