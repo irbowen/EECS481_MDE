@@ -1,15 +1,20 @@
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
+
 #include <vector>
+#include <iostream>
 #include <deque>
 
 using std::vector;
 using std::deque;
 
-struct Color;
-
 struct Color {
 	double r, g, b;
-	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {}
+	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {};
+	Color() {};
 };
+
+
 #define RED Color{1.0f, 0.0f, 0.0f}
 #define BLUE Color{0.0f, 0.0f, 1.0f}
 #define GREEN Color{0.0f, 1.0f, 0.0f}
@@ -88,10 +93,10 @@ public:
 	CircleSpiral(double x, double y, double r, Color c) : CirclePath{ x, y, r, c } {}
 	void addCircle(int);
 };
-/*
+
 class Scene {
 public:
-	vector<Target> targets;
+	vector<Location> targets;
 	vector<CirclePath> paths;
 	vector<CircleSpiral> spirals;
 
@@ -101,4 +106,6 @@ public:
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
-};*/
+};
+
+#endif

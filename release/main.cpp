@@ -11,13 +11,13 @@
 #include <mutex>
 #include <condition_variable>
 
-
-
-void startGame() {
-	Game g;
+void startGame(Game g) {
 	g.startGame();
 }
 
+void startKinect(CDepthBasics kinect, HINSTANCE hInstance, int nCmdShow) {
+	kinect.Run(hInstance, nCmdShow);
+}
 
 // <param name="hInstance">handle to the application instance</param>
 /// <param name="hPrevInstance">always 0</param>
@@ -26,9 +26,16 @@ void startGame() {
 /// <returns>status</returns>
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
 	int glDriver();
+	CDepthBasics kinect;
+	Game g(&kinect);
+
 	std::thread glThread(glDriver);
 	std::thread gameThread(startGame);
+	std::thread kinectThread(startKinect, kinect, hInstance, nCmdShow);
+
 	gameThread.join();
 	glThread.join();
+	kinectThread.join();
+
 	return 0;
 }

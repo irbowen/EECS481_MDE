@@ -12,10 +12,8 @@
 
 #include "graphics.h"
 #include <math.h>
-
 //Isaac Location code
-Location::Location(double x_in, double y_in, double r_in, double pressure_in)
-	: x{ x_in }, y{ y_in }, r{ r_in }, targetPressure{ pressure_in }{
+Location::Location(double x_in, double y_in, double r_in, double pressure_in) : x{ x_in }, y{ y_in }, r{ r_in }, targetPressure{ pressure_in }{
 	std::cout << "Created a location at (x, y, r): " << x << " " << y << " " << r << std::endl;
 	on = true;
 }
