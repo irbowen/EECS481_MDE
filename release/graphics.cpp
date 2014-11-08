@@ -32,8 +32,10 @@ bool Location::contains(double x_in, double y_in) {
 	return distance(x_in, y_in) < r;
 }
 
+//Returns true if the percentage pressure is
 bool Location::withinPressure(double input) {
-	return true;//TODO
+	double percentage = input / targetPressure;
+	return percentage > .5;
 }
 
 double Location::distance(double x_in, double y_in) {
