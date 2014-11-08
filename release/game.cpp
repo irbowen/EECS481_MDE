@@ -2,6 +2,7 @@
 //eecs481 fall2014
 
 #include "game.h"
+#include "DepthBasics.h"
 
 Game::Game() {
 	srand(5);
@@ -16,12 +17,13 @@ void Game::run() {
 			num_active_spots++;
 		}
 		while (true) {
+			vector<vector<double>> pressure_buffer = Kinect.getBuffer();
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 				double x = loc_it->x;
 				double y = loc_it->y;
-				double pressure = Kinect.getPressureAt(x, y);
+				double pressure = pressure_buffer.at(x).at(y);
 				if (loc_it->withinPressure(pressure)) {
-					loc_it->changeColorByPercentage();
+				//	loc_it->changeColorByPercentage();
 					num_active_spots--;
 					if (loc_it->perfectPressure(pressure)) {
 						loc_it->turnOff();
