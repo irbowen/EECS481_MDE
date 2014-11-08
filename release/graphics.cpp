@@ -12,6 +12,14 @@
 
 #include "graphics.h"
 #include <math.h>
+
+void ColorSlideCircle::setGoalProgress(double percent){
+	color.r = startColor.r + (endColor.r - startColor.r) * percent;
+	color.g = startColor.g + (endColor.g - startColor.g) * percent;
+	color.b = startColor.b + (endColor.b - startColor.b) * percent;
+}
+
+
 //Isaac Location code
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : x{ x_in }, y{ y_in }, r{ r_in }, targetPressure{ pressure_in }{
 	std::cout << "Created a location at (x, y, r): " << x << " " << y << " " << r << std::endl;

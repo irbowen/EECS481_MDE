@@ -19,6 +19,17 @@ struct Color {
 #define BLUE Color{0.0f, 0.0f, 1.0f}
 #define GREEN Color{0.0f, 1.0f, 0.0f}
 
+#define CYAN Color{0.0, 1.0, 1.0}
+#define MAGENTA Color{1.0, 0.0, 1.0}
+#define YELLOW Color{1.0, 1.0, 0.0}
+
+#define PINK Color{1.0, 0.51, 0.75}
+#define ORANGE Color{0.98, 0.45, 0.02}
+#define TEAL Color{0.01, 0.58, 0.53}
+
+#define PURPLE Color{0.5, 0.12, 0.61}
+#define TURQUOISE Color{0.02, 0.76, 0.67}
+
 
 class Location {
 public:
@@ -62,6 +73,7 @@ public:
 bool operator==(Color& a, Color& b);
 
 class Circle {
+protected:
 	double x, y;
 	double r;
 	Color color;
@@ -73,6 +85,17 @@ public:
 	void draw();
 	int angle = 0;
 };
+
+class ColorSlideCircle : public Circle {
+	Color startColor;
+	Color endColor;
+public:
+	ColorSlideCircle(double xx, double yy, double rr, Color cStart, Color cEnd) : Circle{ xx, yy, rr, cStart }, startColor{ cStart }, endColor{ cEnd } {}
+
+	void setGoalProgress(double percent);
+
+};
+
 
 class CirclePath {
 protected:
