@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright file="DepthBasics.cpp" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
@@ -34,14 +34,12 @@ extern mutex depth_mtx;
 /// <param name="lpCmdLine">command line arguments</param>
 /// <param name="nCmdShow">whether to display minimized, maximized, or normally</param>
 /// <returns>status</returns>
-/*
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	thread glThread(glDriver);
 	CDepthBasics application;
 	application.Run(hInstance, nCmdShow);
-}*/
-
+}
 
 /// <summary>
 /// Constructor
@@ -85,6 +83,17 @@ CDepthBasics::~CDepthBasics()
 
 	SafeRelease(m_pNuiSensor);
 }
+
+
+NUI_DEPTH_IMAGE_PIXEL * CDepthBasics::getframe()
+{
+	//example of setting target pixel
+	//NUI_DEPTH_IMAGE_PIXEL * targetPixel = frame_data + (640 * pix_y + pix_x);
+	//display_depth = pBufferMid->depth;
+
+	return frame_data;
+}
+
 
 /// <summary>
 /// Creates the main window and begins processing
@@ -377,19 +386,28 @@ void CDepthBasics::ProcessDepth()
 		BYTE * rgbrun = m_depthRGBX;
 		const NUI_DEPTH_IMAGE_PIXEL * pBufferRun = reinterpret_cast<const NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
 
+		
+		//workzone: set frame for app
+		frame_data = reinterpret_cast<NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
+		
+
+
+
 		// end pixel is start + width*height - 1
 		const NUI_DEPTH_IMAGE_PIXEL * pBufferEnd = pBufferRun + (cDepthWidth * cDepthHeight);
 
 
 
 
-
-
+		//workzone: create a function x,y into index# pixel array
+		
 
 		//Set display_depth to middle pixel;
 		//display_depth = (pBufferRun + (320 * 240))->depth;
-		int pix_height = 250;
-		const NUI_DEPTH_IMAGE_PIXEL * pBufferMid = pBufferRun + (320 * ((pix_height)* 2 - 1));
+
+		int pix_x = 40;
+		int pix_y = 300;
+		const NUI_DEPTH_IMAGE_PIXEL * pBufferMid = pBufferRun + (640 * pix_y + pix_x);
 
 		display_depth = pBufferMid->depth;
 
