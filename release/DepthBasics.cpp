@@ -85,12 +85,8 @@ CDepthBasics::~CDepthBasics()
 }
 
 
-NUI_DEPTH_IMAGE_PIXEL * CDepthBasics::getframe()
+std::vector<double> CDepthBasics::getframe()
 {
-	//example of setting target pixel
-	//NUI_DEPTH_IMAGE_PIXEL * targetPixel = frame_data + (640 * pix_y + pix_x);
-	//display_depth = pBufferMid->depth;
-
 	return frame_data;
 }
 
@@ -388,9 +384,16 @@ void CDepthBasics::ProcessDepth()
 
 		
 		//workzone: set frame for app
-		frame_data = reinterpret_cast<NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
-		
+		//frame_data = reinterpret_cast<NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
 
+		const NUI_DEPTH_IMAGE_PIXEL * pStartScan = reinterpret_cast<const NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
+
+		frame_data.resize(0);
+		for (int i = 0; i < (cDepthWidth * cDepthHeight); i++)
+		{
+			frame_data.push_back(pStartScan->depth);
+			pStartScan++;
+		}
 
 
 		// end pixel is start + width*height - 1
