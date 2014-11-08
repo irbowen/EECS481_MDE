@@ -3,8 +3,7 @@
 
 #include "game.h"
 #include "DepthBasics.h"
-
-
+#include "graphics.h"
 
 Game::Game(CDepthBasics& kinect_in) {
 	kinect = &kinect_in;
@@ -27,10 +26,10 @@ void Game::run() {
 				double y = loc_it->y;
 				double pressure = pressure_buffer.at(x).at(y);
 				if (loc_it->withinPressure(pressure)) {
-				//	loc_it->changeColorByPercentage();
+					//	loc_it->changeColorByPercentage();
 					num_active_spots--;
 					//if (loc_it->perfectPressure(pressure)) {
-						loc_it->turnOff();
+					loc_it->turnOff();
 					//}
 					//LIGHTS, SOUNDS, POINTS
 				}
@@ -38,19 +37,18 @@ void Game::run() {
 			//REDRAW
 			count = 0;
 		}
-		else {
-			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-				loc_it->makeBigger(INCREASE_FACTOR);
-			}
-			count++;
-			//REDRAW
-			if (count > BREAK_FACTOR) {//it its too hard, just draw another
-				break;
-			}
-			std::cout << "On pass " << count << std::endl;
+		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+			loc_it->makeBigger(INCREASE_FACTOR);
 		}
+		count++;
+		//REDRAW
+		if (count > BREAK_FACTOR) {//it its too hard, just draw another
+			break;
+		}
+		std::cout << "On pass " << count << std::endl;
 		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+	}
 }
 
 Location Game::createRandomLocation() {
