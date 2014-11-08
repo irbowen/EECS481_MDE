@@ -7,6 +7,7 @@
 #pragma once
 
 #include "resource.h"
+#include "Windows.h"
 #include "NuiApi.h"
 #include "ImageRenderer.h"
 #include <vector>
