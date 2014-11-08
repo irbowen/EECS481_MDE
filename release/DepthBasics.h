@@ -9,6 +9,7 @@
 #include "resource.h"
 #include "NuiApi.h"
 #include "ImageRenderer.h"
+#include <vector>
 
 class CDepthBasics
 {
@@ -18,7 +19,9 @@ class CDepthBasics
 
     static const int        cStatusMessageMaxLen = MAX_PATH*2;
 
-	NUI_DEPTH_IMAGE_PIXEL * frame_data = NULL;
+	//NUI_DEPTH_IMAGE_PIXEL * frame_data = NULL;
+
+	std::vector<double> frame_data;
 
 public:
     /// <summary>
@@ -57,7 +60,7 @@ public:
     /// <param name="hInstance"></param>
     /// <param name="nCmdShow"></param>
     int                     Run(HINSTANCE hInstance, int nCmdShow);
-	NUI_DEPTH_IMAGE_PIXEL * getframe();
+	std::vector<double> getframe();
 
 
 private:
