@@ -11,6 +11,29 @@ struct Color;
 #define GREEN Color{0.0f, 1.0f, 0.0f}
 
 
+class Location {
+	double x, y;
+	double r, rStart;
+	double pressure, targetPressure;
+	bool on;
+	Color color;
+public:
+	Location(double, double, double, double);
+	void draw();
+	void makeBigger(double);
+	void makeSmaller(double);
+	bool contains(double, double);
+	bool withinPressure(double);
+	double distance(double, double);
+	void turnOn() { on = true; };
+	void turnOff() { on = false; };
+	bool isOn() { return on; };
+	void setPressure(double); // Also adjust r so it scales down as pressure->targetPressure
+	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
+	int getRadius() { return r; };
+};
+
+
 class Target {
 	int x, y;
 	int r, rStart;
