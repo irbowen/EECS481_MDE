@@ -4,7 +4,12 @@
 #include "game.h"
 #include "DepthBasics.h"
 
+void Game::startKinect() {
+	kinect.Run(hInstance, nCmdShow);
+}
+
 Game::Game() {
+	std::thread kinectThread(startKinect);
 	srand(5);
 }
 
