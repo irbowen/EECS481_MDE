@@ -21,7 +21,7 @@ void Game::run() {
 			num_active_spots++;
 		}
 		while (true) {
-			vector<vector<double>> pressure_buffer = Kinect.getBuffer();
+			vector<vector<double>> pressure_buffer = kinect->getframe();
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 				double x = loc_it->x;
 				double y = loc_it->y;
@@ -29,9 +29,9 @@ void Game::run() {
 				if (loc_it->withinPressure(pressure)) {
 				//	loc_it->changeColorByPercentage();
 					num_active_spots--;
-					if (loc_it->perfectPressure(pressure)) {
+					//if (loc_it->perfectPressure(pressure)) {
 						loc_it->turnOff();
-					}
+					//}
 					//LIGHTS, SOUNDS, POINTS
 				}
 			}

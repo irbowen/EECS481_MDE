@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <time.h>
+#include "DepthBasics.h"
 #include "graphics.h"
 
 class Game {
