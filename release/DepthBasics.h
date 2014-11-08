@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright file="DepthBasics.h" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
@@ -17,6 +17,8 @@ class CDepthBasics
     static const int        cBytesPerPixel = 4;
 
     static const int        cStatusMessageMaxLen = MAX_PATH*2;
+
+	NUI_DEPTH_IMAGE_PIXEL * frame_data = NULL;
 
 public:
     /// <summary>
@@ -55,6 +57,8 @@ public:
     /// <param name="hInstance"></param>
     /// <param name="nCmdShow"></param>
     int                     Run(HINSTANCE hInstance, int nCmdShow);
+	NUI_DEPTH_IMAGE_PIXEL * getframe();
+
 
 private:
     HWND                    m_hWnd;
