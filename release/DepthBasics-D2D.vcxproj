@@ -173,10 +173,12 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="DepthBasics.cpp" />
     <ClCompile Include="glDriver.cpp" />
     <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DepthBasics.rc" />

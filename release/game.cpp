@@ -4,9 +4,7 @@
 #include "game.h"
 
 Game::Game() {
-	//empty for now
 	srand(5);
-	num_points = 0;
 }
 
 void Game::run() {
@@ -18,36 +16,35 @@ void Game::run() {
 			num_active_spots++;
 		}
 		while (true) {
-			if (input) {//test for input from kinect
-				//get x y z information
-				int x, y, z;
-				x = y = z = 0;
-				for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-					if (loc_it->contains(x, y) && loc_it->withinPressure(z)) {
-						num_active_spots--;
+			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+				double x = loc_it->x;
+				double y = loc_it->y;
+				double pressure = Kinect.getPressureAt(x, y);
+				if (loc_it->withinPressure(pressure)) {
+					loc_it->changeColorByPercentage();
+					num_active_spots--;
+					if (loc_it->perfectPressure(pressure)) {
 						loc_it->turnOff();
-						num_points += POINTS_PER_CORRECT;
-						//LIGHTS, SOUNDS, POINTS
 					}
+					//LIGHTS, SOUNDS, POINTS
 				}
-				//REDRAW
-				count = 0;
 			}
-			else {
-				for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-					loc_it->makeBigger(INCREASE_FACTOR);
-				}
-				count++;
-				//REDRAW
-				if (count > BREAK_FACTOR) {//it its too hard, just draw another
-					break;
-				}
-				std::cout << "On pass " << count << std::endl;
-			}
-			//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
-			std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+			//REDRAW
+			count = 0;
 		}
-	}
+		else {
+			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+				loc_it->makeBigger(INCREASE_FACTOR);
+			}
+			count++;
+			//REDRAW
+			if (count > BREAK_FACTOR) {//it its too hard, just draw another
+				break;
+			}
+			std::cout << "On pass " << count << std::endl;
+		}
+		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
+		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 }
 
 Location Game::createRandomLocation() {

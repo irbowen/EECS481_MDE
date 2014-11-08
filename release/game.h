@@ -5,7 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <time.h>
-#include "location.h"
+#include "graphics.h"
 
 class Game {
 	const int NUM_ROUNDS = 10;
@@ -16,8 +16,7 @@ class Game {
 	const int MAX_NUM_SPOTS = 10;
 	const int SAMPLE_MILLISECONDS = 100;
 	const int POINTS_PER_CORRECT = 100;
-	int num_points;
-	int start_radius = 5;
+	double start_radius = 5;
 	int num_active_spots = 0;
 	std::vector<Location> loc_list;
 	Location createRandomLocation();

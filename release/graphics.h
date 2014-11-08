@@ -12,12 +12,12 @@ struct Color;
 
 
 class Location {
+public:
 	double x, y;
 	double r, rStart;
 	double pressure, targetPressure;
 	bool on;
 	Color color;
-public:
 	Location(double, double, double, double);
 	void draw();
 	void makeBigger(double);
