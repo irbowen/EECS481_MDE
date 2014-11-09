@@ -54,6 +54,7 @@ m_pNuiSensor(NULL)
 {
 	// create heap storage for depth pixel data in RGBX format
 	m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
+	frame_data.resize(307200);
 }
 
 /// <summary>
@@ -410,13 +411,16 @@ void CDepthBasics::ProcessDepth()
 
 
 		//reset frame_data
-		frame_data.resize(0);
+		//frame_data.resize(307200);
+		int i = 0;
 
 		while (pBufferRun < pBufferEnd)
 		{
 			//add pixel depth data to frame_data
-			frame_data.push_back(pStartScan->depth);
+			//frame_data.push_back(pStartScan->depth);
+			frame_data[i] = pBufferRun->depth;
 			pStartScan++;
+			i++;
 
 
 			// discard the portion of the depth that contains only the player index
