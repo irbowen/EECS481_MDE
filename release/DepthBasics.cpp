@@ -34,12 +34,13 @@ extern mutex depth_mtx;
 /// <param name="lpCmdLine">command line arguments</param>
 /// <param name="nCmdShow">whether to display minimized, maximized, or normally</param>
 /// <returns>status</returns>
+/*
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	thread glThread(glDriver);
 	CDepthBasics application;
 	application.Run(hInstance, nCmdShow);
-}
+}*/
 
 /// <summary>
 /// Constructor

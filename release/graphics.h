@@ -33,7 +33,7 @@ struct Color {
 
 class Location {
 public:
-	double x, y;
+	int x, y;
 	double r, rStart;
 	double pressure, targetPressure;
 	bool on;

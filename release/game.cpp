@@ -5,6 +5,10 @@
 #include "DepthBasics.h"
 #include "graphics.h"
 
+Game::Game() {
+	srand(5);
+}
+
 Game::Game(CDepthBasics& kinect_in) {
 	kinect = &kinect_in;
 	//std::thread kinectThread(startKinect);
@@ -20,11 +24,14 @@ void Game::run() {
 			num_active_spots++;
 		}
 		while (true) {
-			vector<vector<double>> pressure_buffer = kinect->getframe();
+			vector<double> pressure_buffer = kinect->getframe();
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-				double x = loc_it->x;
-				double y = loc_it->y;
-				double pressure = pressure_buffer.at(x).at(y);
+				int x = loc_it->x;
+				int y = loc_it->y;
+				std::cout << pressure_buffer.size() << std::endl;
+				std::cout << "x: " << x << " y " << y << std::endl;
+				//double pressure = pressure_buffer.at(y);
+				double pressure = 0;
 				if (loc_it->withinPressure(pressure)) {
 					//	loc_it->changeColorByPercentage();
 					num_active_spots--;
@@ -52,7 +59,7 @@ void Game::run() {
 }
 
 Location Game::createRandomLocation() {
-	int radius = start_radius;
+	double radius = start_radius;
 	int x_location, y_location;
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
@@ -69,6 +76,7 @@ Location Game::createRandomLocation() {
 		}
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	Location randomLoc(x_location, y_location, radius, 5);
+	std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
 }
 

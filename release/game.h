@@ -19,6 +19,7 @@ class Game {
 	Location createRandomLocation();
 	CDepthBasics* kinect;
 public:
+	Game();
 	Game(CDepthBasics& kinect);
 	void run();
 	void startGame();

@@ -27,15 +27,16 @@ void startKinect(CDepthBasics kinect, HINSTANCE hInstance, int nCmdShow) {
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
 	int glDriver();
 	CDepthBasics kinect;
+	
 	Game g(kinect);
 
 	std::thread glThread(glDriver);
-	std::thread gameThread(startGame);
-	std::thread kinectThread(startKinect, kinect, hInstance, nCmdShow);
+	std::thread gameThread(startGame, g);
+//	std::thread kinectThread(startKinect, kinect, hInstance, nCmdShow);
 
 	gameThread.join();
 	glThread.join();
-	kinectThread.join();
+	//kinectThread.join();
 
 	return 0;
 }
