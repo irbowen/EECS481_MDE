@@ -388,14 +388,8 @@ void CDepthBasics::ProcessDepth()
 
 		const NUI_DEPTH_IMAGE_PIXEL * pStartScan = reinterpret_cast<const NUI_DEPTH_IMAGE_PIXEL *>(LockedRect.pBits);
 
-		frame_data.resize(0);
-		for (int i = 0; i < (cDepthWidth * cDepthHeight); i++)
-		{
-			frame_data.push_back(pStartScan->depth);
-			pStartScan++;
-		}
-
-
+		
+	
 		// end pixel is start + width*height - 1
 		const NUI_DEPTH_IMAGE_PIXEL * pBufferEnd = pBufferRun + (cDepthWidth * cDepthHeight);
 
@@ -415,8 +409,16 @@ void CDepthBasics::ProcessDepth()
 		display_depth = pBufferMid->depth;
 
 
+		//reset frame_data
+		frame_data.resize(0);
+
 		while (pBufferRun < pBufferEnd)
 		{
+			//add pixel depth data to frame_data
+			frame_data.push_back(pStartScan->depth);
+			pStartScan++;
+
+
 			// discard the portion of the depth that contains only the player index
 			USHORT depth = pBufferRun->depth;
 
