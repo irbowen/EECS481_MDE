@@ -7,7 +7,6 @@
 #pragma once
 
 #include "resource.h"
-#include "Windows.h"
 #include "NuiApi.h"
 #include "ImageRenderer.h"
 #include <vector>
@@ -23,6 +22,7 @@ class CDepthBasics
 	//NUI_DEPTH_IMAGE_PIXEL * frame_data = NULL;
 
 	std::vector<double> frame_data;
+	//double frame_data[307200];
 
 public:
     /// <summary>
@@ -62,7 +62,6 @@ public:
     /// <param name="nCmdShow"></param>
     int                     Run(HINSTANCE hInstance, int nCmdShow);
 	std::vector<double> getframe();
-
 
 private:
     HWND                    m_hWnd;
