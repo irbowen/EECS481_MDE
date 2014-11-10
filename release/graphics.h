@@ -112,7 +112,7 @@ public:
 };
 
 class CircleSpiral : public CirclePath {
-	using CirclePath::CirclePath;
+	//using CirclePath::CirclePath;
 public:
 	CircleSpiral(double x, double y, double r, Color c) : CirclePath{ x, y, r, c } {}
 	void addCircle(int);
@@ -125,7 +125,7 @@ private:
 public:
 	Polygon(vector<std::pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
 	void draw();
-}
+};
 
 class Scene {
 public:
