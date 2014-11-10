@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <deque>
+#include <utility>
 
 using std::vector;
 using std::deque;
@@ -119,10 +120,10 @@ public:
 
 class Polygon {
 private:
-	vector<pair<int, int>> vertices;
+	vector<std::pair<int, int>> vertices;
 	Color color;
 public:
-	Polygon(vector<pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
+	Polygon(vector<std::pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
 	void draw();
 }
 
