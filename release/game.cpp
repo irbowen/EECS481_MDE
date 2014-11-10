@@ -29,7 +29,7 @@ void Game::run() {
 				int x = loc_it->x;
 				int y = loc_it->y;
 				std::cout << "x: " << x << " y " << y << std::endl;
-				double pressure = pressure_buffer.at(y);
+				double pressure = pressure_buffer.at(y*640+x);
 				//double pressure = 0;
 				if (loc_it->withinPressure(pressure)) {
 					//	loc_it->changeColorByPercentage();
@@ -38,6 +38,14 @@ void Game::run() {
 					loc_it->turnOff();
 					//}
 					//LIGHTS, SOUNDS, POINTS
+					//1.  Include the following header files in this order: 
+						//#include "windows.h", #include "mmsystem.h"
+					//2.  follow the following steps to add winmm.lib to the linker (assuming Visual Studio 2010):
+						//a.  Right click the project name in the Solution Explorer and select "Property".
+						//b. On the left pane of the Property window, select "Linker" and then "Input"
+						//c. On the right pane, type winmm.lib in the "Additional Dependencies" row.
+						//d.  Click "Apply" and then "OK".
+					//PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME);
 				}
 			}
 			//REDRAW
