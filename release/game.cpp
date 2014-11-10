@@ -29,7 +29,7 @@ void Game::run() {
 				int x = loc_it->x;
 				int y = loc_it->y;
 				std::cout << "x: " << x << " y " << y << std::endl;
-				double pressure = pressure_buffer.at(y*640+x);
+				double pressure = pressure_buffer.at(y*MAX_X+x);
 				//double pressure = 0;
 				if (loc_it->withinPressure(pressure)) {
 					//	loc_it->changeColorByPercentage();
