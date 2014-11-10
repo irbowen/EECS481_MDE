@@ -339,10 +339,12 @@ int glDriver(){
 
 	FPSregulator timer(FPS);
 
+	/*
 	scene.startSpiral(1000, 300, 100, GREEN);
 	scene.startPath(500, 500, 50, BLUE);
-	
-	scene.polys.push_back({{100, 100},{200, 100}, {200, 200}, {100, 200}}, CYAN);
+	*/
+
+	scene.polys.push_back({ { { 100, 100 }, { 200, 120 }, { 290, 200 }, { 75, 250 } }, CYAN });
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -378,13 +380,13 @@ int glDriver(){
 
 					if (thisDepth <= 1600 && thisDepth >= 1100)
 					{
-						scene.paths[0].addCircle(thisDepth);
-						scene.spirals[0].addCircle(thisDepth);
+						/*scene.paths[0].addCircle(thisDepth);
+						scene.spirals[0].addCircle(thisDepth);*/
 					}
 
 					else{
-						scene.paths[0].removeCircle();
-						scene.spirals[0].removeCircle();
+						/*scene.paths[0].removeCircle();
+						scene.spirals[0].removeCircle();*/
 					}
 					DrawGLScene();
 					SwapBuffers(hDC);

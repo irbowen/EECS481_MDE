@@ -120,12 +120,15 @@ bool operator==(Color& a, Color& b) {
 		a.g == b.g;
 }
 
-void Polygon::draw(){
+void PolygonGL::draw(){
 	glBegin(GL_POLYGON);
+	
 	glColor3f(color.r, color.b, color.g);
 	
 	for(int i = 0; i < vertices.size(); i++){
 		glVertex2f(vertices[i].first, vertices[i].second);
 	}
+
 	glEnd();
 }
+

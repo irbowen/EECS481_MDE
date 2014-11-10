@@ -118,12 +118,12 @@ public:
 	void addCircle(int);
 };
 
-class Polygon {
+class PolygonGL {
 private:
 	vector<std::pair<int, int>> vertices;
 	Color color;
 public:
-	Polygon(vector<std::pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
+	PolygonGL(vector<std::pair<int, int>> inVert, Color c) : color{ c } { vertices = inVert; }
 	void draw();
 };
 
@@ -132,8 +132,7 @@ public:
 	vector<Location> targets;
 	vector<CirclePath> paths;
 	vector<CircleSpiral> spirals;
-	vector<Polygon> polys;
-
+	vector<PolygonGL> polys;
 
 	Scene() {} // initialize size and location of fixed targets
 	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw();}
