@@ -117,6 +117,15 @@ public:
 	void addCircle(int);
 };
 
+class Polygon {
+private:
+	vector<pair<int, int>> vertices;
+	Color color;
+public:
+	Polygon(vector<pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
+	void draw();
+}
+
 class Scene {
 public:
 	vector<Location> targets;
@@ -134,12 +143,5 @@ public:
 
 
 
-class Polygon {
-private:
-	vector<pair<int, int>> vertices;
-	Color color;
-public:
-	Polygon(vector<pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
-	void draw();
-}
+
 #endif
