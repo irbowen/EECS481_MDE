@@ -17,10 +17,12 @@ using std::unique_lock;
 mutex depth_mtx;
 condition_variable depth_cv;
 
-#define XRES 1600
-#define YRES 900
+#define XRES 640	
+#define YRES 480
 
 #define FPS 10
+
+#define FULLSCREEN false
 
 int thisDepth = 0;
 int lastDepth = 0;
@@ -37,7 +39,8 @@ HINSTANCE hInstance;
 
 bool active = TRUE;
 bool keys[256];
-bool fullscreen = TRUE;
+
+bool fullscreen = FULLSCREEN;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -330,8 +333,6 @@ int DrawGLScene(GLvoid){
 int glDriver(){
 	MSG msg;
 	BOOL done = FALSE;
-
-	fullscreen = TRUE;
 
 	if (!CreateGLWindow("OpenGL framework", XRES, YRES, 16, fullscreen))
 		return 0;

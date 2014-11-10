@@ -28,10 +28,9 @@ void Game::run() {
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 				int x = loc_it->x;
 				int y = loc_it->y;
-				std::cout << pressure_buffer.size() << std::endl;
-				std::cout << "x: " << x << " y " << y << std::endl;
-				//double pressure = pressure_buffer.at(y);
-				double pressure = 0;
+				OutputDebugString(pressure_buffer.size() + L"");			std::cout << "x: " << x << " y " << y << std::endl;
+				double pressure = pressure_buffer.at(y);
+				//double pressure = 0;
 				if (loc_it->withinPressure(pressure)) {
 					//	loc_it->changeColorByPercentage();
 					num_active_spots--;

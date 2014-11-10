@@ -32,7 +32,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	std::thread glThread(glDriver);
 	std::thread gameThread(startGame, g);
-//	std::thread kinectThread(startKinect, kinect, hInstance, nCmdShow);
+	//std::thread kinectThread(startKinect, kinect, hInstance, nCmdShow);
+
+	kinect.Run(hInstance, nCmdShow);
 
 	gameThread.join();
 	glThread.join();
