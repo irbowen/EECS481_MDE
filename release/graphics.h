@@ -122,13 +122,24 @@ public:
 	vector<Location> targets;
 	vector<CirclePath> paths;
 	vector<CircleSpiral> spirals;
+	vector<Polygon> polys;
 
 
 	Scene() {} // initialize size and location of fixed targets
-	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } }
+	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw();}
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
 };
 
+
+
+class Polygon {
+private:
+	vector<pair<int, int>> vertices;
+	Color color;
+public:
+	Polygon(vector<pair<int, int>> inVert, Color c) : vertices{inVert}, color{c} {}
+	void draw();
+}
 #endif

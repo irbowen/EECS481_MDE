@@ -341,6 +341,8 @@ int glDriver(){
 
 	scene.startSpiral(1000, 300, 100, GREEN);
 	scene.startPath(500, 500, 50, BLUE);
+	
+	scene.polys.push_back({{100, 100},{200, 100}, {200, 200}, {100, 200}}, CYAN);
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
