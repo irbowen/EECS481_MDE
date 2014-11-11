@@ -56,11 +56,13 @@ void Location::setPressure(double in) {
 void Circle::draw(){
 	glBegin(GL_TRIANGLE_FAN);
 
-	glColor3f(color.r, color.b, color.g);
+	glColor3f(color.r, color.g, color.b);
 	
+	/*
 	x += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
 	y += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
-	
+	*/
+
 	glVertex2f(x, y);
 
 	for (int angle = 0; angle <= 360; angle += 2){
@@ -123,7 +125,7 @@ bool operator==(Color& a, Color& b) {
 void PolygonGL::draw(){
 	glBegin(GL_POLYGON);
 	
-	glColor3f(color.r, color.b, color.g);
+	glColor3f(color.r, color.g, color.b);
 	
 	for(int i = 0; i < vertices.size(); i++){
 		glVertex2f(vertices[i].first, vertices[i].second);
@@ -131,4 +133,5 @@ void PolygonGL::draw(){
 
 	glEnd();
 }
+
 

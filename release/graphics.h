@@ -31,6 +31,8 @@ struct Color {
 #define PURPLE Color{0.5, 0.12, 0.61}
 #define TURQUOISE Color{0.02, 0.76, 0.67}
 
+#define WHITE Color{1.0, 1.0, 1.0}
+
 
 class Location {
 public:
@@ -97,6 +99,17 @@ public:
 
 };
 
+class ColorSlideRing {
+	ColorSlideCircle ring;
+	ColorSlideCircle center;
+public:
+	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
+
+	inline void setGoalProgress(double percent){ ring.setGoalProgress(percent), center.setGoalProgress(percent); }
+
+	inline void draw() { ring.draw(), center.draw(); }
+};
+
 
 class CirclePath {
 protected:
@@ -133,9 +146,10 @@ public:
 	vector<CirclePath> paths;
 	vector<CircleSpiral> spirals;
 	vector<PolygonGL> polys;
+	vector<ColorSlideRing> rings;
 
 	Scene() {} // initialize size and location of fixed targets
-	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw();}
+	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw(); for (auto x : rings) x.draw(); }
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
