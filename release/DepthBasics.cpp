@@ -4,6 +4,8 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+
+
 #include "stdafx.h"
 #include <strsafe.h>
 #include "DepthBasics.h"
@@ -11,6 +13,9 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+
+
+std::vector<double> frame_data;
 
 using std::thread;
 using std::mutex;
