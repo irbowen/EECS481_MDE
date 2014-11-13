@@ -50,6 +50,20 @@ void Game::run() {
 			}
 			//REDRAW
 			count = 0;
+			/* Feel like the code outside while loop should be there
+			and do not need count = 0 above
+			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+				loc_it->makeBigger(INCREASE_FACTOR);
+			}
+			count++;
+			//REDRAW
+			if (count > BREAK_FACTOR) {//it its too hard, just draw another
+				break;
+			}
+			std::cout << "On pass " << count << std::endl;
+			//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
+			std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+			*/
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 			loc_it->makeBigger(INCREASE_FACTOR);
