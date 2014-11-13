@@ -56,7 +56,8 @@ void Game::run() {
 			}
 			count++;
 			//REDRAW
-			if (count > BREAK_FACTOR) {//it its too hard, just draw another
+			if (count > BREAK_FACTOR || num_active_spots == 0) {//it its too hard, just draw another
+			// Or every point is successfully pressed
 				break;
 			}
 			std::cout << "On pass " << count << std::endl;
