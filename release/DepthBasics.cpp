@@ -86,12 +86,12 @@ CDepthBasics::~CDepthBasics()
 	SafeRelease(m_pNuiSensor);
 }
 
-
+/*
 std::vector<double> CDepthBasics::getframe()
 {
 	return frame_data;
 }
-
+*/
 
 /// <summary>
 /// Creates the main window and begins processing
