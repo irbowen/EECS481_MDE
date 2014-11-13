@@ -23,6 +23,7 @@ void ColorSlideCircle::setGoalProgress(double percent){
 //Isaac Location code
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : x{ x_in }, y{ y_in }, r{ r_in }, start_pressure{ pressure_in }{
 	std::cout << "Created a location at (x, y, r): " << x << " " << y << " " << r << std::endl;
+	std::cout << "At depth: " << start_pressure << std::endl;
 	on = true;
 }
 
@@ -38,10 +39,19 @@ bool Location::contains(double x_in, double y_in) {
 	return distance(x_in, y_in) < r;
 }
 
-//Returns true if the percentage pressure is
+double Location::getPercentage(double input) {
+	double deflection = abs(input - start_pressure);
+	return deflection / TARGET_PRESSURE;
+}
+
 bool Location::withinPressure(double input) {
-	double percentage = input;
-	return percentage > .5;
+	double deflection = abs(input - start_pressure);
+	return abs(deflection - TARGET_PRESSURE) < 500;
+}
+
+bool Location::exactMatch(double input) {
+	double deflection = abs(input - start_pressure);
+	return abs(deflection - TARGET_PRESSURE) < 100;
 }
 
 double Location::distance(double x_in, double y_in) {

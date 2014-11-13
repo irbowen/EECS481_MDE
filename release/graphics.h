@@ -48,6 +48,8 @@ public:
 	void makeSmaller(double);
 	bool contains(double, double);
 	bool withinPressure(double);
+	bool exactMatch(double);
+	double getPercentage(double);
 	double distance(double, double);
 	void turnOn() { on = true; };
 	void turnOff() { on = false; };
