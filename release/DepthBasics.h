@@ -12,7 +12,7 @@
 #include "ImageRenderer.h"
 #include <vector>
 
-std::vector<double> frame_data;
+extern std::vector<double> frame_data;
 
 class CDepthBasics
 {
