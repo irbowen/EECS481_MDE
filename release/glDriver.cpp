@@ -1,6 +1,8 @@
 #include <gl\glew.h>
 #include <Windows.h>
 #include <chrono>
+#include <iostream>
+
 #include "graphics.h"
 
 #include <mutex>
@@ -13,6 +15,8 @@ using std::milli;
 using std::mutex;
 using std::condition_variable;
 using std::unique_lock;
+using std::cout;
+using std::endl;
 
 mutex depth_mtx;
 condition_variable depth_cv;
@@ -20,7 +24,7 @@ condition_variable depth_cv;
 #define XRES 640	
 #define YRES 480
 
-#define FPS 10
+#define FPS 20
 
 #define FULLSCREEN false
 
@@ -346,7 +350,12 @@ int glDriver(){
 
 	scene.polys.push_back({ { { 100, 100 }, { 200, 120 }, { 290, 200 }, { 75, 250 } }, PURPLE });
 
-	scene.rings.push_back({300, 300, 100, WHITE, RED, GREEN});
+	scene.points.push_back({ 150, 250, RED });
+
+	cout << scene.polys[0].inside(150, 250) << endl;
+
+	scene.rings.push_back({ 300, 300, 100, WHITE, RED, GREEN });
+	scene.rings.push_back({ 50, 400, 50, TURQUOISE, MAGENTA, WHITE });
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -373,8 +382,8 @@ int glDriver(){
 					if (keys[VK_CONTROL]){
 						if (keys[VK_UP])
 							debugDepth += 10;
-						else if (keys[VK_DOWN])
-							debugDepth -= 10;
+						else //if (keys[VK_DOWN])
+							debugDepth = debugDepth <= 1200 ? debugDepth : debugDepth - 100;
 
 						thisDepth = debugDepth;
 					}
@@ -383,6 +392,7 @@ int glDriver(){
 					if (thisDepth <= 1600 && thisDepth >= 1100)
 					{
 						scene.rings[0].setGoalProgress((thisDepth - 1100) * 1.0 / 500);
+						scene.rings[1].setGoalProgress((thisDepth - 1100) * 1.0 / 500);
 
 						/*scene.paths[0].addCircle(thisDepth);
 						scene.spirals[0].addCircle(thisDepth);*/

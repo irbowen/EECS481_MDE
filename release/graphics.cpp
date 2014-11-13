@@ -134,4 +134,31 @@ void PolygonGL::draw(){
 	glEnd();
 }
 
+bool PolygonGL::inside(double x, double y){
+	bool rtn = false;
+	for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++){
+
+		double xi = vertices[i].first;
+		double xj = vertices[j].first;
+		double yi = vertices[i].second;
+		double yj = vertices[j].second;
+
+		if (((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi))
+			rtn = !rtn;
+
+
+	} 
+
+	return rtn;
+}
+
+void Point::draw(){
+	glBegin(GL_POINTS);
+
+	glColor3f(color.r, color.g, color.b);
+
+	glVertex2f(x, y);
+
+	glEnd();
+}
 

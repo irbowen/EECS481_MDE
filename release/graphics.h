@@ -139,6 +139,15 @@ private:
 public:
 	PolygonGL(vector<std::pair<int, int>> inVert, Color c) : color{ c } { vertices = inVert; }
 	void draw();
+	bool inside(double, double);
+};
+
+class Point {
+	double x, y;
+	Color color;
+public:
+	Point(double xx, double yy, Color c) : x{ xx }, y{ yy }, color{ c } {}
+	void draw();
 };
 
 class Scene {
@@ -148,9 +157,11 @@ public:
 	vector<CircleSpiral> spirals;
 	vector<PolygonGL> polys;
 	vector<ColorSlideRing> rings;
+	vector<Point> points;
+
 
 	Scene() {} // initialize size and location of fixed targets
-	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw(); for (auto x : rings) x.draw(); }
+	void draw() { for (CirclePath cp : paths) { cp.draw(); } for (CircleSpiral cs : spirals) { cs.draw(); } for (auto x : polys) x.draw(); for (auto x : rings) x.draw(); for (auto x : points) x.draw(); }
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
