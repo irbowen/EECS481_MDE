@@ -49,7 +49,7 @@ double Location::distance(double x_in, double y_in) {
 }
 
 void Location::setPressure(double in) {
-	pressure = in;
+	start_pressure = in;
 }
 //Isaac Locatin code
 

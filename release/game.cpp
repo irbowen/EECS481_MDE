@@ -24,12 +24,11 @@ void Game::run() {
 			num_active_spots++;
 		}
 		while (true) {
-			vector<double> pressure_buffer = kinect->getframe();
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 				int x = loc_it->x;
 				int y = loc_it->y;
 				std::cout << "x: " << x << " y " << y << std::endl;
-				double pressure = pressure_buffer.at(y*MAX_X+x);
+				double pressure = frame_data.at(y*MAX_X + x);
 				//double pressure = 0;
 				if (loc_it->withinPressure(pressure)) {
 					//	loc_it->changeColorByPercentage();
@@ -83,6 +82,7 @@ Location Game::createRandomLocation() {
 		}
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	Location randomLoc(x_location, y_location, radius, 5);
+	randomLoc.start_pressure = frame_data.get(MAX_X*y_location + x_location);
 	std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
 }

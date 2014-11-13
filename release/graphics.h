@@ -38,7 +38,8 @@ class Location {
 public:
 	int x, y;
 	double r, rStart;
-	double pressure, targetPressure;
+	const double TARGET_PRESSURE = 500;
+	double start_pressure;
 	bool on;
 	Color color;
 	Location(double, double, double, double);
