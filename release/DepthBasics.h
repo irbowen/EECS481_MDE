@@ -12,6 +12,8 @@
 #include "ImageRenderer.h"
 #include <vector>
 
+std::vector<double> frame_data;
+
 class CDepthBasics
 {
     static const int        cDepthWidth  = 640;
@@ -22,7 +24,7 @@ class CDepthBasics
 
 	//NUI_DEPTH_IMAGE_PIXEL * frame_data = NULL;
 
-	std::vector<double> frame_data;
+	//std::vector<double> frame_data;
 	//double frame_data[307200];
 
 public:
@@ -62,7 +64,7 @@ public:
     /// <param name="hInstance"></param>
     /// <param name="nCmdShow"></param>
     int                     Run(HINSTANCE hInstance, int nCmdShow);
-	std::vector<double> getframe();
+	//std::vector<double> getframe();
 
 private:
     HWND                    m_hWnd;
