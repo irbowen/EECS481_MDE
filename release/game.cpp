@@ -43,6 +43,28 @@ void Game::run() {
 				//d.  Click "Apply" and then "OK".
 				//PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME);
 			}
+<<<<<<< HEAD
+=======
+			//REDRAW
+			count = 0;
+			/* Feel like the code outside while loop should be there
+			and do not need count = 0 above
+			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+				if (!Loc_it->isOn()) {
+					loc_it->makeBigger(INCREASE_FACTOR);
+					count++;
+				}
+			}
+			//REDRAW
+			if (count > BREAK_FACTOR || num_active_spots == 0) {//it its too hard, just draw another
+			// Or every point is successfully pressed
+				break;
+			}
+			std::cout << "On pass " << count << std::endl;
+			//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
+			std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+			*/
+>>>>>>> 6370e01542120055d6a7f9ff005f64e83dd7b82f
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//Increase size of all existing locations
 			loc_it->makeBigger(INCREASE_FACTOR);
