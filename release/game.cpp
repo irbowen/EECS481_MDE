@@ -52,9 +52,11 @@ void Game::run() {
 			/* Feel like the code outside while loop should be there
 			and do not need count = 0 above
 			for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-				loc_it->makeBigger(INCREASE_FACTOR);
+				if (!Loc_it->isOn()) {
+					loc_it->makeBigger(INCREASE_FACTOR);
+					count++;
+				}
 			}
-			count++;
 			//REDRAW
 			if (count > BREAK_FACTOR || num_active_spots == 0) {//it its too hard, just draw another
 			// Or every point is successfully pressed
