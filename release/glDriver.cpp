@@ -24,7 +24,7 @@ condition_variable depth_cv;
 #define XRES 640	
 #define YRES 480
 
-#define FPS 20
+#define FPS 100
 
 #define FULLSCREEN false
 
@@ -334,6 +334,9 @@ int DrawGLScene(GLvoid){
 	return TRUE;
 }
 
+#include "graphics.h"
+#include "game.h"
+
 int glDriver(){
 	MSG msg;
 	BOOL done = FALSE;
@@ -389,6 +392,7 @@ int glDriver(){
 
 						thisDepth = debugDepth;
 					}
+
 
 
 					if (thisDepth <= 1600 && thisDepth >= 1100)

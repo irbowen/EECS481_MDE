@@ -17,6 +17,7 @@ struct Color {
 	Color() {};
 };
 
+std::ostream& operator<<(std::ostream& os, const Color& c);
 
 #define RED Color{1.0f, 0.0f, 0.0f}
 #define BLUE Color{0.0f, 0.0f, 1.0f}
@@ -77,9 +78,10 @@ public:
 };
 
 class ColorSlideRing {
+public:
+
 	ColorSlideCircle ring;
 	ColorSlideCircle center;
-public:
 	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
 
 	inline void setGoalProgress(double percent){ ring.setGoalProgress(percent), center.setGoalProgress(percent); }
@@ -160,6 +162,7 @@ public:
 	ColorSlideRing target;
 	double rStart;
 	const double TARGET_PRESSURE = 500;
+	double pressure;
 	double start_pressure;
 	bool on;
 	Color color;
@@ -174,8 +177,7 @@ public:
 	void turnOn() { on = true; scene.targets.insert(this); };
 	void turnOff() { on = false; scene.targets.erase(this); };
 	bool isOn() { return on; };
-	void setPressure(double); // Also adjust r so it scales down as pressure->targetPressure
-	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
+	void setPressure(double);
 	double getRadius() { return target.getR(); };
 	double getX() { return target.getX(); }
 	double getY() { return target.getY(); }

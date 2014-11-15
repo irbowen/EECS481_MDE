@@ -20,13 +20,13 @@ class Game {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
 	const int MAX_NUM_SPOTS = 20;
-	const int SAMPLE_MILLISECONDS = 100;
-	double start_radius = 5;
+	const int SAMPLE_MILLISECONDS = 10;
+	double start_radius = 20;
 	int num_active_spots = 0;
-	std::vector<Location> loc_list;
-	Location createRandomLocation();
+	Location* createRandomLocation();
 	CDepthBasics* kinect;
 public:
+	static std::vector<Location*> loc_list;
 	Game();
 	Game(CDepthBasics& kinect);
 	void run();

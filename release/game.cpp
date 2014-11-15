@@ -15,6 +15,8 @@ Game::Game(CDepthBasics& kinect_in) {
 	srand(5);
 }
 
+std::vector<Location*> Game::loc_list;
+
 void Game::run() {
 	for (int i = 0; i < NUM_ROUNDS; i++) {//10 rounds for now
 		std::cout << "Currently on round " << i << std::endl;
@@ -23,9 +25,19 @@ void Game::run() {
 			loc_list.push_back(createRandomLocation());
 			num_active_spots++;
 		}
-		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+		for (auto loc_it : loc_list) {
 			int x = loc_it->getX();
 			int y = loc_it->getY();
+
+			//loc_it->setPressure(0);
+
+			std::cout << "before: "<< loc_it->target.ring.color << std::endl;
+
+			loc_it->setPressure(500);
+
+			std::cout << "after: " << loc_it->target.ring.color << std::endl;
+
+
 			std::cout << "x: " << x << " y " << y << std::endl;
 			double pressure = frame_data.at(y*MAX_X + x);
 			if (loc_it->withinPressure(pressure)) {//if the pressure is within the range
@@ -44,7 +56,7 @@ void Game::run() {
 				//PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME);
 			}
 		}
-		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//Increase size of all existing locations
+		for (auto loc_it : loc_list) {//Increase size of all existing locations
 			loc_it->makeBigger(INCREASE_FACTOR);
 		}
 		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
@@ -52,14 +64,14 @@ void Game::run() {
 	}
 }
 
-Location Game::createRandomLocation() {
+Location* Game::createRandomLocation() {
 	double radius = start_radius;
 	int x_location, y_location;
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
 		std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
-		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
+		for (auto loc_it : loc_list) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
 				// if (distance < (radius + loc_it->getRadius()) //to avoid overlap
@@ -72,11 +84,10 @@ Location Game::createRandomLocation() {
 	// while (x_location <= radius || abs(x_location - MAX_X) <= radius 
 		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius)
 
-	// LEAK LEAK LEAK
-	Location randomLoc = *(new Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location)));
-
 	std::cout << "x,y: " << x_location << " " << y_location;
-	return randomLoc;
+
+	// LEAK LEAK LEAK
+	return new Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 }
 
 void Game::startGame() {

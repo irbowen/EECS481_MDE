@@ -13,6 +13,12 @@
 #include "graphics.h"
 #include <math.h>
 
+std::ostream& operator<<(std::ostream& os, const Color& c){
+	std::cout << c.r << ' ' << c.g << ' ' << c.b;
+	return os;
+}
+
+
 //Isaac Location code
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : target{ x_in, y_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }{
 	std::cout << "Created a location at (x, y, r): " << x_in << " " << y_in << " " << r_in << std::endl;
@@ -52,7 +58,9 @@ double Location::distance(double x_in, double y_in) {
 }
 
 void Location::setPressure(double in) {
-	start_pressure = in;
+	pressure = in;
+	target.setGoalProgress(getPercentage(in));
+	std::cout << getPercentage(in) << std::endl;
 }
 //Isaac Locatin code
 
