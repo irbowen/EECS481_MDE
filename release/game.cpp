@@ -64,19 +64,23 @@ Location Game::createRandomLocation() {
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
+		//bool valid=false;
 	//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				// if (distance < (radius + loc_it->getRadius()) //to avoid overlap
+				//if (distance >= (radius + loc_it->getRadius()) {//to avoid overlap
+					//valid=true;
+					//break;
+				//}
 				if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
 					continue;
 				}
 			}
 		}
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	// while (x_location <= radius || abs(x_location - MAX_X) <= radius 
-		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius)
+	// while ( (x_location <= radius || abs(x_location - MAX_X) <= radius 
+		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid==false)
 	Location randomLoc(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 	//std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
