@@ -20,9 +20,9 @@ class Game {
 	const int BREAK_FACTOR = 20;
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	const int MAX_NUM_SPOTS = 10;
+	const int MAX_NUM_SPOTS = 2;
 	const int SAMPLE_MILLISECONDS = 500;
-	double start_radius = 20;
+	double start_radius = 200;
 	int num_active_spots = 0;
 	Location* createRandomLocation();
 	double checkPressure(Location loc);

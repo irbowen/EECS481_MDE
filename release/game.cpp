@@ -84,7 +84,6 @@ void Game::run() {
 				//		std::cout << *f_it << " ";
 			}
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
-				//change color
 				if (loc_it->exactMatch(pressure)) {
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);
 					std::cout << "Matches at " << loc_it->getX() << " " << loc_it->getY() << " pressure: " << pressure << std::endl;
@@ -100,7 +99,7 @@ void Game::run() {
 			//redraw location
 		}
 		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
-		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+		//std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
 

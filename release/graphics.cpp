@@ -48,17 +48,18 @@ bool Location::contains(double x_in, double y_in) {
 
 double Location::getPercentage(double input) {
 	double deflection = abs(input - start_pressure);
-	return deflection / abs(TARGET_PRESSURE - start_pressure);
+	return deflection / TARGET_PRESSURE;
 }
 
 bool Location::withinPressure(double input) {
-	double deflection = abs(input - start_pressure);
-	return abs(deflection - TARGET_PRESSURE) < 500;
+	double deflection = input - start_pressure;
+	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
 bool Location::exactMatch(double input) {
-	double deflection = abs(input - start_pressure);
-	return abs(deflection - TARGET_PRESSURE) < 250;
+	double deflection = input - start_pressure;
+	return deflection <= TARGET_PRESSURE + 100 && deflection >= TARGET_PRESSURE - 100;
+
 }
 
 double Location::distance(double x_in, double y_in) {
@@ -67,8 +68,10 @@ double Location::distance(double x_in, double y_in) {
 
 void Location::setPressure(double in) {
 	pressure = in;
-	target.setGoalProgress(getPercentage(in));
-	std::cout << getPercentage(in) << std::endl;
+	if (in == 0)
+		target.setGoalProgress(0);
+	else
+		target.setGoalProgress(getPercentage(in));
 }
 //Isaac Locatin code
 
@@ -197,5 +200,4 @@ void Scene::draw() {
 	for (auto x : rings) x.draw();
 	for (auto x : points) x.draw();
 	for (auto x : targets) x->draw();
-	std::cout << targets.size() << std::endl;
 }

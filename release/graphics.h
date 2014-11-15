@@ -144,7 +144,7 @@ class Location {
 public:
 	ColorSlideRing target;
 	double rStart;
-	const double TARGET_PRESSURE = 500;
+	double TARGET_PRESSURE = 500;
 	const double MAX_RADIUS = 150;
 	double pressure;
 	double start_pressure;
