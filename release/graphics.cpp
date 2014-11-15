@@ -52,13 +52,13 @@ double Location::getPercentage(double input) {
 }
 
 bool Location::withinPressure(double input) {
-	double deflection = input - start_pressure;
+	double deflection = abs(input - start_pressure);
 	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
 bool Location::exactMatch(double input) {
-	double deflection = input - start_pressure;
-	return deflection <= TARGET_PRESSURE + 100 && deflection >= TARGET_PRESSURE - 100;
+	double deflection = abs(input - start_pressure);
+	return deflection <= TARGET_PRESSURE + 200 && deflection >= TARGET_PRESSURE - 200;
 
 }
 

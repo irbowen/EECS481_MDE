@@ -145,7 +145,7 @@ public:
 	ColorSlideRing target;
 	double rStart;
 	double TARGET_PRESSURE = 500;
-	const double MAX_RADIUS = 150;
+	const double MAX_RADIUS = 50;
 	double pressure;
 	double start_pressure;
 	bool on;
