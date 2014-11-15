@@ -29,4 +29,5 @@ public:
 	void startGame();
 	void startKinect();
 	void printRemainingLocations();
+	void printRemovedLocations();
 };

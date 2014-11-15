@@ -16,13 +16,28 @@ Game::Game(CDepthBasics& kinect_in) {
 
 void Game::printRemainingLocations() {
 	std::ostringstream ss;
+	ss << "Remaing locations: ";
 	for (auto it = loc_list.begin(); it != loc_list.end(); ++it) {
-		ss << it->toString();
+		if (it->isOn()) {
+			ss << it->toString();
+		}
+	}
+	std::cout << ss.str() << "\n";
+}
+
+void Game::printRemovedLocations() {
+	std::ostringstream ss;
+	ss << "Removed locations: ";
+	for (auto it = loc_list.begin(); it != loc_list.end(); ++it) {
+		if (!it->isOn()) {
+			ss << it->toString();
+		}
 	}
 	std::cout << ss.str() << "\n";
 }
 
 void Game::run() {
+	std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS*10));
 	for (int i = 0; i < NUM_ROUNDS; i++) {
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
@@ -38,12 +53,12 @@ void Game::run() {
 				//hard to see because cmd is only 80 chars wide!
 		//		std::cout << *f_it << " ";
 			}
-			std::cout << std::endl;
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				//change color
 				if (true) {//if it matches 'excatly'
 					std::cout << "Matches at " << x << " " << y << " pressure: " << pressure  << std::endl;
 					printRemainingLocations();
+					printRemovedLocations();
 					num_active_spots--;
 					loc_it->turnOff();
 				}
