@@ -80,7 +80,7 @@ Location Game::createRandomLocation() {
 		}
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	// while ( (x_location <= radius || abs(x_location - MAX_X) <= radius 
-		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid==false)
+		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid==false);
 	Location randomLoc(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 	//std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
