@@ -26,11 +26,16 @@ void Game::run() {
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
 			int x = loc_it->x;
 			int y = loc_it->y;
-			std::cout << "x: " << x << " y " << y << std::endl;
-			double pressure = frame_data.at(y*MAX_X + x);
-			if (loc_it->withinPressure(pressure)) {//if the pressure is within the range
+			double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
+			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
+				//hard to see because cmd is only 80 chars wide!
+				std::cout << *f_it << " ";
+			}
+			std::cout << std::endl;
+			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				//change color
 				if (true) {//if it matches 'excatly'
+					std::cout << "Matches at " << x << " " << y << " pressure: " << pressure  << std::endl;
 					num_active_spots--;
 					loc_it->turnOff();
 				}
@@ -46,6 +51,7 @@ void Game::run() {
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//Increase size of all existing locations
 			loc_it->makeBigger(INCREASE_FACTOR);
+			//redraw location
 		}
 		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -58,7 +64,7 @@ Location Game::createRandomLocation() {
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
-		std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+	//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
@@ -72,7 +78,7 @@ Location Game::createRandomLocation() {
 	// while (x_location <= radius || abs(x_location - MAX_X) <= radius 
 		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius)
 	Location randomLoc(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
-	std::cout << "x,y: " << x_location << " " << y_location;
+	//std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
 }
 

@@ -15,7 +15,7 @@ class Game {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
 	const int MAX_NUM_SPOTS = 20;
-	const int SAMPLE_MILLISECONDS = 100;
+	const int SAMPLE_MILLISECONDS = 500;
 	double start_radius = 5;
 	int num_active_spots = 0;
 	std::vector<Location> loc_list;
