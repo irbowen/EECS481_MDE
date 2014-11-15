@@ -348,6 +348,7 @@ int glDriver(){
 	scene.startPath(500, 500, 50, BLUE);
 	*/
 
+	/*
 	scene.polys.push_back({ { { 100, 100 }, { 200, 120 }, { 290, 200 }, { 75, 250 } }, PURPLE });
 
 	scene.points.push_back({ 150, 250, RED });
@@ -356,6 +357,7 @@ int glDriver(){
 
 	scene.rings.push_back({ 300, 300, 100, WHITE, RED, GREEN });
 	scene.rings.push_back({ 50, 400, 50, TURQUOISE, MAGENTA, WHITE });
+	*/
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -391,8 +393,10 @@ int glDriver(){
 
 					if (thisDepth <= 1600 && thisDepth >= 1100)
 					{
+						/*
 						scene.rings[0].setGoalProgress((thisDepth - 1100) * 1.0 / 500);
 						scene.rings[1].setGoalProgress((thisDepth - 1100) * 1.0 / 500);
+						*/
 
 						/*scene.paths[0].addCircle(thisDepth);
 						scene.spirals[0].addCircle(thisDepth);*/

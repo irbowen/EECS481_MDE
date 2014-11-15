@@ -13,35 +13,28 @@
 #include "graphics.h"
 #include <math.h>
 
-void ColorSlideCircle::setGoalProgress(double percent){
-	color.r = startColor.r + (endColor.r - startColor.r) * percent;
-	color.g = startColor.g + (endColor.g - startColor.g) * percent;
-	color.b = startColor.b + (endColor.b - startColor.b) * percent;
-}
-
-
 //Isaac Location code
-Location::Location(double x_in, double y_in, double r_in, double pressure_in) : x{ x_in }, y{ y_in }, r{ r_in }, start_pressure{ pressure_in }{
-	std::cout << "Created a location at (x, y, r): " << x << " " << y << " " << r << std::endl;
+Location::Location(double x_in, double y_in, double r_in, double pressure_in) : target{ x_in, y_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }{
+	std::cout << "Created a location at (x, y, r): " << x_in << " " << y_in << " " << r_in << std::endl;
 	std::cout << "At depth: " << start_pressure << std::endl;
-	on = true;
+	turnOn();
 }
 
 void Location::makeBigger(double increase) {
-	r += increase;
+	target.setR(target.getR() + increase);
 }
 
 void Location::makeSmaller(double decrease) {
-	r -= decrease;
+	target.setR(target.getR() - decrease);
 }
 
 bool Location::contains(double x_in, double y_in) {
-	return distance(x_in, y_in) < r;
+	return distance(x_in, y_in) < target.getR();
 }
 
 double Location::getPercentage(double input) {
 	double deflection = abs(input - start_pressure);
-	return deflection / TARGET_PRESSURE;
+	return deflection / abs(TARGET_PRESSURE - start_pressure);
 }
 
 bool Location::withinPressure(double input) {
@@ -55,7 +48,7 @@ bool Location::exactMatch(double input) {
 }
 
 double Location::distance(double x_in, double y_in) {
-	return sqrt(pow(x - x_in, 2) + pow(y - y_in, 2));
+	return sqrt(pow(target.getX() - x_in, 2) + pow(target.getY() - y_in, 2));
 }
 
 void Location::setPressure(double in) {
@@ -63,21 +56,30 @@ void Location::setPressure(double in) {
 }
 //Isaac Locatin code
 
+void ColorSlideCircle::setGoalProgress(double percent){
+	color.r = startColor.r + (endColor.r - startColor.r) * percent;
+	color.g = startColor.g + (endColor.g - startColor.g) * percent;
+	color.b = startColor.b + (endColor.b - startColor.b) * percent;
+}
+
+
+
+
 void Circle::draw(){
 	glBegin(GL_TRIANGLE_FAN);
 
-	glColor3f(color.r, color.g, color.b);
+	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
 	
 	/*
 	x += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
 	y += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
 	*/
 
-	glVertex2f(x, y);
+	glVertex2f((GLfloat)x, (GLfloat)y);
 
 	for (int angle = 0; angle <= 360; angle += 2){
-		glVertex2f(x + sin(angle * PI / 180) * r,
-			y + cos(angle * PI / 180) * r);
+		glVertex2f((GLfloat) (x + sin(angle * PI / 180) * r),
+				   (GLfloat) (y + cos(angle * PI / 180) * r));
 	}
 
 	glEnd();
@@ -90,7 +92,7 @@ void CirclePath::addCircle(int depth){
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
 
-	float ratio = (1500 - depth - 500) / 1000;
+	double ratio = (1500 - depth - 500) / 1000.0;
 
 	double base_r = 100;
 
@@ -135,10 +137,10 @@ bool operator==(Color& a, Color& b) {
 void PolygonGL::draw(){
 	glBegin(GL_POLYGON);
 	
-	glColor3f(color.r, color.g, color.b);
+	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
 	
-	for(int i = 0; i < vertices.size(); i++){
-		glVertex2f(vertices[i].first, vertices[i].second);
+	for(unsigned i = 0; i < vertices.size(); i++){
+		glVertex2f((GLfloat)vertices[i].first, (GLfloat)vertices[i].second);
 	}
 
 	glEnd();
@@ -146,7 +148,7 @@ void PolygonGL::draw(){
 
 bool PolygonGL::inside(double x, double y){
 	bool rtn = false;
-	for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++){
+	for (unsigned i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++){
 
 		double xi = vertices[i].first;
 		double xj = vertices[j].first;
@@ -165,10 +167,19 @@ bool PolygonGL::inside(double x, double y){
 void Point::draw(){
 	glBegin(GL_POINTS);
 
-	glColor3f(color.r, color.g, color.b);
+	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
 
-	glVertex2f(x, y);
+	glVertex2f((GLfloat)x, (GLfloat)y);
 
 	glEnd();
 }
 
+void Scene::draw() {
+	for (CirclePath cp : paths) { cp.draw(); }
+	for (CircleSpiral cs : spirals) { cs.draw(); }
+	for (auto x : polys) x.draw();
+	for (auto x : rings) x.draw();
+	for (auto x : points) x.draw();
+	for (auto x : targets) x->draw();
+	std::cout << targets.size() << std::endl;
+}

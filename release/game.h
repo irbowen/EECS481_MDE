@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -7,6 +10,8 @@
 //#include "Mmsystem.h"
 #include "DepthBasics.h"
 #include "graphics.h"
+
+
 
 class Game {
 	const int NUM_ROUNDS = 1000;
@@ -28,3 +33,4 @@ public:
 	void startGame();
 	void startKinect();
 };
+#endif

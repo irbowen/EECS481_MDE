@@ -24,8 +24,8 @@ void Game::run() {
 			num_active_spots++;
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-			int x = loc_it->x;
-			int y = loc_it->y;
+			int x = loc_it->getX();
+			int y = loc_it->getY();
 			std::cout << "x: " << x << " y " << y << std::endl;
 			double pressure = frame_data.at(y*MAX_X + x);
 			if (loc_it->withinPressure(pressure)) {//if the pressure is within the range
@@ -71,7 +71,10 @@ Location Game::createRandomLocation() {
 	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	// while (x_location <= radius || abs(x_location - MAX_X) <= radius 
 		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius)
-	Location randomLoc(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+
+	// LEAK LEAK LEAK
+	Location randomLoc = *(new Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location)));
+
 	std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
 }
