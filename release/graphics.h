@@ -5,6 +5,7 @@
 #include <iostream>
 #include <deque>
 #include <utility>
+#include <sstream>
 
 using std::vector;
 using std::deque;
@@ -57,6 +58,7 @@ public:
 	void setPressure(double); // Also adjust r so it scales down as pressure->targetPressure
 	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
 	double getRadius() { return r; };
+	std::string toString();
 };
 
 /*

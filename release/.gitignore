@@ -1,4 +1,4 @@
 Debug/*
-*sdf
-*suo
+*.sdf
+*.suo
 localmain*

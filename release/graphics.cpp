@@ -31,6 +31,12 @@ void Location::makeBigger(double increase) {
 	r += increase;
 }
 
+std::string Location::toString() {
+	std::ostringstream ss;
+	ss << "X: " << x << "Y: " << " R: " << r << " start_pressure: " << start_pressure << "\n";
+	return ss.str();
+}
+
 void Location::makeSmaller(double decrease) {
 	r -= decrease;
 }
@@ -51,7 +57,7 @@ bool Location::withinPressure(double input) {
 
 bool Location::exactMatch(double input) {
 	double deflection = abs(input - start_pressure);
-	return abs(deflection - TARGET_PRESSURE) < 100;
+	return abs(deflection - TARGET_PRESSURE) < 250;
 }
 
 double Location::distance(double x_in, double y_in) {

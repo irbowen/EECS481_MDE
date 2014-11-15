@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <time.h>
+#include <sstream>
 //For playing sound
 //#include "Windows.h"
 //#include "Mmsystem.h"
@@ -9,7 +10,7 @@
 #include "graphics.h"
 
 class Game {
-	const int NUM_ROUNDS = 1000;
+	const int NUM_ROUNDS = 100;
 	const int INCREASE_FACTOR = 1;
 	const int BREAK_FACTOR = 20;
 	const int MAX_X = 640;
@@ -27,4 +28,5 @@ public:
 	void run();
 	void startGame();
 	void startKinect();
+	void printRemainingLocations();
 };

@@ -11,12 +11,19 @@ Game::Game() {
 
 Game::Game(CDepthBasics& kinect_in) {
 	kinect = &kinect_in;
-	//std::thread kinectThread(startKinect);
 	srand(5);
 }
 
+void Game::printRemainingLocations() {
+	std::ostringstream ss;
+	for (auto it = loc_list.begin(); it != loc_list.end(); ++it) {
+		ss << it->toString();
+	}
+	std::cout << ss.str() << "\n";
+}
+
 void Game::run() {
-	for (int i = 0; i < NUM_ROUNDS; i++) {//10 rounds for now
+	for (int i = 0; i < NUM_ROUNDS; i++) {
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
 		if (num_active_spots <= MAX_NUM_SPOTS) {
@@ -29,13 +36,14 @@ void Game::run() {
 			double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
 			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
 				//hard to see because cmd is only 80 chars wide!
-				std::cout << *f_it << " ";
+		//		std::cout << *f_it << " ";
 			}
 			std::cout << std::endl;
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				//change color
 				if (true) {//if it matches 'excatly'
 					std::cout << "Matches at " << x << " " << y << " pressure: " << pressure  << std::endl;
+					printRemainingLocations();
 					num_active_spots--;
 					loc_it->turnOff();
 				}
