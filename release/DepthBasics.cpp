@@ -16,6 +16,7 @@
 
 
 std::vector<double> frame_data;
+bool buffer_valid;
 
 using std::thread;
 using std::mutex;
@@ -58,6 +59,7 @@ m_pDepthStreamHandle(INVALID_HANDLE_VALUE),
 m_bNearMode(false),
 m_pNuiSensor(NULL)
 {
+	buffer_valid = false;
 	// create heap storage for depth pixel data in RGBX format
 	m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
 	frame_data.resize(307200);
@@ -461,6 +463,7 @@ void CDepthBasics::ProcessDepth()
 			// Increment our index into the Kinect's depth buffer
 			++pBufferRun;
 		}
+		buffer_valid = true;
 
 		// Draw the data with Direct2D
 		m_pDrawDepth->Draw(m_depthRGBX, cDepthWidth * cDepthHeight * cBytesPerPixel);

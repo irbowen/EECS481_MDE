@@ -5,25 +5,28 @@
 #include <chrono>
 #include <thread>
 #include <time.h>
+#include <sstream>
 //For playing sound
-//#include "Windows.h"
-//#include "Mmsystem.h"
+#include "Windows.h"
+#include "Mmsystem.h"
 #include "DepthBasics.h"
 #include "graphics.h"
 
 
 
 class Game {
-	const int NUM_ROUNDS = 1000;
+	const int NUM_ROUNDS = 100;
 	const int INCREASE_FACTOR = 1;
 	const int BREAK_FACTOR = 20;
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
 	const int MAX_NUM_SPOTS = 20;
-	const int SAMPLE_MILLISECONDS = 10;
+	const int SAMPLE_MILLISECONDS = 500;
 	double start_radius = 20;
 	int num_active_spots = 0;
 	Location* createRandomLocation();
+	double checkPressure(Location loc);
+
 	CDepthBasics* kinect;
 public:
 	static std::vector<Location*> loc_list;
@@ -32,5 +35,7 @@ public:
 	void run();
 	void startGame();
 	void startKinect();
+	void printRemainingLocations();
+	void printRemovedLocations();
 };
 #endif

@@ -24,10 +24,17 @@ Location::Location(double x_in, double y_in, double r_in, double pressure_in) : 
 	std::cout << "Created a location at (x, y, r): " << x_in << " " << y_in << " " << r_in << std::endl;
 	std::cout << "At depth: " << start_pressure << std::endl;
 	turnOn();
+
 }
 
 void Location::makeBigger(double increase) {
 	target.setR(target.getR() + increase);
+}
+
+std::string Location::toString() {
+	std::ostringstream ss;
+	ss << "X: " << getX() << "Y: " << getY() << " R: " << getRadius() << " start_pressure: " << start_pressure << "\n";
+	return ss.str();
 }
 
 void Location::makeSmaller(double decrease) {
@@ -50,7 +57,7 @@ bool Location::withinPressure(double input) {
 
 bool Location::exactMatch(double input) {
 	double deflection = abs(input - start_pressure);
-	return abs(deflection - TARGET_PRESSURE) < 100;
+	return abs(deflection - TARGET_PRESSURE) < 250;
 }
 
 double Location::distance(double x_in, double y_in) {

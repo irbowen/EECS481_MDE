@@ -6,6 +6,7 @@
 #include <deque>
 #include <utility>
 #include <unordered_set>
+#include <sstream>
 
 using std::vector;
 using std::deque;
@@ -36,23 +37,6 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 
 #define WHITE Color{1.0, 1.0, 1.0}
 
-
-/*
-class Target {
-	int x, y;
-	int r, rStart;
-	int pressure, targetPressure;
-	bool on;
-public:
-	Target(int xx, int yy, int rr, int target) : x{ xx }, y{ yy }, r{ rr }, rStart{ rr }, targetPressure{ target }, on{ false } {}
-	void draw(); // Draw circle if on
-	inline void turnOn() { on = true; }
-	inline void turnOff() { on = false; }
-	void setPressure(int); // Also adjust r so it scales down as pressure->targetPressure
-	// [pressure = 0 -> r = rStart ;; pressure = targetPressure -> r = rStart / k for some const k]
-	bool hitTarget(); // Is pressure close enough to targetPressure?
-};
-*/
 
 bool operator==(Color& a, Color& b);
 
@@ -182,6 +166,7 @@ public:
 	double getX() { return target.getX(); }
 	double getY() { return target.getY(); }
 	void draw() { target.draw(); }
+	std::string toString();
 };
 
 #endif

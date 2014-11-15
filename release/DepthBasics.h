@@ -13,6 +13,7 @@
 #include <vector>
 
 extern std::vector<double> frame_data;
+extern bool buffer_valid;
 
 class CDepthBasics
 {
