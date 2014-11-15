@@ -36,6 +36,7 @@ struct Color {
 
 
 class Location {
+	const double MAX_RADIUS = 40;
 public:
 	int x, y;
 	double r, rStart;

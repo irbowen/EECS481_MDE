@@ -73,14 +73,10 @@ void Game::run() {
 			num_active_spots++;
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
-			//double pressure = checkPressure(*loc_it);
+			double pressure = checkPressure(*loc_it);
 			int x = loc_it->x;
 			int y = loc_it->y;
-			double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
-			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
-				//hard to see because cmd is only 80 chars wide!
-				//		std::cout << *f_it << " ";
-			}
+		//	double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				//change color
 				if (loc_it->exactMatch(pressure)) {

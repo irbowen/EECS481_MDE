@@ -27,7 +27,9 @@ Location::Location(double x_in, double y_in, double r_in, double pressure_in) : 
 }
 
 void Location::makeBigger(double increase) {
-	r += increase;
+	if (r < MAX_RADIUS) {
+		r += increase;
+	}
 }
 
 std::string Location::toString() {
