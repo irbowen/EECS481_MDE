@@ -37,7 +37,6 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 
 #define WHITE Color{1.0, 1.0, 1.0}
 
-
 bool operator==(Color& a, Color& b);
 
 class Circle {
@@ -146,6 +145,7 @@ public:
 	ColorSlideRing target;
 	double rStart;
 	const double TARGET_PRESSURE = 500;
+	const double MAX_RADIUS = 150;
 	double pressure;
 	double start_pressure;
 	bool on;

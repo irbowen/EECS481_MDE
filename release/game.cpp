@@ -74,7 +74,6 @@ void Game::run() {
 			loc_list.push_back(createRandomLocation());
 			num_active_spots++;
 		}
-
 		for (auto loc_it : loc_list) {
 			double pressure = checkPressure(*loc_it);
 
