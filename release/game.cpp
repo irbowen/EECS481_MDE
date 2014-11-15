@@ -22,6 +22,30 @@ void Game::printRemainingLocations() {
 	std::cout << ss.str() << "\n";
 }
 
+double Game::checkPressure(Location loc){
+	int x = loc.x;
+	int y = loc.y;
+	int radius = loc.getRadius();
+	double pressure = frame_data.at(x+y*MAX_X);
+	if (y-radius/2>=0 && frame_data.at(x+(y-radius/2)*MAX_X) > pressure)
+		pressure = frame_data.at(x+(y-radius/2)*MAX_X);
+	if (y-radius>=0 && frame_data.at(x+(y-radius)*MAX_X) > pressure)
+		pressure = frame_data.at(x+(y-radius)*MAX_X);
+	if (y+radius/2<MAX_Y && frame_data.at(x+(y+radius/2)*MAX_X) > pressure)
+		pressure = frame_data.at(x+(y+radius/2)*MAX_X);
+	if (y+radius<MAX_Y && frame_data.at(x+(y+radius)*MAX_X) > pressure)
+		pressure = frame_data.at(x+(y+radius)*MAX_X);
+	if (x-radius/2>=0 && frame_data.at((x-radius/2)+y*MAX_X) > pressure)
+		pressure = frame_data.at((x-radius/2)+y*MAX_X);
+	if (x-radius=0 && frame_data.at((x-radius)+y*MAX_X) > pressure)
+		pressure = frame_data.at((x-radius)+y*MAX_X);
+	if (x+radius/2<MAX_X && frame_data.at((x+radius/2)+y*MAX_X) > pressure)
+		pressure = frame_data.at((x+radius/2)+y*MAX_X);
+	if (x+radius<MAX_X && frame_data.at((x+radius)+y*MAX_X) > pressure)
+		pressure = frame_data.at((x+radius)+y*MAX_X);
+	return pressure;
+}
+
 void Game::run() {
 	for (int i = 0; i < NUM_ROUNDS; i++) {
 		std::cout << "Currently on round " << i << std::endl;
@@ -31,6 +55,7 @@ void Game::run() {
 			num_active_spots++;
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {
+			//double pressure = checkPressure(*loc_it);
 			int x = loc_it->x;
 			int y = loc_it->y;
 			double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
@@ -77,18 +102,18 @@ Location Game::createRandomLocation() {
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				//if (distance >= (radius + loc_it->getRadius()) {//to avoid overlap
-					//valid=true;
-					//break;
-				//}
-				if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
-					continue;
+				if (distance >= (radius + loc_it->getRadius()) {//to avoid overlap
+					valid=true;
+					break;
 				}
+				//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
+				//	continue;
+				//}
 			}
 		}
-	} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	// while ( (x_location <= radius || abs(x_location - MAX_X) <= radius 
-		//|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid==false);
+	//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
+	} while ( (x_location <= radius || abs(x_location - MAX_X) <= radius 
+		|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid==false);
 	Location randomLoc(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 	//std::cout << "x,y: " << x_location << " " << y_location;
 	return randomLoc;
