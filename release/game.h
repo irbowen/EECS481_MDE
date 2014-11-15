@@ -4,8 +4,8 @@
 #include <time.h>
 #include <sstream>
 //For playing sound
-//#include "Windows.h"
-//#include "Mmsystem.h"
+#include "Windows.h"
+#include "Mmsystem.h"
 #include "DepthBasics.h"
 #include "graphics.h"
 

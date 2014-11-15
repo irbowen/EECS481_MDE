@@ -40,28 +40,31 @@ double Game::checkPressure(Location loc){
 	int x = loc.x;
 	int y = loc.y;
 	int radius = loc.getRadius();
-	double pressure = frame_data.at(x+y*MAX_X);
-	if (y-radius/2>=0 && frame_data.at(x+(y-radius/2)*MAX_X) > pressure)
-		pressure = frame_data.at(x+(y-radius/2)*MAX_X);
-	if (y-radius>=0 && frame_data.at(x+(y-radius)*MAX_X) > pressure)
-		pressure = frame_data.at(x+(y-radius)*MAX_X);
-	if (y+radius/2<MAX_Y && frame_data.at(x+(y+radius/2)*MAX_X) > pressure)
-		pressure = frame_data.at(x+(y+radius/2)*MAX_X);
-	if (y+radius<MAX_Y && frame_data.at(x+(y+radius)*MAX_X) > pressure)
-		pressure = frame_data.at(x+(y+radius)*MAX_X);
-	if (x-radius/2>=0 && frame_data.at((x-radius/2)+y*MAX_X) > pressure)
-		pressure = frame_data.at((x-radius/2)+y*MAX_X);
-	if (x-radius=0 && frame_data.at((x-radius)+y*MAX_X) > pressure)
-		pressure = frame_data.at((x-radius)+y*MAX_X);
-	if (x+radius/2<MAX_X && frame_data.at((x+radius/2)+y*MAX_X) > pressure)
-		pressure = frame_data.at((x+radius/2)+y*MAX_X);
-	if (x+radius<MAX_X && frame_data.at((x+radius)+y*MAX_X) > pressure)
-		pressure = frame_data.at((x+radius)+y*MAX_X);
+	double pressure = frame_data.at(x + y*MAX_X);
+	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
+	if (y - radius >= 0 && frame_data.at(x + (y - radius)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y - radius)*MAX_X);
+	if (y + radius / 2 < MAX_Y && frame_data.at(x + (y + radius / 2)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y + radius / 2)*MAX_X);
+	if (y + radius<MAX_Y && frame_data.at(x + (y + radius)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y + radius)*MAX_X);
+	if (x - radius / 2 >= 0 && frame_data.at((x - radius / 2) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x - radius / 2) + y*MAX_X);
+	if (x - radius >= 0 && frame_data.at((x - radius) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x - radius) + y*MAX_X);
+	if (x + radius / 2 < MAX_X && frame_data.at((x + radius / 2) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x + radius / 2) + y*MAX_X);
+	if (x + radius<MAX_X && frame_data.at((x + radius) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x + radius) + y*MAX_X);
 	return pressure;
 }
 
 void Game::run() {
-	std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS*10));
+	while (!buffer_valid) {//sleep while kinect boots up
+		std::cout << "waiting for buffer" << std::endl;
+		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+	}
 	for (int i = 0; i < NUM_ROUNDS; i++) {
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
@@ -76,25 +79,18 @@ void Game::run() {
 			double pressure = frame_data.at(y*MAX_X + x);//check locations around this spot
 			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
 				//hard to see because cmd is only 80 chars wide!
-		//		std::cout << *f_it << " ";
+				//		std::cout << *f_it << " ";
 			}
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				//change color
-				if (true) {//if it matches 'excatly'
-					std::cout << "Matches at " << x << " " << y << " pressure: " << pressure  << std::endl;
+				if (loc_it->exactMatch(pressure)) {
+					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);
+					std::cout << "Matches at " << x << " " << y << " pressure: " << pressure << std::endl;
 					printRemainingLocations();
 					printRemovedLocations();
 					num_active_spots--;
 					loc_it->turnOff();
 				}
-				//1.  Include the following header files in this order: 
-				//#include "windows.h", #include "mmsystem.h"
-				//2.  follow the following steps to add winmm.lib to the linker (assuming Visual Studio 2010):
-				//a.  Right click the project name in the Solution Explorer and select "Property".
-				//b. On the left pane of the Property window, select "Linker" and then "Input"
-				//c. On the right pane, type winmm.lib in the "Additional Dependencies" row.
-				//d.  Click "Apply" and then "OK".
-				//PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME);
 			}
 		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//Increase size of all existing locations
@@ -109,15 +105,18 @@ void Game::run() {
 Location Game::createRandomLocation() {
 	double radius = start_radius;
 	int x_location, y_location;
+	bool valid = false;
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
-		//bool valid=false;
-	//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+		if (loc_list.size() == 0) {
+			valid = true;
+		}
 		for (auto loc_it = loc_list.begin(); loc_it != loc_list.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if (distance >= (radius + loc_it->getRadius()) {//to avoid overlap
+				if (distance >= (radius + loc_it->getRadius())) {//to avoid overlap
 					valid=true;
 					break;
 				}
