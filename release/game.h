@@ -21,6 +21,7 @@ class Game {
 	int num_active_spots = 0;
 	std::vector<Location> loc_list;
 	Location createRandomLocation();
+	double checkPressure(Location loc);
 	CDepthBasics* kinect;
 public:
 	Game();
