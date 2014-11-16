@@ -48,7 +48,9 @@ bool Location::contains(double x_in, double y_in) {
 
 double Location::getPercentage(double input) {
 	double deflection = abs(input - start_pressure);
-	return deflection / TARGET_PRESSURE;
+	return (deflection / TARGET_PRESSURE <= 1.0 &&
+			deflection / TARGET_PRESSURE >= 0.0) ?
+				deflection / TARGET_PRESSURE : 0.0;
 }
 
 bool Location::withinPressure(double input) {
