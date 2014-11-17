@@ -115,18 +115,27 @@ Location* Game::createRandomLocation() {
 		if (loc_list.size() == 0) {
 			valid = true;
 		}
-
+		// To detect overlap
+		int count_on=0;
+		int count_not=0;
 		for (auto loc_it : loc_list) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
+				count_on++;
 				double distance = loc_it->distance(x_location, y_location);
 				if (distance >= (radius + loc_it->getRadius())) {//to avoid overlap
-					valid=true;
-					break;
+					// check every circle 
+					count_not++;
+					//valid=true;
+					//break;
 				}
 				//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
 				//	continue;
 				//}
 			}
+		}
+		// If not overlap with all the circle, that is valid
+		if (count_on==count_not){
+			valid=true;
 		}
 		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	} while ((x_location <= radius || abs(x_location - MAX_X) <= radius
