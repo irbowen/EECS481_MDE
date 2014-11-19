@@ -65,7 +65,7 @@ double Game::checkPressure(Location loc){
 void Game::run() {
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
-		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
 	for (int i = 0; i < NUM_ROUNDS; i++) {
 		std::cout << "Currently on round " << i << std::endl;
@@ -85,12 +85,16 @@ void Game::run() {
 			}
 			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
 				if (loc_it->exactMatch(pressure)) {
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);
-					std::cout << "Matches at " << loc_it->getX() << " " << loc_it->getY() << " pressure: " << pressure << std::endl;
-					printRemainingLocations();
-					printRemovedLocations();
-					num_active_spots--;
-					loc_it->turnOff();
+					loc_it->num_rounds_correct++;
+					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+					if (loc_it->num_rounds_correct > 5) {
+						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+						std::cout << "Matches at " << loc_it->getX() << " " << loc_it->getY() << " pressure: " << pressure << std::endl;
+						printRemainingLocations();
+						printRemovedLocations();
+						num_active_spots--;
+						loc_it->turnOff();
+					}
 				}
 			}
 		}
