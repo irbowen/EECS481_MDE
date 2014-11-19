@@ -12,10 +12,13 @@ Hopefully Ele can make it to this one.
 *David cannot make it to the meeting and will be working from 14:00-17:00 instead. Others are welcome to join*
 * Thursday, November 20: 18:00-22:00
 *Isaac will not be able to make it*
+*Zhinan will not be able to make it*
 * Friday, November 21: 11:30-14:30
 *Isaac will be unavailable for this meeting*
+*Zhinan will not be able to make it*
 **Step 4 should be finished at this point**
 * Saturday, November 22: 12:00-22:00 PM
+*Zhinan will be unavailable from 8:00 PM*
 **Step 8 should be finished at this point**
 * Sunday, November 23: 12:00-22:00 PM
 *Galen will be unavailable from 13:30-15:30*
