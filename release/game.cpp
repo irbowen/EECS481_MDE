@@ -93,6 +93,7 @@ void Game::run() {
 						printRemovedLocations();
 						num_active_spots--;
 						loc_it.turnOff();
+						loc_it.fade(1000);
 					}
 				}
 			}
@@ -101,6 +102,7 @@ void Game::run() {
 			loc_it.makeBigger(INCREASE_FACTOR);
 			//redraw location
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
 
