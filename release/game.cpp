@@ -14,12 +14,13 @@ Game::Game(CDepthBasics& kinect_in) {
 	srand(5);
 }
 
-std::vector<Location> Game::loc_list;
+//std::vector<Location> Game::loc_list;
+//std::vector<Location> Scene::locations;
 
 void Game::printRemainingLocations() {
 	std::ostringstream ss;
 	ss << "Remaing locations: ";
-	for (auto it : loc_list) {
+	for (auto it : Scene::locations) {
 		if (it.isOn()) {
 			ss << it.toString();
 		}
@@ -30,7 +31,7 @@ void Game::printRemainingLocations() {
 void Game::printRemovedLocations() {
 	std::ostringstream ss;
 	ss << "Removed locations: ";
-	for (auto it : loc_list) {
+	for (auto it : Scene::locations) {
 		if (!it.isOn()) {
 			ss << it.toString();
 		}
@@ -71,10 +72,10 @@ void Game::run() {
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
 		if (num_active_spots <= MAX_NUM_SPOTS) {
-			loc_list.push_back(createRandomLocation());
+			Scene::locations.push_back(createRandomLocation());
 			num_active_spots++;
 		}
-		for (auto& loc_it : loc_list) {
+		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
 
 			loc_it.setPressure(pressure);
@@ -98,7 +99,7 @@ void Game::run() {
 				}
 			}
 		}
-		for (auto loc_it : loc_list) {//Increase size of all existing locations
+		for (auto loc_it : Scene::locations) {//Increase size of all existing locations
 			loc_it.makeBigger(INCREASE_FACTOR);
 			//redraw location
 		}
@@ -114,13 +115,13 @@ Location Game::createRandomLocation() {
 		y_location = rand() % MAX_Y;
 
 		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
-		if (loc_list.size() == 0) {
+		if (Scene::locations.size() == 0) {
 			valid = true;
 		}
 		// To detect overlap
 		int count_on=0;
 		int count_not=0;
-		for (auto loc_it : loc_list) {//now check that it doesn't overlap with any already created
+		for (auto loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
 				count_on++;
 				double distance = loc_it.distance(x_location, y_location);

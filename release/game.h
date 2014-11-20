@@ -29,7 +29,7 @@ class Game {
 
 	CDepthBasics* kinect;
 public:
-	static std::vector<Location> loc_list;
+//	static std::vector<Location> loc_list;
 	Game();
 	Game(CDepthBasics& kinect);
 	void run();
