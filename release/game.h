@@ -20,7 +20,7 @@ class Game {
 	const int BREAK_FACTOR = 20;
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	const int MAX_NUM_SPOTS = 15;
+	const int MAX_NUM_SPOTS = 3;
 	const int SAMPLE_MILLISECONDS = 100;
 	double start_radius = 20;
 	int num_active_spots = 0;

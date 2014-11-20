@@ -77,18 +77,12 @@ void Game::run() {
 		}
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
-
 			loc_it.setPressure(pressure);
-			
-			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
-				//hard to see because cmd is only 80 chars wide!
-				//		std::cout << *f_it << " ";
-			}
 			if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 				if (loc_it.exactMatch(pressure)) {
 					loc_it.num_rounds_correct++;
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it.num_rounds_correct > 5) {
+					if (loc_it.num_rounds_correct > 1) {
 						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						printRemainingLocations();
@@ -99,7 +93,7 @@ void Game::run() {
 				}
 			}
 		}
-		for (auto loc_it : Scene::locations) {//Increase size of all existing locations
+		for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
 			loc_it.makeBigger(INCREASE_FACTOR);
 			//redraw location
 		}
@@ -121,7 +115,7 @@ Location Game::createRandomLocation() {
 		// To detect overlap
 		int count_on=0;
 		int count_not=0;
-		for (auto loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
+		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
 				count_on++;
 				double distance = loc_it.distance(x_location, y_location);
