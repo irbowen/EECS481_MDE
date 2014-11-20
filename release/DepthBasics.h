@@ -13,6 +13,8 @@
 #include <vector>
 
 extern std::vector<double> frame_data;
+//extern int max_depth;
+//extern int max_index;
 extern bool buffer_valid;
 
 class CDepthBasics
