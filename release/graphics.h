@@ -7,6 +7,11 @@
 #include <utility>
 #include <unordered_set>
 #include <sstream>
+#include <chrono>
+
+using namespace std::chrono;
+
+using std::milli;
 
 using std::vector;
 using std::deque;
@@ -40,6 +45,9 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 bool operator==(Color& a, Color& b);
 
 class Circle {
+	high_resolution_clock::time_point fadeStart;
+	double fadeDuration = 0.0;
+	Color startColor;
 public:
 	double x, y;
 	double r;
@@ -47,6 +55,7 @@ public:
 	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color{ cc } {}
 	Circle(double xx, double yy, double rr, Color cc, int aa) : x{ xx }, y{ yy }, r{ rr }, color{ cc }, angle{ aa } {}
 	void draw();
+	void fade(double);
 	int angle = 0;
 };
 
@@ -78,6 +87,8 @@ public:
 	inline double getY(){ return ring.y; }
 
 	inline void draw() { ring.draw(), center.draw(); }
+
+	inline void fade(double ms) { ring.fade(ms), center.fade(ms); }
 };
 
 
@@ -123,22 +134,20 @@ class Location;
 
 class Scene {
 public:
-	unordered_set<Location*> targets;
-	vector<CirclePath> paths;
-	vector<CircleSpiral> spirals;
-	vector<PolygonGL> polys;
-	vector<ColorSlideRing> rings;
-	vector<Point> points;
+	static vector<Location> locations;
+	static vector<CirclePath> paths;
+	static vector<CircleSpiral> spirals;
+	static vector<PolygonGL> polys;
+	static vector<ColorSlideRing> rings;
+	static vector<Point> points;
 
 
 	Scene() {} // initialize size and location of fixed targets
-	void draw();
+	static void draw();
 
 	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
 };
-
-extern Scene scene;
 
 class Location {
 public:
@@ -159,8 +168,8 @@ public:
 	bool exactMatch(double);
 	double getPercentage(double);
 	double distance(double, double);
-	void turnOn() { on = true; scene.targets.insert(this); };
-	void turnOff() { on = false; scene.targets.erase(this); };
+	void turnOn() { on = true; };
+	void turnOff() { on = false; };
 	bool isOn() { return on; };
 	void setPressure(double);
 	double getRadius() { return target.getR(); };

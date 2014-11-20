@@ -313,8 +313,6 @@ public:
 	}
 };
 
-Scene scene;
-
 int DrawGLScene(GLvoid){
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -329,7 +327,7 @@ int DrawGLScene(GLvoid){
 
 	// DO DRAWING
 
-	scene.draw();
+	Scene::draw();
 
 	return TRUE;
 }

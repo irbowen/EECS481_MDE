@@ -83,11 +83,14 @@ void ColorSlideCircle::setGoalProgress(double percent){
 	color.b = startColor.b + (endColor.b - startColor.b) * percent;
 }
 
-
-
-
 void Circle::draw(){
 	glBegin(GL_TRIANGLE_FAN);
+
+	if (fadeDuration != 0.0){
+		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
+		// TODO+++
+	}
+
 
 	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
 	
@@ -105,6 +108,13 @@ void Circle::draw(){
 
 	glEnd();
 }
+
+void Circle::fade(double ms){
+	fadeStart = high_resolution_clock::now();
+	fadeDuration = ms;
+	startColor = color;
+}
+
 
 void CirclePath::addCircle(int depth){
 	Circle prev = circles.front();
@@ -201,5 +211,13 @@ void Scene::draw() {
 	for (auto x : polys) x.draw();
 	for (auto x : rings) x.draw();
 	for (auto x : points) x.draw();
-	for (auto x : targets) x->draw();
+	for (auto x : locations) x.draw();
 }
+
+
+vector<Location> Scene::locations;
+vector<CirclePath> Scene::paths;
+vector<CircleSpiral> Scene::spirals;
+vector<PolygonGL> Scene::polys;
+vector<ColorSlideRing> Scene::rings;
+vector<Point> Scene::points;
