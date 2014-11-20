@@ -421,15 +421,23 @@ void CDepthBasics::ProcessDepth()
 		//reset frame_data
 		//frame_data.resize(307200);
 		int i = 0;
-
+		//int max_index = 0;
+		//int max_depth = 0;
 		while (pBufferRun < pBufferEnd)
 		{
 			//add pixel depth data to frame_data
 			//frame_data.push_back(pStartScan->depth);
 			frame_data[i] = pBufferRun->depth;
+			
+			//detect the max depth on the frame
+			// if (frame_data[i] > max_depth){
+			//	max_depth = frame_data;
+			//	max_index = i;
+			//}
+			
 			pStartScan++;
 			i++;
-
+			
 
 			// discard the portion of the depth that contains only the player index
 			USHORT depth = pBufferRun->depth;
