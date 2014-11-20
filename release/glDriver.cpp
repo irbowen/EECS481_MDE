@@ -360,6 +360,8 @@ int glDriver(){
 	scene.rings.push_back({ 50, 400, 50, TURQUOISE, MAGENTA, WHITE });
 	*/
 
+	Scene::circles.push_back({ 400, 400, 100, MAGENTA });
+
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 			if (msg.message == WM_QUIT)

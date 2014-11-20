@@ -140,6 +140,7 @@ public:
 	static vector<PolygonGL> polys;
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
+	static vector<Circle> circles;
 
 
 	Scene() {} // initialize size and location of fixed targets

@@ -77,18 +77,30 @@ void Location::setPressure(double in) {
 }
 //Isaac Locatin code
 
-void ColorSlideCircle::setGoalProgress(double percent){
-	color.r = startColor.r + (endColor.r - startColor.r) * percent;
-	color.g = startColor.g + (endColor.g - startColor.g) * percent;
-	color.b = startColor.b + (endColor.b - startColor.b) * percent;
+
+namespace {
+	Color mix(const Color& a, const Color& b, double percent){
+
+		return Color{ a.r + (b.r - a.r) * percent,
+			a.g + (b.g - a.g) * percent,
+			a.b + (b.b - a.b) * percent };
+
+	}
 }
+
+
+void ColorSlideCircle::setGoalProgress(double percent){
+	color = mix(startColor, endColor, percent);
+}
+
 
 void Circle::draw(){
 	glBegin(GL_TRIANGLE_FAN);
 
 	if (fadeDuration != 0.0){
 		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
-		// TODO+++
+
+		color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
 	}
 
 
@@ -212,6 +224,7 @@ void Scene::draw() {
 	for (auto x : rings) x.draw();
 	for (auto x : points) x.draw();
 	for (auto x : locations) x.draw();
+	for (auto x : circles) x.draw();
 }
 
 
@@ -221,3 +234,4 @@ vector<CircleSpiral> Scene::spirals;
 vector<PolygonGL> Scene::polys;
 vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
+vector<Circle> Scene::circles;

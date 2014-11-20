@@ -40,9 +40,9 @@ void Game::printRemovedLocations() {
 }
 
 double Game::checkPressure(Location loc){
-	int x = loc.getX();
-	int y = loc.getY();
-	int radius = loc.getRadius();
+	int x = (int)loc.getX();
+	int y = (int)loc.getY();
+	int radius = (int)loc.getRadius();
 	double pressure = frame_data.at(x + y*MAX_X);
 	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
 		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
