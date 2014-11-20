@@ -69,6 +69,8 @@ void Game::run() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
 	for (int i = 0; i < NUM_ROUNDS; i++) {
+		// Play background sound
+		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
 		if (num_active_spots <= MAX_NUM_SPOTS) {
@@ -83,6 +85,8 @@ void Game::run() {
 					loc_it.num_rounds_correct++;
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
 					if (loc_it.num_rounds_correct > 1) {
+						// Stop background sound
+						//PlaySound(NULL, 0, 0);
 						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						printRemainingLocations();
