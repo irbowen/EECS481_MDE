@@ -24,12 +24,12 @@ class Game {
 	const int SAMPLE_MILLISECONDS = 100;
 	double start_radius = 20;
 	int num_active_spots = 0;
-	Location* createRandomLocation();
+	Location createRandomLocation();
 	double checkPressure(Location loc);
 
 	CDepthBasics* kinect;
 public:
-	static std::vector<Location*> loc_list;
+	static std::vector<Location> loc_list;
 	Game();
 	Game(CDepthBasics& kinect);
 	void run();

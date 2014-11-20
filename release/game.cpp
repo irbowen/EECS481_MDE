@@ -14,14 +14,14 @@ Game::Game(CDepthBasics& kinect_in) {
 	srand(5);
 }
 
-std::vector<Location*> Game::loc_list;
+std::vector<Location> Game::loc_list;
 
 void Game::printRemainingLocations() {
 	std::ostringstream ss;
 	ss << "Remaing locations: ";
 	for (auto it : loc_list) {
-		if (it->isOn()) {
-			ss << it->toString();
+		if (it.isOn()) {
+			ss << it.toString();
 		}
 	}
 	std::cout << ss.str() << "\n";
@@ -31,8 +31,8 @@ void Game::printRemovedLocations() {
 	std::ostringstream ss;
 	ss << "Removed locations: ";
 	for (auto it : loc_list) {
-		if (!it->isOn()) {
-			ss << it->toString();
+		if (!it.isOn()) {
+			ss << it.toString();
 		}
 	}
 	std::cout << ss.str() << "\n";
@@ -74,40 +74,38 @@ void Game::run() {
 			loc_list.push_back(createRandomLocation());
 			num_active_spots++;
 		}
-		for (auto loc_it : loc_list) {
-			double pressure = checkPressure(*loc_it);
+		for (auto& loc_it : loc_list) {
+			double pressure = checkPressure(loc_it);
 
-			loc_it->setPressure(pressure);
+			loc_it.setPressure(pressure);
 			
 			for (auto f_it = frame_data.begin(); f_it != frame_data.end(); ++f_it) {//prints out the fram
 				//hard to see because cmd is only 80 chars wide!
 				//		std::cout << *f_it << " ";
 			}
-			if (loc_it->isOn() && loc_it->withinPressure(pressure)) {//if the pressure is within the range
-				if (loc_it->exactMatch(pressure)) {
-					loc_it->num_rounds_correct++;
+			if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+				if (loc_it.exactMatch(pressure)) {
+					loc_it.num_rounds_correct++;
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it->num_rounds_correct > 5) {
+					if (loc_it.num_rounds_correct > 5) {
 						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-						std::cout << "Matches at " << loc_it->getX() << " " << loc_it->getY() << " pressure: " << pressure << std::endl;
+						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						printRemainingLocations();
 						printRemovedLocations();
 						num_active_spots--;
-						loc_it->turnOff();
+						loc_it.turnOff();
 					}
 				}
 			}
 		}
 		for (auto loc_it : loc_list) {//Increase size of all existing locations
-			loc_it->makeBigger(INCREASE_FACTOR);
+			loc_it.makeBigger(INCREASE_FACTOR);
 			//redraw location
 		}
-		//Sleep for x number of miliseconds.  slow down the loop, dont sample kinect too much
-		//std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
 
-Location* Game::createRandomLocation() {
+Location Game::createRandomLocation() {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
@@ -123,10 +121,10 @@ Location* Game::createRandomLocation() {
 		int count_on=0;
 		int count_not=0;
 		for (auto loc_it : loc_list) {//now check that it doesn't overlap with any already created
-			if (loc_it->isOn()) {
+			if (loc_it.isOn()) {
 				count_on++;
-				double distance = loc_it->distance(x_location, y_location);
-				if (distance >= (radius + loc_it->getRadius())) {//to avoid overlap
+				double distance = loc_it.distance(x_location, y_location);
+				if (distance >= (radius + loc_it.getRadius())) {//to avoid overlap
 					// check every circle 
 					count_not++;
 					//valid=true;
@@ -148,7 +146,7 @@ Location* Game::createRandomLocation() {
 	std::cout << "x,y: " << x_location << " " << y_location;
 
 	// LEAK LEAK LEAK
-	return new Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 }
 
 void Game::startGame() {
