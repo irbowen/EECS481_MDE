@@ -421,8 +421,6 @@ void CDepthBasics::ProcessDepth()
 		//reset frame_data
 		//frame_data.resize(307200);
 		int i = 0;
-		//int max_index = 0;
-		//int max_depth = 0;
 		while (pBufferRun < pBufferEnd)
 		{
 			//add pixel depth data to frame_data
