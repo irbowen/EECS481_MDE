@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <sstream>
 #include <chrono>
+#include <list>
 
 using namespace std::chrono;
 
@@ -16,6 +17,8 @@ using std::milli;
 using std::vector;
 using std::deque;
 using std::unordered_set;
+
+using std::list;
 
 struct Color {
 	double r, g, b;
@@ -40,15 +43,20 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 #define PURPLE Color{0.5, 0.12, 0.61}
 #define TURQUOISE Color{0.02, 0.76, 0.67}
 
+extern vector<Color> colors;
+
 #define WHITE Color{1.0, 1.0, 1.0}
 
-bool operator==(Color& a, Color& b);
+bool operator==(const Color& a, const Color& b);
 
 class Circle {
 	high_resolution_clock::time_point fadeStart;
 	double fadeDuration = 0.0;
 	Color startColor;
 public:
+
+	double remove = false;
+
 	double x, y;
 	double r;
 	Color color;
@@ -91,26 +99,32 @@ public:
 	inline void fade(double ms) { ring.fade(ms), center.fade(ms); }
 };
 
-
-class CirclePath {
-protected:
-	deque<Circle> circles;
+class RandomCircleCursor {
 public:
-	CirclePath(double x, double y, double r, Color c) { circles.push_front({ x, y, r, c }); }
-	void draw() { for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); } }
+	list<Circle> circles;
+	int x, y, r;
+public:
+	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r } {}
+
+	void draw();
 
 	// Add different sized circle to path in random direction
-	virtual void addCircle(int);
+	virtual void addCircle();
 
 	inline void removeCircle() { if (circles.size() > 1) circles.pop_front(); }
+
+	inline void setPos(int x_in, int y_in) { x = x_in, y = y_in; }
 };
 
+/*
 class CircleSpiral : public CirclePath {
 	//using CirclePath::CirclePath;
 public:
 	CircleSpiral(double x, double y, double r, Color c) : CirclePath{ x, y, r, c } {}
 	void addCircle(int);
 };
+*/
+
 
 class PolygonGL {
 private:
@@ -135,8 +149,8 @@ class Location;
 class Scene {
 public:
 	static vector<Location> locations;
-	static vector<CirclePath> paths;
-	static vector<CircleSpiral> spirals;
+	static vector<RandomCircleCursor> cursors;
+	//static vector<CircleSpiral> spirals;
 	static vector<PolygonGL> polys;
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
@@ -146,8 +160,8 @@ public:
 	Scene() {} // initialize size and location of fixed targets
 	static void draw();
 
-	void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
-	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }
+	/*void startPath(double x, double y, double r, Color c) { paths.push_back(CirclePath{ x, y, r, c }); }
+	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }*/
 };
 
 class Location {
@@ -178,6 +192,8 @@ public:
 	double getY() { return target.getY(); }
 	void draw() { target.draw(); }
 	std::string toString();
+
+	inline void fade(double ms){ target.fade(ms); }
 };
 
 #endif

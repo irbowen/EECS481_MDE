@@ -101,6 +101,11 @@ void Circle::draw(){
 		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
 
 		color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
+
+		//std::cout << color << std::endl;
+
+		if (elapsed >= fadeDuration)
+			remove = true;
 	}
 
 
@@ -128,27 +133,34 @@ void Circle::fade(double ms){
 }
 
 
-void CirclePath::addCircle(int depth){
-	Circle prev = circles.front();
+void RandomCircleCursor::addCircle(){
+
 	double theta = (rand() % 360) * PI / 180;
-	double distanceToNew = prev.r/2;
+	
+	double distanceToNew = r/(rand()%3 + 1);
+
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
 
-	double ratio = (1500 - depth - 500) / 1000.0;
 
-	double base_r = 100;
+	double newR = r / (rand() % 2 + 1);
 
-	double dr = (rand() % 2) ? prev.r / 10 : -prev.r / 10;
+	Color color = colors[rand() % colors.size()];
 
-	Color c = prev.color == RED ? BLUE : (prev.color == BLUE ? GREEN : (prev.color == GREEN ? RED : RED));
+	//Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
 
-	Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
+	circles.push_front({ dx + x, dy + y, newR, color});
 
-	circles.push_front({ dx + prev.x, dy + prev.y, prev.r + dr, r});
+	circles.front().fade(1000);
 
 }
 
+void RandomCircleCursor::draw() {
+	for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); }
+	circles.remove_if([](const Circle& c) { return c.color == WHITE; });
+}
+
+/*
 void CircleSpiral::addCircle(int depth){
 	Circle prev = circles.front();
 	static int angle = 0;
@@ -170,8 +182,9 @@ void CircleSpiral::addCircle(int depth){
 
 	circles.push_front({ dx + prev.x, dy + prev.y, 100 - 0.2 * normalized, r, prev.angle + 5 });
 }
+*/
 
-bool operator==(Color& a, Color& b) {
+bool operator==(const Color& a, const Color& b) {
 	return	a.r == b.r &&
 		a.b == b.b &&
 		a.g == b.g;
@@ -218,20 +231,22 @@ void Point::draw(){
 }
 
 void Scene::draw() {
-	for (CirclePath cp : paths) { cp.draw(); }
-	for (CircleSpiral cs : spirals) { cs.draw(); }
-	for (auto x : polys) x.draw();
-	for (auto x : rings) x.draw();
-	for (auto x : points) x.draw();
-	for (auto x : locations) x.draw();
-	for (auto x : circles) x.draw();
+	for (auto& x : cursors) { x.draw(); }
+	//for (CircleSpiral cs : spirals) { cs.draw(); }
+	for (auto& x : polys) x.draw();
+	for (auto& x : rings) x.draw();
+	for (auto& x : points) x.draw();
+	for (auto& x : locations) x.draw();
+	for (auto& x : circles) x.draw();
 }
 
 
 vector<Location> Scene::locations;
-vector<CirclePath> Scene::paths;
-vector<CircleSpiral> Scene::spirals;
+vector<RandomCircleCursor> Scene::cursors;
+//vector<CircleSpiral> Scene::spirals;
 vector<PolygonGL> Scene::polys;
 vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
 vector<Circle> Scene::circles;
+
+vector<Color> colors{ RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, PINK, ORANGE, TEAL, PURPLE, TURQUOISE };

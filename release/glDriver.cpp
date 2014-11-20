@@ -24,7 +24,7 @@ condition_variable depth_cv;
 #define XRES 640	
 #define YRES 480
 
-#define FPS 100
+#define FPS 60
 
 #define FULLSCREEN false
 
@@ -360,7 +360,9 @@ int glDriver(){
 	scene.rings.push_back({ 50, 400, 50, TURQUOISE, MAGENTA, WHITE });
 	*/
 
-	Scene::circles.push_back({ 400, 400, 100, MAGENTA });
+
+
+	Scene::cursors.push_back({ 320, 240, 100});
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -385,6 +387,9 @@ int glDriver(){
 					*/
 	
 					if (keys[VK_CONTROL]){
+
+						Scene::cursors[0].addCircle();
+
 						if (keys[VK_UP])
 							debugDepth += 10;
 						else //if (keys[VK_DOWN])
@@ -410,6 +415,7 @@ int glDriver(){
 						/*scene.paths[0].removeCircle();
 						scene.spirals[0].removeCircle();*/
 					}
+
 					DrawGLScene();
 					SwapBuffers(hDC);
 				}
