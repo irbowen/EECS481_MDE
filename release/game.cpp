@@ -4,6 +4,12 @@
 #include "game.h"
 #include "DepthBasics.h"
 #include "graphics.h"
+#include <mutex>
+#include <thread>
+
+using std::mutex;
+
+extern mutex LocationLock;
 
 Game::Game() {
 	srand(5);
@@ -20,7 +26,7 @@ Game::Game(CDepthBasics& kinect_in) {
 void Game::printRemainingLocations() {
 	std::ostringstream ss;
 	ss << "Remaing locations: ";
-	for (auto it : Scene::locations) {
+	for (const auto& it : Scene::locations) {
 		if (it.isOn()) {
 			ss << it.toString();
 		}
@@ -31,7 +37,7 @@ void Game::printRemainingLocations() {
 void Game::printRemovedLocations() {
 	std::ostringstream ss;
 	ss << "Removed locations: ";
-	for (auto it : Scene::locations) {
+	for (const auto& it : Scene::locations) {
 		if (!it.isOn()) {
 			ss << it.toString();
 		}
@@ -77,6 +83,11 @@ void Game::run() {
 			Scene::locations.push_back(createRandomLocation());
 			num_active_spots++;
 		}
+
+
+		
+		LocationLock.lock();
+
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
 			loc_it.setPressure(pressure);
@@ -102,6 +113,7 @@ void Game::run() {
 			loc_it.makeBigger(INCREASE_FACTOR);
 			//redraw location
 		}
+		LocationLock.unlock();
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
@@ -121,6 +133,9 @@ Location Game::createRandomLocation() {
 		// To detect overlap
 		int count_on=0;
 		int count_not=0;
+
+		
+
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
 				count_on++;
@@ -146,7 +161,6 @@ Location Game::createRandomLocation() {
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 
-	// LEAK LEAK LEAK
 	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
 }
 

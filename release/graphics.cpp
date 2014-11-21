@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <cmath>
 #include <cstdlib>
+#include <mutex>
 
 
 #define PI 3.14159265
@@ -12,6 +13,10 @@
 
 #include "graphics.h"
 #include <math.h>
+
+using std::mutex;
+
+mutex LocationLock;
 
 std::ostream& operator<<(std::ostream& os, const Color& c){
 	std::cout << c.r << ' ' << c.g << ' ' << c.b;
@@ -32,7 +37,7 @@ void Location::makeBigger(double increase) {
 		target.setR(target.getR() + increase);
 }
 
-std::string Location::toString() {
+std::string Location::toString() const {
 	std::ostringstream ss;
 	ss << "X: " << getX() << "Y: " << getY() << " R: " << getRadius() << " start_pressure: " << start_pressure << "\n";
 	return ss.str();
@@ -151,7 +156,7 @@ void RandomCircleCursor::addCircle(){
 
 	circles.push_front({ dx + x, dy + y, newR, color});
 
-	circles.front().fade(1000);
+	circles.front().fade(rand()%500 + 500);
 
 }
 
@@ -236,7 +241,9 @@ void Scene::draw() {
 	for (auto& x : polys) x.draw();
 	for (auto& x : rings) x.draw();
 	for (auto& x : points) x.draw();
+	LocationLock.lock();
 	for (auto& x : locations) x.draw();
+	LocationLock.unlock();
 	for (auto& x : circles) x.draw();
 }
 

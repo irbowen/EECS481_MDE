@@ -88,11 +88,11 @@ public:
 
 	inline void setR(double r) { ring.r = r, center.r = r * 0.9; }
 
-	inline double getR(){ return ring.r; }
+	inline double getR() const { return ring.r; }
 
-	inline double getX(){ return ring.x; }
+	inline double getX() const { return ring.x; }
 
-	inline double getY(){ return ring.y; }
+	inline double getY() const { return ring.y; }
 
 	inline void draw() { ring.draw(), center.draw(); }
 
@@ -185,13 +185,13 @@ public:
 	double distance(double, double);
 	void turnOn() { on = true; };
 	void turnOff() { on = false; };
-	bool isOn() { return on; };
+	bool isOn() const { return on; };
 	void setPressure(double);
-	double getRadius() { return target.getR(); };
-	double getX() { return target.getX(); }
-	double getY() { return target.getY(); }
+	double getRadius() const { return target.getR(); };
+	double getX() const { return target.getX(); }
+	double getY() const { return target.getY(); }
 	void draw() { target.draw(); }
-	std::string toString();
+	std::string toString() const;
 
 	inline void fade(double ms){ target.fade(ms); }
 };
