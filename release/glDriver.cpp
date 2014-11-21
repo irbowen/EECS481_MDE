@@ -360,6 +360,7 @@ int glDriver(){
 	scene.rings.push_back({ 50, 400, 50, TURQUOISE, MAGENTA, WHITE });
 	*/
 
+	
 
 
 	Scene::cursors.push_back({ 320, 240, 50});

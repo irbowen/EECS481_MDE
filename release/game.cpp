@@ -11,6 +11,8 @@ using std::mutex;
 
 extern mutex LocationLock;
 
+Color palette(Color& c);
+
 Game::Game() {
 	srand(5);
 }

@@ -91,8 +91,23 @@ namespace {
 			a.b + (b.b - a.b) * percent };
 
 	}
+
+	
 }
 
+Color palette(Color& c){
+	Color a = c;
+	a.r += (((rand() % 200) - 100) / 300.0);
+	a.g += (((rand() % 200) - 100) / 300.0);
+	a.b += (((rand() % 200) - 100) / 300.0);
+	if (a.r < 0) a.r = 0;
+	else if (a.r > 1) a.r = 1;
+	if (a.g < 0) a.g = 0;
+	else if (a.g > 1) a.g = 1;
+	if (a.b < 0) a.b = 0;
+	else if (a.b > 1) a.b = 1;
+	return a;
+}
 
 void ColorSlideCircle::setGoalProgress(double percent){
 	color = mix(startColor, endColor, percent);
@@ -153,8 +168,9 @@ void RandomCircleCursor::addCircle(){
 
 	double newR = r / (rand() % 4 + 2);
 
-	Color color = colorScheme_ocean[rand() % colorScheme_ocean.size()];
-
+	//Color color = colorScheme_ocean[rand() % colorScheme_ocean.size()];
+	Color color = palette({ MAGENTA });
+	std::cout << color << std::endl;
 	//Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
 
 	circles.push_front({ dx + x, dy + y, newR, color});
