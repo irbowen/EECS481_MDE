@@ -156,6 +156,10 @@ public:
 
 class Location;
 
+
+//draft
+class LocPair;
+
 class Scene {
 public:
 	static vector<Location> locations;
@@ -166,6 +170,9 @@ public:
 	static vector<Point> points;
 	static vector<Circle> circles;
 
+
+	//draft
+	static vector<LocPair> locpairs;
 
 	Scene() {} // initialize size and location of fixed targets
 	static void draw();
