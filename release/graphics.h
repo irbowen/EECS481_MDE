@@ -106,7 +106,6 @@ public:
 
 class ColorSlideRing {
 public:
-
 	ColorSlideCircle ring;
 	ColorSlideCircle center;
 	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
@@ -178,6 +177,10 @@ public:
 
 class Location;
 
+
+//draft
+class LocPair;
+
 class Scene {
 public:
 	static vector<Location> locations;
@@ -188,6 +191,9 @@ public:
 	static vector<Point> points;
 	static vector<Circle> circles;
 
+
+	//draft
+	static vector<LocPair> locpairs;
 
 	Scene() {} // initialize size and location of fixed targets
 	static void draw();
@@ -227,6 +233,18 @@ public:
 	std::string toString() const;
 
 	inline void fade(double ms){ target.fade(ms); }
+};
+
+class LocPair
+{
+public:
+	ColorSlideRing start;
+	ColorSlideRing destination;
+	double rStart;
+	double start_pressure;
+	LocPair(double, double, double, double, double, double);
+	bool on;
+	void draw() { start.draw(); destination.draw(); }
 };
 
 #endif

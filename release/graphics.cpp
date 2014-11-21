@@ -100,6 +100,19 @@ namespace {
 	}
 }
 
+Color palette(Color& c){
+	Color a = c;
+	a.r += (((rand() % 200) - 100) / 300.0);
+	a.g += (((rand() % 200) - 100) / 300.0);
+	a.b += (((rand() % 200) - 100) / 300.0);
+	if (a.r < 0) a.r = 0;
+	else if (a.r > 1) a.r = 1;
+	if (a.g < 0) a.g = 0;
+	else if (a.g > 1) a.g = 1;
+	if (a.b < 0) a.b = 0;
+	else if (a.b > 1) a.b = 1;
+	return a;
+}
 
 void ColorSlideCircle::setGoalProgress(double percent){
 	color = mix(startColor, endColor, percent);
@@ -172,8 +185,6 @@ void RandomCircleCursor::addCircle(){
 	double newR = r / (rand() % 4 + 2);
 
 	Color color = (*colorScheme)->at(rand() % (*colorScheme)->size());
-
-	//Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
 
 	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%4000 + 4000)});
 
@@ -254,7 +265,8 @@ void Point::draw(){
 	glEnd();
 }
 
-void Scene::draw() {
+void Scene::draw() 
+{
 	for (auto& x : cursors) { x.draw(); }
 	//for (CircleSpiral cs : spirals) { cs.draw(); }
 	for (auto& x : polys) x.draw();
@@ -264,9 +276,10 @@ void Scene::draw() {
 	for (auto& x : locations) x.draw();
 	LocationLock.unlock();
 	for (auto& x : circles) x.draw();
+	for (auto& x : locpairs) x.draw();
 }
 
-
+vector<LocPair> Scene::locpairs;
 vector<Location> Scene::locations;
 vector<RandomCircleCursor> Scene::cursors;
 //vector<CircleSpiral> Scene::spirals;
@@ -337,3 +350,14 @@ vector<vector<Color>*> colorSchemes{
 
 
 
+//draft
+LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double pressure_in) 
+		: start{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, destination{ x2_in, y2_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }
+{
+
+	 
+	std::cout << "Created a location at (x, y, r): " << x1_in << " " << y1_in << " " << r_in << std::endl;
+	std::cout << "At depth: " << start_pressure << std::endl;
+	on = true;
+
+}

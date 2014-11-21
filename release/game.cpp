@@ -11,6 +11,8 @@ using std::mutex;
 
 extern mutex LocationLock;
 
+Color palette(Color& c);
+
 Game::Game() {
 	srand(5);
 }
@@ -69,7 +71,7 @@ double Game::checkPressure(Location loc){
 	return pressure;
 }
 
-void Game::run() {
+void Game::run(char mode) {
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -83,41 +85,55 @@ void Game::run() {
 		LocationLock.lock();
 
 		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation());
+			Scene::locations.push_back(createRandomLocation('s'));
 			num_active_spots++;
 		}
 
-		for (auto& loc_it : Scene::locations) {
-			double pressure = checkPressure(loc_it);
-			loc_it.setPressure(pressure);
-			if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-				if (loc_it.exactMatch(pressure)) {
-					loc_it.num_rounds_correct++;
-					loc_it.prev_correct_round = i;
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it.num_rounds_correct > 1) {
-						// Stop background sound
-						//PlaySound(NULL, 0, 0);
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-						printRemainingLocations();
-						printRemovedLocations();
-						num_active_spots--;
-						loc_it.turnOff();
-						loc_it.fade(1000);
-						loc_it.num_rounds_correct = 0;
-					}
-					else if (i - loc_it.prev_correct_round > 1){
-						loc_it.num_rounds_correct = 0;
+		
+		//Run Slide Ring Target Mode
+		if (mode = 's')
+		{
+			for (auto& loc_it : Scene::locations) {
+				double pressure = checkPressure(loc_it);
+				loc_it.setPressure(pressure);
+				if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+					if (loc_it.exactMatch(pressure)) {
+						loc_it.num_rounds_correct++;
+						loc_it.prev_correct_round = i;
+						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+						if (loc_it.num_rounds_correct > 1) {
+							// Stop background sound
+							//PlaySound(NULL, 0, 0);
+							PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+							std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+							printRemainingLocations();
+							printRemovedLocations();
+							num_active_spots--;
+							loc_it.turnOff();
+							loc_it.fade(1000);
+							loc_it.num_rounds_correct = 0;
+						}
+						else if (i - loc_it.prev_correct_round > 1){
+							loc_it.num_rounds_correct = 0;
+						}
 					}
 				}
 			}
+			for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
+				loc_it.makeBigger(INCREASE_FACTOR);
+				//redraw location
+			}
+			LocationLock.unlock();
 		}
-		for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-			loc_it.makeBigger(INCREASE_FACTOR);
-			//redraw location
+
+
+		//Run Kinect The Dots Mode
+		else if (mode = 'k')
+		{
+
 		}
-		LocationLock.unlock();
+
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
@@ -126,19 +142,27 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
+
+	
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
+
+		if (opt_x != -1 && opt_y != -1)
+		{
+			x_location = opt_x;
+			y_location = opt_y;
+		}
 
 		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
 		if (Scene::locations.size() == 0) {
 			valid = true;
 		}
 		// To detect overlap
-		int count_on=0;
-		int count_not=0;
+		int count_on = 0;
+		int count_not = 0;
 
-		
+
 
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
@@ -156,8 +180,8 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 			}
 		}
 		// If not overlap with all the circle, that is valid
-		if (count_on==count_not){
-			valid=true;
+		if (count_on == count_not){
+			valid = true;
 		}
 		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	} while ((x_location <= radius || abs(x_location - MAX_X) <= radius
@@ -166,8 +190,9 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 	std::cout << "x,y: " << x_location << " " << y_location;
 
 	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+	
 }
 
 void Game::startGame() {
-	run();
+	run('s');
 }

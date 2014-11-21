@@ -25,6 +25,7 @@ class Game {
 	double start_radius = 20;
 	int num_active_spots = 0;
 	Location createRandomLocation(int opt_x = -1, int opt_y = -1);
+	LocPair createRandomLocPair(int opt_x1 = -1, int opt_y1 = -1, int opt_x2 = -1, int opt_y2 = -1);
 	double checkPressure(Location loc);
 
 	CDepthBasics* kinect;
@@ -32,7 +33,7 @@ public:
 //	static std::vector<Location> loc_list;
 	Game();
 	Game(CDepthBasics& kinect);
-	void run();
+	void run(char mode);						//s = slidering | k = kinect-the-dots
 	void startGame();
 	void startKinect();
 	void printRemainingLocations();
