@@ -113,7 +113,9 @@ public:
 
 	inline void removeCircle() { if (circles.size() > 1) circles.pop_front(); }
 
-	inline void setPos(int x_in, int y_in) { x = x_in, y = y_in; }
+	inline void chY(int dy) { y += dy; }
+
+	inline void chX(int dx) { x += dx; }
 };
 
 /*
