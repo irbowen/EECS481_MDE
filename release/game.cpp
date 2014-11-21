@@ -87,10 +87,6 @@ void Game::run() {
 			num_active_spots++;
 		}
 
-
-		
-
-
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
 			loc_it.setPressure(pressure);
