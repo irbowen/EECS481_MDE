@@ -391,9 +391,13 @@ int glDriver(){
 						Scene::cursors[0].addCircle();
 
 						if (keys[VK_UP])
-							debugDepth += 10;
-						else //if (keys[VK_DOWN])
-							debugDepth = debugDepth <= 1200 ? debugDepth : debugDepth - 100;
+							Scene::cursors[0].chY(-10);
+						else if (keys[VK_DOWN])
+							Scene::cursors[0].chY(10);
+						if (keys[VK_RIGHT])
+							Scene::cursors[0].chX(10);
+						else if (keys[VK_LEFT])
+							Scene::cursors[0].chX(-10);
 
 						thisDepth = debugDepth;
 					}
