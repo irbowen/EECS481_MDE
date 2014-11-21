@@ -79,6 +79,9 @@ void Game::run() {
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
 		int count = 0;
+
+		LocationLock.lock();
+
 		if (num_active_spots <= MAX_NUM_SPOTS) {
 			Scene::locations.push_back(createRandomLocation());
 			num_active_spots++;
@@ -86,7 +89,7 @@ void Game::run() {
 
 
 		
-		LocationLock.lock();
+
 
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);

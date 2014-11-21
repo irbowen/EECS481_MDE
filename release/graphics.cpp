@@ -107,8 +107,6 @@ void Circle::draw(){
 
 		color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
 
-		//std::cout << color << std::endl;
-
 		if (elapsed >= fadeDuration)
 			remove = true;
 	}
@@ -146,9 +144,9 @@ void RandomCircleCursor::addCircle(){
 
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
+	
 
-
-	double newR = r / (rand() % 2 + 1);
+	double newR = r / (rand() % 3 + 2);
 
 	Color color = colors[rand() % colors.size()];
 
