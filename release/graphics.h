@@ -22,8 +22,9 @@ using std::list;
 
 struct Color {
 	double r, g, b;
-	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {};
-	Color() {};
+	Color(double rr, double gg, double bb) : r{ rr }, g{ gg }, b{ bb } {}
+	Color(int rr, int gg, int bb) : r{ rr / 255.0 }, g{ gg / 255.0 }, b{ bb / 255.0 } {}
+	Color() {}
 };
 
 std::ostream& operator<<(std::ostream& os, const Color& c);
@@ -43,7 +44,14 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 #define PURPLE Color{0.5, 0.12, 0.61}
 #define TURQUOISE Color{0.02, 0.76, 0.67}
 
+
+// all predefined colors
 extern vector<Color> colors;
+
+// predefined color schemes
+extern vector<Color> colorScheme_bleu;
+extern vector<Color> colorScheme_desert;
+extern vector<Color> colorScheme_ocean;
 
 #define WHITE Color{1.0, 1.0, 1.0}
 

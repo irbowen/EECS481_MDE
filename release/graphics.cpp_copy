@@ -153,7 +153,7 @@ void RandomCircleCursor::addCircle(){
 
 	double newR = r / (rand() % 4 + 2);
 
-	Color color = colorScheme_ocean[rand() % colorScheme_ocean.size()];
+	Color color = colors[rand() % colors.size()];
 
 	//Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
 
@@ -260,30 +260,3 @@ vector<Point> Scene::points;
 vector<Circle> Scene::circles;
 
 vector<Color> colors{ RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, PINK, ORANGE, TEAL, PURPLE, TURQUOISE };
-
-vector<Color> colorScheme_bleu{
-	Color{ 52, 162, 169 },
-	Color{82, 128, 169},
-	Color{96, 94, 169},
-	Color{121, 80, 169},
-	Color{130, 61, 169}
-};
-
-vector<Color> colorScheme_desert{
-	Color{130, 73, 92},
-	Color{171, 85, 103},
-	Color{204, 110, 110},
-	Color{240, 153, 125},
-	Color{250, 192, 135}
-};
-
-vector<Color> colorScheme_ocean{
-	Color{0, 160, 120},
-	Color{106, 74, 60},
-	Color{204, 51, 63},
-	Color{235, 104, 65},
-	Color{237, 201, 81}
-};
-
-
-
