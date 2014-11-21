@@ -87,10 +87,6 @@ void Game::run() {
 			num_active_spots++;
 		}
 
-
-		
-
-
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
 			loc_it.setPressure(pressure);
@@ -121,7 +117,7 @@ void Game::run() {
 	}
 }
 
-Location Game::createRandomLocation() {
+Location Game::createRandomLocation(int opt_x, int opt_y) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
