@@ -238,7 +238,8 @@ void Point::draw(){
 	glEnd();
 }
 
-void Scene::draw() {
+void Scene::draw() 
+{
 	for (auto& x : cursors) { x.draw(); }
 	//for (CircleSpiral cs : spirals) { cs.draw(); }
 	for (auto& x : polys) x.draw();
@@ -248,9 +249,10 @@ void Scene::draw() {
 	for (auto& x : locations) x.draw();
 	LocationLock.unlock();
 	for (auto& x : circles) x.draw();
+	for (auto& x : locpairs) x.draw();
 }
 
-
+vector<LocPair> Scene::locpairs;
 vector<Location> Scene::locations;
 vector<RandomCircleCursor> Scene::cursors;
 //vector<CircleSpiral> Scene::spirals;
@@ -289,12 +291,12 @@ vector<Color> colorScheme_ocean{
 
 //draft
 LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double pressure_in) 
-		: start{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, destination{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }
+		: start{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, destination{ x2_in, y2_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }
 {
 
 	 
 	std::cout << "Created a location at (x, y, r): " << x1_in << " " << y1_in << " " << r_in << std::endl;
 	std::cout << "At depth: " << start_pressure << std::endl;
-	//turnOn();
+	on = true;
 
 }

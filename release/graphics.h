@@ -87,8 +87,6 @@ public:
 
 class ColorSlideRing {
 public:
-	ColorSlideRing();
-
 	ColorSlideCircle ring;
 	ColorSlideCircle center;
 	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
@@ -195,7 +193,6 @@ public:
 	int prev_correct_round = 0;
 	Color color;
 	Location(double, double, double, double);
-	Location();									//default constructor
 	void makeBigger(double);
 	void makeSmaller(double);
 	bool contains(double, double);
@@ -218,12 +215,14 @@ public:
 
 class LocPair
 {
+public:
 	ColorSlideRing start;
 	ColorSlideRing destination;
 	double rStart;
 	double start_pressure;
 	LocPair(double, double, double, double, double, double);
-	void turnOn();
+	bool on;
+	void draw() { start.draw(); destination.draw(); }
 };
 
 #endif
