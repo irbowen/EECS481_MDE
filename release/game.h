@@ -32,7 +32,7 @@ public:
 //	static std::vector<Location> loc_list;
 	Game();
 	Game(CDepthBasics& kinect);
-	void run();
+	void run(char mode);						//s = slidering | k = kinect-the-dots
 	void startGame();
 	void startKinect();
 	void printRemainingLocations();

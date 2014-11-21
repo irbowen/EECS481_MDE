@@ -71,7 +71,7 @@ double Game::checkPressure(Location loc){
 	return pressure;
 }
 
-void Game::run() {
+void Game::run(char mode) {
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -90,38 +90,48 @@ void Game::run() {
 		}
 
 		
-		for (auto& loc_it : Scene::locations) {
-			double pressure = checkPressure(loc_it);
-			loc_it.setPressure(pressure);
-			if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-				if (loc_it.exactMatch(pressure)) {
-					loc_it.num_rounds_correct++;
-					loc_it.prev_correct_round = i;
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it.num_rounds_correct > 1) {
-						// Stop background sound
-						//PlaySound(NULL, 0, 0);
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-						printRemainingLocations();
-						printRemovedLocations();
-						num_active_spots--;
-						loc_it.turnOff();
-						loc_it.fade(1000);
-						loc_it.num_rounds_correct = 0;
-					}
-					else if (i - loc_it.prev_correct_round > 1){
-						loc_it.num_rounds_correct = 0;
+		//Run Slide Ring Target Mode
+		if (mode = 's')
+		{
+			for (auto& loc_it : Scene::locations) {
+				double pressure = checkPressure(loc_it);
+				loc_it.setPressure(pressure);
+				if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+					if (loc_it.exactMatch(pressure)) {
+						loc_it.num_rounds_correct++;
+						loc_it.prev_correct_round = i;
+						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+						if (loc_it.num_rounds_correct > 1) {
+							// Stop background sound
+							//PlaySound(NULL, 0, 0);
+							PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+							std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+							printRemainingLocations();
+							printRemovedLocations();
+							num_active_spots--;
+							loc_it.turnOff();
+							loc_it.fade(1000);
+							loc_it.num_rounds_correct = 0;
+						}
+						else if (i - loc_it.prev_correct_round > 1){
+							loc_it.num_rounds_correct = 0;
+						}
 					}
 				}
 			}
+			for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
+				loc_it.makeBigger(INCREASE_FACTOR);
+				//redraw location
+			}
+			LocationLock.unlock();
 		}
-		for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-			loc_it.makeBigger(INCREASE_FACTOR);
-			//redraw location
+
+
+		//Run Kinect The Dots Mode
+		else if (mode = 'k')
+		{
+
 		}
-		LocationLock.unlock();
-		
 
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -175,5 +185,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run();
+	run('s');
 }
