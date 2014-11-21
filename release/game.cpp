@@ -85,7 +85,7 @@ void Game::run(char mode) {
 		LocationLock.lock();
 
 		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation());
+			Scene::locations.push_back(createRandomLocation('s'));
 			num_active_spots++;
 		}
 
@@ -138,50 +138,69 @@ void Game::run(char mode) {
 	}
 }
 
-Location Game::createRandomLocation(int opt_x, int opt_y) {
+Location Game::createRandomLocation(char mode, int opt_x, int opt_y) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
-	do {//check to make sure its not off the screen
-		x_location = rand() % MAX_X;
-		y_location = rand() % MAX_Y;
 
-		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
-		if (Scene::locations.size() == 0) {
-			valid = true;
-		}
-		// To detect overlap
-		int count_on=0;
-		int count_not=0;
+	if (mode = 's')
+	{
+		do {//check to make sure its not off the screen
+			x_location = rand() % MAX_X;
+			y_location = rand() % MAX_Y;
 
-		
-
-		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
-			if (loc_it.isOn()) {
-				count_on++;
-				double distance = loc_it.distance(x_location, y_location);
-				if (distance >= (radius + loc_it.getRadius())) {//to avoid overlap
-					// check every circle 
-					count_not++;
-					//valid=true;
-					//break;
-				}
-				//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
-				//	continue;
-				//}
+			if (opt_x != -1 && opt_y != -1)
+			{
+				x_location = opt_x;
+				y_location = opt_y;
 			}
-		}
-		// If not overlap with all the circle, that is valid
-		if (count_on==count_not){
-			valid=true;
-		}
-		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	} while ((x_location <= radius || abs(x_location - MAX_X) <= radius
-		|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid == false);
 
-	std::cout << "x,y: " << x_location << " " << y_location;
+			//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+			if (Scene::locations.size() == 0) {
+				valid = true;
+			}
+			// To detect overlap
+			int count_on = 0;
+			int count_not = 0;
 
-	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+
+
+			for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
+				if (loc_it.isOn()) {
+					count_on++;
+					double distance = loc_it.distance(x_location, y_location);
+					if (distance >= (radius + loc_it.getRadius())) {//to avoid overlap
+						// check every circle 
+						count_not++;
+						//valid=true;
+						//break;
+					}
+					//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
+					//	continue;
+					//}
+				}
+			}
+			// If not overlap with all the circle, that is valid
+			if (count_on == count_not){
+				valid = true;
+			}
+			//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
+		} while ((x_location <= radius || abs(x_location - MAX_X) <= radius
+			|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid == false);
+
+		std::cout << "x,y: " << x_location << " " << y_location;
+
+		return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+	}
+
+	else if (mode = 'k')
+	{
+		if (opt_x != -1)
+		{
+			x_location = opt_x;
+			y_location = opt_y;
+		}
+	}
 }
 
 void Game::startGame() {
