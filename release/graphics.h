@@ -87,6 +87,7 @@ public:
 
 class ColorSlideRing {
 public:
+	ColorSlideRing();
 
 	ColorSlideCircle ring;
 	ColorSlideCircle center;
@@ -194,6 +195,7 @@ public:
 	int prev_correct_round = 0;
 	Color color;
 	Location(double, double, double, double);
+	Location();									//default constructor
 	void makeBigger(double);
 	void makeSmaller(double);
 	bool contains(double, double);
@@ -212,6 +214,16 @@ public:
 	std::string toString() const;
 
 	inline void fade(double ms){ target.fade(ms); }
+};
+
+class LocPair
+{
+	ColorSlideRing start;
+	ColorSlideRing destination;
+	double rStart;
+	double start_pressure;
+	LocPair(double, double, double, double, double, double);
+	void turnOn();
 };
 
 #endif
