@@ -46,6 +46,8 @@ bool keys[256];
 
 bool fullscreen = FULLSCREEN;
 
+bool shift_last = false;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int InitGL(GLvoid){
@@ -362,7 +364,7 @@ int glDriver(){
 
 
 
-	Scene::cursors.push_back({ 320, 240, 50});
+	Scene::cursors.push_back({ 320, 240, 75});
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -388,7 +390,8 @@ int glDriver(){
 	
 					if (keys[VK_CONTROL]){
 
-						Scene::cursors[0].addCircle();
+						for (int i = 0; i < 10; ++i)
+							Scene::cursors[0].addCircle();
 
 						if (keys[VK_UP])
 							Scene::cursors[0].chY(-10);
@@ -401,6 +404,11 @@ int glDriver(){
 
 						thisDepth = debugDepth;
 					}
+
+					if (keys[VK_SHIFT] && !shift_last)
+						Scene::cursors[0].rotateScheme();
+
+					shift_last = keys[VK_SHIFT];
 
 
 

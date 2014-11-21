@@ -45,6 +45,9 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 #define TURQUOISE Color{0.02, 0.76, 0.67}
 
 
+// TODO: motherfuckin RAINBOW SLIDER awwwwyeaaaaah
+//		 --use it in cursor with palette function for visual orgasm 
+
 // all predefined colors
 extern vector<Color> colors;
 
@@ -52,28 +55,44 @@ extern vector<Color> colors;
 extern vector<Color> colorScheme_bleu;
 extern vector<Color> colorScheme_desert;
 extern vector<Color> colorScheme_ocean;
+extern vector<Color> colorScheme_goldfish;
+extern vector<Color> colorScheme_melon;
+extern vector<Color> colorScheme_emo;
+
+// pointers to predefined schemes
+extern vector<vector<Color>*> colorSchemes;
 
 #define WHITE Color{1.0, 1.0, 1.0}
 
 bool operator==(const Color& a, const Color& b);
 
 class Circle {
+protected:
 	high_resolution_clock::time_point fadeStart;
 	double fadeDuration = 0.0;
 	Color startColor;
-public:
 
-	double remove = false;
+public:
 
 	double x, y;
 	double r;
 	Color color;
 	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color{ cc } {}
 	Circle(double xx, double yy, double rr, Color cc, int aa) : x{ xx }, y{ yy }, r{ rr }, color{ cc }, angle{ aa } {}
-	void draw();
+	virtual void draw();
 	void fade(double);
 	int angle = 0;
 };
+
+class CursorCircle : public Circle {
+	double startR;
+	std::pair<double, double> startPos;
+	std::pair<double, double> endPos;
+public:
+	CursorCircle(double xx, double yy, double rr, const Color& cc, const std::pair<double, double>& end, double ms);
+	void draw();
+};
+
 
 class ColorSlideCircle : public Circle {
 	Color startColor;
@@ -109,10 +128,11 @@ public:
 
 class RandomCircleCursor {
 public:
-	list<Circle> circles;
+	list<CursorCircle> circles;
+	vector<vector<Color>*>::iterator colorScheme;
 	int x, y, r;
 public:
-	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r } {}
+	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
 
 	void draw();
 
@@ -124,6 +144,8 @@ public:
 	inline void chY(int dy) { y += dy; }
 
 	inline void chX(int dx) { x += dx; }
+
+	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
 };
 
 /*

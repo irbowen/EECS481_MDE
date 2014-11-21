@@ -91,6 +91,13 @@ namespace {
 			a.b + (b.b - a.b) * percent };
 
 	}
+
+	std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct){
+		
+		return {p1.first + prct * (p2.first - p1.first),
+				p1.second + prct * (p2.second - p1.second)};
+
+	}
 }
 
 
@@ -100,18 +107,6 @@ void ColorSlideCircle::setGoalProgress(double percent){
 
 
 void Circle::draw(){
-
-
-	if (fadeDuration != 0.0){
-		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
-
-		color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
-
-	}
-
-	if (fadeDuration != 0.0 && color == WHITE)
-		return;
-
 
 	glBegin(GL_TRIANGLE_FAN);
 
@@ -138,14 +133,37 @@ void Circle::fade(double ms){
 	fadeStart = high_resolution_clock::now();
 	fadeDuration = ms;
 	startColor = color;
+
 }
 
+CursorCircle::CursorCircle(double xx, double yy, double rr, const Color& cc, const std::pair<double, double>& end, double ms) : Circle{ xx, yy, rr, cc }, startPos{ xx, yy }, endPos{ end } {
+	fade(ms);
+	startR = r;
+	startPos = { x, y };
+}
+
+void CursorCircle::draw(){
+	double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
+
+	color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
+
+	r = startR * elapsed / fadeDuration;
+
+	auto pos = between(endPos, startPos, elapsed / fadeDuration);
+
+	x = pos.first, y = pos.second;
+
+	if (color == WHITE)
+		return;
+
+	Circle::draw();
+}
 
 void RandomCircleCursor::addCircle(){
 
 	double theta = (rand() % 360) * PI / 180;
 	
-	double distanceToNew = r/(rand()%3 + 1);
+	double distanceToNew = 3*r/2/(rand()%5 + 1);
 
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
@@ -153,13 +171,11 @@ void RandomCircleCursor::addCircle(){
 
 	double newR = r / (rand() % 4 + 2);
 
-	Color color = colorScheme_ocean[rand() % colorScheme_ocean.size()];
+	Color color = (*colorScheme)->at(rand() % (*colorScheme)->size());
 
 	//Color r{ 1.0 / (rand() % 10), 1.0 / (rand() % 2), 1.0 / (rand() % 10) };
 
-	circles.push_front({ dx + x, dy + y, newR, color});
-
-	circles.front().fade(rand()%1000 + 500);
+	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%4000 + 4000)});
 
 }
 
@@ -284,6 +300,40 @@ vector<Color> colorScheme_ocean{
 	Color{235, 104, 65},
 	Color{237, 201, 81}
 };
+
+vector<Color> colorScheme_goldfish{
+	Color{105, 210, 231},
+	Color{167, 219, 216},
+	Color{224, 228, 204},
+	Color{243, 134, 48},
+	Color{250, 105, 0}
+};
+
+vector<Color> colorScheme_melon{
+	Color{209, 242, 165},
+	Color{239, 250, 180},
+	Color{255, 196, 140},
+	Color{255, 159, 128},
+	Color{245, 105, 145}
+};
+
+vector<Color> colorScheme_emo{
+	Color{85, 98, 112},
+	Color{78, 205, 196},
+	Color{199, 244, 100},
+	Color{255, 107, 107},
+	Color{196, 77, 88}
+};
+
+vector<vector<Color>*> colorSchemes{
+	&colorScheme_emo,
+	&colorScheme_bleu,
+	&colorScheme_desert,
+	&colorScheme_goldfish,
+	&colorScheme_ocean,
+	&colorScheme_melon
+};
+
 
 
 
