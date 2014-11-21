@@ -100,18 +100,20 @@ void ColorSlideCircle::setGoalProgress(double percent){
 
 
 void Circle::draw(){
-	glBegin(GL_TRIANGLE_FAN);
+
 
 	if (fadeDuration != 0.0){
 		double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
 
 		color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
 
-		//std::cout << color << std::endl;
-
-		if (elapsed >= fadeDuration)
-			remove = true;
 	}
+
+	if (fadeDuration != 0.0 && color == WHITE)
+		return;
+
+
+	glBegin(GL_TRIANGLE_FAN);
 
 
 	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
@@ -120,6 +122,7 @@ void Circle::draw(){
 	x += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
 	y += (1.0 * (rand() % 10)) / (rand() % 10 + (rand() % 2 ? 1 : -10));
 	*/
+
 
 	glVertex2f((GLfloat)x, (GLfloat)y);
 
@@ -146,9 +149,9 @@ void RandomCircleCursor::addCircle(){
 
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
+	
 
-
-	double newR = r / (rand() % 2 + 1);
+	double newR = r / (rand() % 4 + 2);
 
 	Color color = colors[rand() % colors.size()];
 
@@ -156,7 +159,7 @@ void RandomCircleCursor::addCircle(){
 
 	circles.push_front({ dx + x, dy + y, newR, color});
 
-	circles.front().fade(rand()%500 + 500);
+	circles.front().fade(rand()%1000 + 500);
 
 }
 
