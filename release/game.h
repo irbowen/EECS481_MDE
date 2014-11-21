@@ -24,7 +24,7 @@ class Game {
 	const int SAMPLE_MILLISECONDS = 100;
 	double start_radius = 20;
 	int num_active_spots = 0;
-	Location createRandomLocation();
+	Location createRandomLocation(int opt_x = -1, int opt_y = -1);
 	double checkPressure(Location loc);
 
 	CDepthBasics* kinect;
