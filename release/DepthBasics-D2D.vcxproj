@@ -176,10 +176,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="helper.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="DepthBasics.cpp" />
     <ClCompile Include="glDriver.cpp" />
+    <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
