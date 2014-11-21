@@ -89,6 +89,7 @@ void Game::run() {
 			num_active_spots++;
 		}
 
+		
 		for (auto& loc_it : Scene::locations) {
 			double pressure = checkPressure(loc_it);
 			loc_it.setPressure(pressure);
@@ -120,6 +121,9 @@ void Game::run() {
 			//redraw location
 		}
 		LocationLock.unlock();
+		
+
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
