@@ -94,6 +94,7 @@ void Game::run() {
 			if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 				if (loc_it.exactMatch(pressure)) {
 					loc_it.num_rounds_correct++;
+					loc_it.prev_correct_round = i;
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
 					if (loc_it.num_rounds_correct > 1) {
 						// Stop background sound
@@ -105,6 +106,10 @@ void Game::run() {
 						num_active_spots--;
 						loc_it.turnOff();
 						loc_it.fade(1000);
+						loc_it.num_rounds_correct = 0;
+					}
+					else if (i - loc_it.prev_correct_round > 1){
+						loc_it.num_rounds_correct = 0;
 					}
 				}
 			}
