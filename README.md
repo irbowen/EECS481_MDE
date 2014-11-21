@@ -6,13 +6,6 @@ EECS481_MDE
 
 ### Timeline
 Sorry for the weird military time. Makes it easier to suss out AM vs PM
-* Tuesday, November 18: 19:30-21:30
-Hopefully Ele can make it to this one.
-* Wednesday, November 19: 12:00-13:30, 19:00-22:00
-*David cannot make it to the meeting and will be working from 14:00-17:00 instead. Others are welcome to join*
-* Thursday, November 20: 18:00-22:00
-*Isaac will not be able to make it*
-*, and Zhinan will not be able to make it*
 * Friday, November 21: 11:30-14:30
 *Isaac will be unavailable for this meeting*
 *, and Zhinan will not be able to make it*
@@ -43,13 +36,11 @@ Hopefully Ele can make it to this one.
 9. For kinect-the-dots (ktd) game, detecting continuous depth + motion
 10. For ktd, animation of line
 11. Generating patterns for ktd
-12. Any other effects we want with ktd
 13. Graphics for ktd
 14. Sounds for ktd
 15. Making the beta presentable
-
+16. User interface to modify game. (sudo)
 
 ### Stretch Goals
-* Sudo mode
 * MSPaint
 * Mode of final game
