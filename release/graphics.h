@@ -279,6 +279,7 @@ class LocPair
 public:
 
 	bool locked = false;
+	//bool on;
 	double TARGET_PRESSURE = 500;
 
 	ColorSlideRing start;
@@ -286,8 +287,9 @@ public:
 	double rStart;
 	double start_pressure;
 	LocPair(double, double, double, double, double, double);
-	bool on;
 	void draw() { start.draw(); destination.draw(); }
+
+	bool withinPressure(double input);
 
 
 };

@@ -409,6 +409,11 @@ LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double 
 	 
 	std::cout << "Created a location at (x, y, r): " << x1_in << " " << y1_in << " " << r_in << std::endl;
 	std::cout << "At depth: " << start_pressure << std::endl;
-	on = true;
+	//on = true;
 
+}
+
+bool LocPair::withinPressure(double input) {
+	double deflection = abs(input - start_pressure);
+	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }

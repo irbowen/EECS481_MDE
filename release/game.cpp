@@ -4,6 +4,7 @@
 #include "game.h"
 #include "DepthBasics.h"
 #include "graphics.h"
+#include "helper.h"
 #include <mutex>
 #include <thread>
 
@@ -147,17 +148,23 @@ void Game::runConnectMode()
 	{
 		//1. check pressure at start ring
 		
-		//****	double pressure = checkPressure(_pair);
+		double pressure = checkPressure(_pair.start.getX(), _pair.start.getY(), _pair.start.getR());
 
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!_pair.locked)
+		while (!_pair.withinPressure(pressure))
 		{
-			//****	pressure = checkPressure(_pair);
+			pressure = checkPressure(_pair.start.getX(), _pair.start.getY(), _pair.start.getR());
 		}
 
-		//3. if start ring is locked in keep track of where she is pressing
+		_pair.locked == true;
+
+		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
 		//		a. 
+		if (_pair.locked == true) 
+		{
+			line(_pair);
+		}
 	}
 }
 
@@ -239,5 +246,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }
