@@ -177,7 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="helper.cpp" />
+    <ClCompile Include="helper.h" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="DepthBasics.cpp" />
     <ClCompile Include="glDriver.cpp" />

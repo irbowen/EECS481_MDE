@@ -10,6 +10,7 @@
 #include <chrono>
 #include <list>
 
+
 using namespace std::chrono;
 
 using std::milli;
@@ -289,7 +290,13 @@ public:
 	LocPair(double, double, double, double, double, double);
 	void draw() { start.draw(); destination.draw(); }
 
+	bool line(LocPair loc);
+
 	bool withinPressure(double input);
+
+	double dist(int x1, int y1, int x2, int y2);
+
+	bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
 
 
 };

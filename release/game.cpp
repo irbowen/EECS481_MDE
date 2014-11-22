@@ -4,7 +4,6 @@
 #include "game.h"
 #include "DepthBasics.h"
 #include "graphics.h"
-#include "helper.h"
 #include <mutex>
 #include <thread>
 
@@ -103,7 +102,7 @@ void Game::runSlideRingMode(int i) {
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
-		double pressure = checkPressure(loc_it.getX(), loc_it.getY(), loc_it.getRadius());
+		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 		loc_it.setPressure(pressure);
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
@@ -143,22 +142,26 @@ void Game::runConnectMode()
 	{
 		//1. check pressure at start ring
 		
-		double pressure = checkPressure(_pair.start.getX(), _pair.start.getY(), _pair.start.getR());
+		double pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
 
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
 		while (!_pair.withinPressure(pressure))
 		{
-			pressure = checkPressure(_pair.start.getX(), _pair.start.getY(), _pair.start.getR());
+			pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
 		}
 
-		_pair.locked == true;
+		_pair.locked = true;
 
 		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
 		//		a. 
 		if (_pair.locked == true) 
 		{
-			line(_pair);
+			int i = 0;
+			while (_pair.line(_pair))
+			{
+				if (i++ > 10) break;
+			}
 		}
 	}
 }
