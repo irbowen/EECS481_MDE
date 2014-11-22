@@ -39,10 +39,16 @@ bool line(LocPair loc){
 	// draw current track and check whether the line is finished
 	while(dist(last_x,x2,last_y,y2)-(int)loc2.getR()>0){
 		// Assume minDepth is the cursor
-		int x = minDepth_index % MAX_X; // column
-		int y = minDepth_index / MAX_X; // row
+
+		//get cursor location (400,400) is example for now
+		int cursor_x = 400;
+		int cursor_y = 400;
+
+		int x = cursor_x % MAX_X; // column
+		int y = cursor_y / MAX_X; // row
 
 		if (on_line(x1, y1, x2, y2, x, y))
+		{
 			//if(dist(x,y,x2,y2)<dist(last_x,last_y,x2,y2)){
 				last_x = x;
 				last_y = y;
