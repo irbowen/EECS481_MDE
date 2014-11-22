@@ -47,10 +47,7 @@ void Game::printRemovedLocations() {
 	std::cout << ss.str() << "\n";
 }
 
-double Game::checkPressure(Location loc){
-	int x = (int)loc.getX();
-	int y = (int)loc.getY();
-	int radius = (int)loc.getRadius();
+double Game::checkPressure(int x, int y, int radius){
 	double pressure = frame_data.at(x + y*MAX_X);
 	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
 		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
@@ -110,7 +107,7 @@ void Game::runSlideRingMode(int i) {
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
-		double pressure = checkPressure(loc_it);
+		double pressure = checkPressure(loc_it.getX(), loc_it.getY(), loc_it.getRadius());
 		loc_it.setPressure(pressure);
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
