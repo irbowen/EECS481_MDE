@@ -46,7 +46,7 @@ bool line(LocPair loc){
 				last_x = x;
 				last_y = y;
 				// OpenGL draw line
-				Scene::lines.push_back({x1,y1},{last_x,last_y}, RED, 5.0);
+				Scene::lines.push_back({{x1,y1},{last_x,last_y}, GREEN, 5.0});
 			}
 			else
 				return false;
@@ -83,7 +83,7 @@ double Game::checkPressure(LocPair loc){
 
 else if (mode == 'k')
 {
-  int count = 0;
+	int count = 0;
 	// create a locpair already
 		//1. check pressure at start ring
 		double pressure = checkPressure(locpair);
@@ -93,13 +93,16 @@ else if (mode == 'k')
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
 		
+		// OpenGL draw help line
+		Scene::lines.push_back({locpair.start.getX(),locpair.start.getY()},
+			{locpair.destination.getX(),locpair.destination.getX()}, RED, 3.0});
 
 		//3. if start ring is locked in keep track of where she is pressing
 		//		a. 
 		while(!line(locpair)){
-		  count++;
-		  if (count>10)
-		    break;
+			count++;
+		  	if (count>10)
+		    		break;
 		}
 
 	}
