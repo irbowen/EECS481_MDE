@@ -6,6 +6,7 @@
 #include "graphics.h"
 #include <mutex>
 #include <thread>
+#include <fstream>
 
 using std::mutex;
 
@@ -48,23 +49,23 @@ void Game::printRemovedLocations() {
 }
 
 double Game::checkPressure(int x, int y, int radius){
-	double pressure = frame_data.at(x + y*MAX_X);
-	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
-	if (y - radius / 4 >= 0 && frame_data.at(x + (y - radius / 4)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y - radius / 4)*MAX_X);
-	if (y + radius / 2 < MAX_Y && frame_data.at(x + (y + radius / 2)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y + radius / 2)*MAX_X);
-	if (y + radius / 4 < MAX_Y && frame_data.at(x + (y + radius / 4)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y + radius / 4)*MAX_X);
-	if (x - radius / 2 >= 0 && frame_data.at((x - radius / 2) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x - radius / 2) + y*MAX_X);
-	if (x - radius / 4 >= 0 && frame_data.at((x - radius / 4) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x - radius / 4) + y*MAX_X);
-	if (x + radius / 2 < MAX_X && frame_data.at((x + radius / 2) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x + radius / 2) + y*MAX_X);
-	if (x + radius / 4 < MAX_X && frame_data.at((x + radius / 4) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x + radius / 4) + y*MAX_X);
+	double pressure = intial_buffer.at(x + y*MAX_X);
+	if (y - radius / 2 >= 0 && intial_buffer.at(x + (y - radius / 2)*MAX_X) > pressure)
+		pressure = intial_buffer.at(x + (y - radius / 2)*MAX_X);
+	if (y - radius / 4 >= 0 && intial_buffer.at(x + (y - radius / 4)*MAX_X) > pressure)
+		pressure = intial_buffer.at(x + (y - radius / 4)*MAX_X);
+	if (y + radius / 2 < MAX_Y && intial_buffer.at(x + (y + radius / 2)*MAX_X) > pressure)
+		pressure = intial_buffer.at(x + (y + radius / 2)*MAX_X);
+	if (y + radius / 4 < MAX_Y && intial_buffer.at(x + (y + radius / 4)*MAX_X) > pressure)
+		pressure = intial_buffer.at(x + (y + radius / 4)*MAX_X);
+	if (x - radius / 2 >= 0 && intial_buffer.at((x - radius / 2) + y*MAX_X) > pressure)
+		pressure = intial_buffer.at((x - radius / 2) + y*MAX_X);
+	if (x - radius / 4 >= 0 && intial_buffer.at((x - radius / 4) + y*MAX_X) > pressure)
+		pressure = intial_buffer.at((x - radius / 4) + y*MAX_X);
+	if (x + radius / 2 < MAX_X && intial_buffer.at((x + radius / 2) + y*MAX_X) > pressure)
+		pressure = intial_buffer.at((x + radius / 2) + y*MAX_X);
+	if (x + radius / 4 < MAX_X && intial_buffer.at((x + radius / 4) + y*MAX_X) > pressure)
+		pressure = intial_buffer.at((x + radius / 4) + y*MAX_X);
 	return pressure;
 }
 
@@ -73,6 +74,17 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
+	intial_buffer = frame_data;
+	std::ofstream out_file;
+	out_file.open("out3.txt");
+	for (int i = 0; i < MAX_Y; i++) {
+		for (int j = 0; j < MAX_X; j++) {
+			out_file << intial_buffer.at(i*MAX_X + j) << " ";
+		}
+		out_file << "\n";
+	}
+	out_file << std::endl;
+	out_file.close();
 	int i = 0;
 	while (true) {
 		// Play background sound
@@ -98,7 +110,7 @@ void Game::runSlideRingMode(int i) {
 	if (num_active_spots <= log(num_triggered_spots + 2)) {
 		Scene::locations.push_back(createRandomLocation(-1, -1));
 		auto& last = Scene::locations.at(Scene::locations.size() - 1);
-		last.target.setR(last.target.getR() * (2 / log(num_triggered_spots+2)));
+		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
@@ -187,7 +199,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 		dest_y = opt_y2;
 	}
 
-	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, intial_buffer.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(int opt_x, int opt_y) {
@@ -241,7 +253,7 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 
-	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+	return Location(x_location, y_location, radius, intial_buffer.at(MAX_X*y_location + x_location));
 	
 }
 
