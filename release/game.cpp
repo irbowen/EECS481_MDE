@@ -96,7 +96,7 @@ void Game::run(char mode) {
 
 		
 		//Run Slide Ring Target Mode
-		if (mode = 's')
+		if (mode == 's')
 		{
 			for (auto& loc_it : Scene::locations) {
 				double pressure = checkPressure(loc_it);
@@ -135,7 +135,7 @@ void Game::run(char mode) {
 		}
 
 		//Run Kinect The Dots Mode
-		else if (mode = 'k')
+		else if (mode == 'k')
 		{
 			for (auto& _pair : Scene::locpairs) 
 			{
