@@ -89,6 +89,7 @@ void Game::run(char mode) {
 			num_active_spots++;
 		}
 
+		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 		
 		//Run Slide Ring Target Mode
 		if (mode = 's')
@@ -130,12 +131,37 @@ void Game::run(char mode) {
 		//Run Kinect The Dots Mode
 		else if (mode = 'k')
 		{
-
+			for (auto& _pair : Scene::locpairs) 
+			{
+				
+			}
 		}
 
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
+}
+
+LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
+{
+	int start_x, start_y, dest_x, dest_y;
+
+	start_x = rand() % MAX_X;
+	start_y = rand() % MAX_Y;
+
+	dest_x = rand() % MAX_X;
+	dest_y = rand() % MAX_Y;
+
+	if (opt_x1 > -1 && opt_y1 > -1 && opt_x2 > -1 && opt_y2 > -1)
+	{
+		start_x = opt_x1;
+		start_y = opt_y1;
+
+		dest_x = opt_x2;
+		dest_y = opt_y2;
+	}
+
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(int opt_x, int opt_y) {
@@ -148,7 +174,7 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
 
-		if (opt_x != -1 && opt_y != -1)
+		if (opt_x > -1 && opt_y > -1)
 		{
 			x_location = opt_x;
 			y_location = opt_y;
