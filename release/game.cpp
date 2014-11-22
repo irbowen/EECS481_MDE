@@ -118,7 +118,8 @@ void Game::runSlideRingMode(int i) {
 		loc_it.setPressure(pressure);
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
-			if (loc_it.exactMatch(pressure)) {
+			if (loc_it.exactMatch(pressure)) 
+			{
 				loc_it.num_rounds_correct++;
 				loc_it.prev_correct_round = i;
 				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
@@ -148,36 +149,38 @@ void Game::runSlideRingMode(int i) {
 	LocationLock.unlock();
 }
 
+
 void Game::runConnectMode()
 {
-	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-	for (auto& _pair : Scene::locpairs)
-	{
-		_pair.draw();
+	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
+	Scene::locpair = createRandomLocPair(50, 50, 300, 300);
+
+		
 		//1. check pressure at start ring
 		
-		double pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
+		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 
+		std::cout << "Pressure is " << pressure << std::endl;
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!_pair.withinPressure(pressure))
+		while (!Scene::locpair.withinPressure(pressure))
 		{
-			pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
+			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 		}
 
-		_pair.locked = true;
-
+		Scene::locpair.locked = true;
+		Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() }, 
+		{ (int)Scene::locpair.destination.getX(), (int)Scene::locpair.destination.getX() }, RED, 5.0 });
 		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
 		//		a. 
-		if (_pair.locked == true) 
+		if (Scene::locpair.locked == true) 
 		{
 			int i = 0;
-			while (_pair.line(_pair))
+			while (Scene::locpair.line())
 			{
 				if (i++ > 10) break;
 			}
 		}
-	}
 }
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
@@ -258,5 +261,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }

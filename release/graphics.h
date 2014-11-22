@@ -224,6 +224,7 @@ class LocPair;
 
 class Scene {
 public:
+	static LocPair locpair;
 	static vector<Location> locations;
 	static vector<RandomCircleCursor> cursors;
 	//static vector<CircleSpiral> spirals;
@@ -287,10 +288,11 @@ public:
 	ColorSlideRing destination;
 	double rStart;
 	double start_pressure;
+	LocPair();
 	LocPair(double, double, double, double, double, double);
 	void draw() { start.draw(); destination.draw(); }
 
-	bool line(LocPair loc);
+	bool line();
 
 	bool withinPressure(double input);
 

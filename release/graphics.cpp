@@ -270,6 +270,7 @@ void Point::draw(){
 
 void Scene::draw() 
 {
+	locpair.draw();
 	for (auto& x : cursors) { x.draw(); }
 	//for (CircleSpiral cs : spirals) { cs.draw(); }
 	for (auto& x : polys) x.draw();
@@ -320,6 +321,7 @@ void Line::draw(){
 
 
 vector<LocPair> Scene::locpairs;
+LocPair Scene::locpair(-1,-1,-1,-1,-1,-1);
 vector<Location> Scene::locations;
 vector<RandomCircleCursor> Scene::cursors;
 //vector<CircleSpiral> Scene::spirals;
@@ -417,11 +419,11 @@ bool LocPair::withinPressure(double input) {
 	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
-bool LocPair::line(LocPair loc){
+bool LocPair::line(){
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	ColorSlideRing loc1 = loc.start;
-	ColorSlideRing loc2 = loc.destination;
+	ColorSlideRing loc1 = start;
+	ColorSlideRing loc2 = destination;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();
@@ -446,7 +448,7 @@ bool LocPair::line(LocPair loc){
 			last_x = x;
 			last_y = y;
 			// OpenGL draw line
-			Scene::lines.push_back({ { x1, y1 }, { last_x, last_y }, RED, 5.0 });
+			Scene::lines.push_back({ { x1, y1 }, { last_x, last_y }, GREEN, 5.0 });
 			//}
 		}
 		else
