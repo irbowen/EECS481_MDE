@@ -15,6 +15,8 @@
 #include <math.h>
 
 using std::mutex;
+using std::cout;
+using std::endl;
 
 mutex LocationLock;
 
@@ -121,6 +123,10 @@ void ColorSlideCircle::setGoalProgress(double percent){
 
 void Circle::draw(){
 
+	double ms = elapsed();
+
+	color = (ms >= fadeDuration) ? WHITE : mix(startColor, WHITE, ms / fadeDuration);
+
 	glBegin(GL_TRIANGLE_FAN);
 
 
@@ -156,13 +162,11 @@ CursorCircle::CursorCircle(double xx, double yy, double rr, const Color& cc, con
 }
 
 void CursorCircle::draw(){
-	double elapsed = duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count();
+	double ms = elapsed();
 
-	color = (elapsed >= fadeDuration) ? WHITE : mix(startColor, WHITE, elapsed / fadeDuration);
+	r = startR * ms / fadeDuration;
 
-	r = startR * elapsed / fadeDuration;
-
-	auto pos = between(endPos, startPos, elapsed / fadeDuration);
+	auto pos = between(endPos, startPos, ms / fadeDuration);
 
 	x = pos.first, y = pos.second;
 
@@ -184,15 +188,15 @@ void RandomCircleCursor::addCircle(){
 
 	double newR = r / (rand() % 4 + 2);
 
-	Color color = (*colorScheme)->at(rand() % (*colorScheme)->size());
+	Color color = nextColor();
 
-	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%4000 + 400)});
+	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%1000 + 500)});
 
 }
 
 void RandomCircleCursor::draw() {
 	for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); }
-	circles.remove_if([](const Circle& c) { return c.color == WHITE; });
+	circles.remove_if([](const CursorCircle& c) { return c.elapsed() / c.fadeDuration >= 0.95; });
 }
 
 /*
@@ -284,7 +288,7 @@ Color ColorWheel::next(){
 	vector<Color>::iterator nxt = std::next(cur);
 	
 	if (nxt == gradient.end())
-		nxt == gradient.begin();
+		nxt = gradient.begin();
 
 	Color rtn = mix(*cur, *nxt, 1.0 * ticks++ / ticksPerColor);
 
@@ -298,7 +302,7 @@ Color ColorWheel::next(){
 }
 
 void Line::draw(){
-	glLineWidth(thickness);
+	glLineWidth((GLfloat)thickness);
 
 	glBegin(GL_LINES);
 
@@ -374,6 +378,15 @@ vector<Color> colorScheme_emo{
 	Color{199, 244, 100},
 	Color{255, 107, 107},
 	Color{196, 77, 88}
+};
+
+vector<Color> colorScheme_rainbow{
+	RED,
+	ORANGE,
+	YELLOW,
+	GREEN,
+	BLUE,
+	PURPLE
 };
 
 vector<vector<Color>*> colorSchemes{

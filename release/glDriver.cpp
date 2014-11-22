@@ -23,6 +23,7 @@ bool keys[256];
 bool fullscreen = FULLSCREEN;
 
 static bool shift_last = false;
+static bool ctrl_last = false;
 
 int glDriver(){
 	MSG msg;
@@ -43,7 +44,7 @@ int glDriver(){
 	*/
 
 	// Line ctor : Line(p1, p2, color, thickness)
-	Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
+	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
 
 	Scene::cursors.push_back({ 320, 240, 75});
@@ -66,7 +67,12 @@ int glDriver(){
 	
 					if (keys[VK_CONTROL]){
 
-						for (int i = 0; i < 10; ++i)
+
+
+						ctrl_last = keys[VK_CONTROL];
+
+
+						for (int i = 0; i < 5; ++i)
 							Scene::cursors[0].addCircle();
 
 						if (keys[VK_UP])

@@ -57,6 +57,8 @@ extern vector<Color> colorScheme_goldfish;
 extern vector<Color> colorScheme_melon;
 extern vector<Color> colorScheme_emo;
 
+extern vector<Color> colorScheme_rainbow;
+
 // pointers to predefined schemes
 extern vector<vector<Color>*> colorSchemes;
 
@@ -67,19 +69,21 @@ bool operator==(const Color& a, const Color& b);
 class Circle {
 protected:
 	high_resolution_clock::time_point fadeStart;
-	double fadeDuration = 0.0;
 	Color startColor;
 
 public:
 
+	double fadeDuration = 0.0;
+	inline double elapsed() const { return duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count(); }
+
 	double x, y;
 	double r;
 	Color color;
+
 	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color{ cc } {}
-	Circle(double xx, double yy, double rr, Color cc, int aa) : x{ xx }, y{ yy }, r{ rr }, color{ cc }, angle{ aa } {}
+
 	virtual void draw();
 	void fade(double);
-	int angle = 0;
 };
 
 class CursorCircle : public Circle {
@@ -150,13 +154,15 @@ public:
 	void draw();
 
 	// Add different sized circle to path in random direction
-	virtual void addCircle();
+	void addCircle();
 
-	inline void removeCircle() { if (circles.size() > 1) circles.pop_front(); }
+	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
 
 	inline void chY(int dy) { y += dy; }
 
 	inline void chX(int dx) { x += dx; }
+
+	inline void setPos(int xx, int yy) { x = xx, y = yy; }
 
 	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
 };
