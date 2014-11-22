@@ -76,9 +76,8 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
-<<<<<<< HEAD
 
-	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
+	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 
 
 	for (int i = 0; i < NUM_ROUNDS; i++) 
@@ -133,18 +132,8 @@ void Game::run(char mode) {
 				//redraw location
 			}
 			LocationLock.unlock();
-=======
-	int i = 0;
-	while (true) {
-		// Play background sound
-		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
-		std::cout << "Currently on round " << i << std::endl;
-		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-		//Run Slide Ring Target Mode
-		if (mode == 's') {
-			runSlideRingMode(i);
->>>>>>> origin/master
 		}
+
 		//Run Kinect The Dots Mode
 		else if (mode = 'k')
 		{
@@ -165,6 +154,7 @@ void Game::run(char mode) {
 	}
 }
 
+/*
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 1)) {
@@ -207,6 +197,7 @@ void Game::runSlideRingMode(int i) {
 	}
 	LocationLock.unlock();
 }
+*/
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
 {
@@ -230,7 +221,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
 }
 
-Location Game::createRandomLocation(int opt_x = -1, int opt_y = -1) {
+Location Game::createRandomLocation(int opt_x, int opt_y) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
@@ -286,5 +277,5 @@ Location Game::createRandomLocation(int opt_x = -1, int opt_y = -1) {
 }
 
 void Game::startGame() {
-	run('k');
+	run('s');
 }
