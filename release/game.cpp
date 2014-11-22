@@ -51,20 +51,20 @@ double Game::checkPressure(int x, int y, int radius){
 	double pressure = frame_data.at(x + y*MAX_X);
 	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
 		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
-	if (y - radius >= 0 && frame_data.at(x + (y - radius)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y - radius)*MAX_X);
+	if (y - radius / 4 >= 0 && frame_data.at(x + (y - radius / 4)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y - radius / 4)*MAX_X);
 	if (y + radius / 2 < MAX_Y && frame_data.at(x + (y + radius / 2)*MAX_X) > pressure)
 		pressure = frame_data.at(x + (y + radius / 2)*MAX_X);
-	if (y + radius<MAX_Y && frame_data.at(x + (y + radius)*MAX_X) > pressure)
-		pressure = frame_data.at(x + (y + radius)*MAX_X);
+	if (y + radius / 4 < MAX_Y && frame_data.at(x + (y + radius / 4)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y + radius / 4)*MAX_X);
 	if (x - radius / 2 >= 0 && frame_data.at((x - radius / 2) + y*MAX_X) > pressure)
 		pressure = frame_data.at((x - radius / 2) + y*MAX_X);
-	if (x - radius >= 0 && frame_data.at((x - radius) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x - radius) + y*MAX_X);
+	if (x - radius / 4 >= 0 && frame_data.at((x - radius / 4) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x - radius / 4) + y*MAX_X);
 	if (x + radius / 2 < MAX_X && frame_data.at((x + radius / 2) + y*MAX_X) > pressure)
 		pressure = frame_data.at((x + radius / 2) + y*MAX_X);
-	if (x + radius<MAX_X && frame_data.at((x + radius) + y*MAX_X) > pressure)
-		pressure = frame_data.at((x + radius) + y*MAX_X);
+	if (x + radius / 4 < MAX_X && frame_data.at((x + radius / 4) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x + radius / 4) + y*MAX_X);
 	return pressure;
 }
 
@@ -138,8 +138,10 @@ void Game::runSlideRingMode(int i) {
 
 void Game::runConnectMode()
 {
+	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 	for (auto& _pair : Scene::locpairs)
 	{
+		_pair.draw();
 		//1. check pressure at start ring
 		
 		double pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
@@ -244,5 +246,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run('k');
+	run('s');
 }
