@@ -53,7 +53,7 @@ bool line(LocPair loc){
 				last_x = x;
 				last_y = y;
 				// OpenGL draw line
-				Scene::lines.push_back({x1,y1},{last_x,last_y}, RED, 5.0);
+				Scene::lines.push_back({ { x1, y1 }, { last_x, last_y }, RED, 5.0 });
 			//}
 		}
 		else
