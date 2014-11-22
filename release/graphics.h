@@ -238,6 +238,8 @@ public:
 class LocPair
 {
 public:
+	double TARGET_PRESSURE = 500;
+
 	ColorSlideRing start;
 	ColorSlideRing destination;
 	double rStart;
@@ -245,6 +247,8 @@ public:
 	LocPair(double, double, double, double, double, double);
 	bool on;
 	void draw() { start.draw(); destination.draw(); }
+
+
 };
 
 #endif
