@@ -78,64 +78,19 @@ void Game::run(char mode) {
 	}
 
 	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-
-
-	for (int i = 0; i < NUM_ROUNDS; i++) 
-	{
+	int i = 0;
+	while (true) {
 		// Play background sound
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
-		int count = 0;
-
-		LocationLock.lock();
-
-		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation());
-			num_active_spots++;
-		}
-
 		
 		//Run Slide Ring Target Mode
-		if (mode = 's')
-		{
-			for (auto& loc_it : Scene::locations) {
-				double pressure = checkPressure(loc_it);
-				loc_it.setPressure(pressure);
-				if (loc_it.isOn() && loc_it.withinPressure(pressure)) 
-				{//if the pressure is within the range
-					if (loc_it.exactMatch(pressure)) 
-					{
-						loc_it.num_rounds_correct++;
-						loc_it.prev_correct_round = i;
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-						if (loc_it.num_rounds_correct > 1) 
-						{
-							// Stop background sound
-							//PlaySound(NULL, 0, 0);
-							PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-							std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-							printRemainingLocations();
-							printRemovedLocations();
-							num_active_spots--;
-							loc_it.turnOff();
-							loc_it.fade(1000);
-							loc_it.num_rounds_correct = 0;
-						}
-						else if (i - loc_it.prev_correct_round > 1){
-							loc_it.num_rounds_correct = 0;
-						}
-					}
-				}
-			}
-			for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-				loc_it.makeBigger(INCREASE_FACTOR);
-				//redraw location
-			}
-			LocationLock.unlock();
+		if (mode == 's') {
+			runSlideRingMode(i);
 		}
 
 		//Run Kinect The Dots Mode
-		else if (mode = 'k')
+		else if (mode == 'k')
 		{
 			for (auto& _pair : Scene::locpairs) 
 			{
@@ -154,20 +109,19 @@ void Game::run(char mode) {
 	}
 }
 
-/*
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 1)) {
-		Scene::locations.push_back(createRandomLocation());
+		Scene::locations.push_back(createRandomLocation(-1, -1));
 		auto& last = Scene::locations.at(Scene::locations.size() - 1);
-		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots)));
+		last.target.setR(last.target.getR() * (2 / log(num_triggered_spots)));
 		num_active_spots++;
 	}
-
 	for (auto& loc_it : Scene::locations) {
 		double pressure = checkPressure(loc_it);
 		loc_it.setPressure(pressure);
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+			std::cout << "Within pressure\n";
 			if (loc_it.exactMatch(pressure)) {
 				loc_it.num_rounds_correct++;
 				loc_it.prev_correct_round = i;
@@ -197,7 +151,6 @@ void Game::runSlideRingMode(int i) {
 	}
 	LocationLock.unlock();
 }
-*/
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
 {
