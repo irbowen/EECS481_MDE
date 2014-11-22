@@ -26,8 +26,7 @@ std::ostream& operator<<(std::ostream& os, const Color& c){
 
 //Isaac Location code
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : target{ x_in, y_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }{
-	std::cout << "Created a location at (x, y, r): " << x_in << " " << y_in << " " << r_in << std::endl;
-	std::cout << "At depth: " << start_pressure << std::endl;
+	std::cout << "Created a location at (x, y, r, z): " << x_in << " " << y_in << " " << r_in << pressure_in << std::endl;
 	turnOn();
 
 }

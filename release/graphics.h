@@ -233,11 +233,9 @@ public:
 	double rStart;
 	double TARGET_PRESSURE = 500;
 	const double MAX_RADIUS = 50;
-	double pressure;
-	double start_pressure;
+	double pressure, start_pressure;
 	bool on;
-	int num_rounds_correct = 0;
-	int prev_correct_round = 0;
+	int num_rounds_correct = 0, prev_correct_round = 0;
 	Color color;
 	Location(double, double, double, double);
 	void makeBigger(double);
