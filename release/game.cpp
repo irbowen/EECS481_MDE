@@ -81,36 +81,18 @@ void Game::run(char mode) {
 		// Play background sound
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
-<<<<<<< HEAD
-=======
-		int count = 0;
-
-		LocationLock.lock();
-
-		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation('s'));
-			num_active_spots++;
-		}
-
 		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-		
->>>>>>> origin/master
 		//Run Slide Ring Target Mode
 		if (mode == 's') {
 			runSlideRingMode(i);
 		}
 		//Run Kinect The Dots Mode
-<<<<<<< HEAD
-		else if (mode == 'k') {
-
-=======
 		else if (mode = 'k')
 		{
 			for (auto& _pair : Scene::locpairs) 
 			{
 				
 			}
->>>>>>> origin/master
 		}
 		i++;
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -120,8 +102,8 @@ void Game::run(char mode) {
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 1)) {
-		Scene::locations.push_back(createRandomLocation('s'));
-		auto last = Scene::locations.at(Scene::locations.size() - 1);
+		Scene::locations.push_back(createRandomLocation());
+		auto& last = Scene::locations.at(Scene::locations.size() - 1);
 		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots)));
 		num_active_spots++;
 	}
