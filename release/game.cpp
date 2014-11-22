@@ -76,7 +76,12 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
-	for (int i = 0; i < NUM_ROUNDS; i++) {
+
+	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
+
+
+	for (int i = 0; i < NUM_ROUNDS; i++) 
+	{
 		// Play background sound
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
@@ -85,11 +90,10 @@ void Game::run(char mode) {
 		LocationLock.lock();
 
 		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation('s'));
+			Scene::locations.push_back(createRandomLocation());
 			num_active_spots++;
 		}
 
-		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 		
 		//Run Slide Ring Target Mode
 		if (mode = 's')
@@ -97,12 +101,15 @@ void Game::run(char mode) {
 			for (auto& loc_it : Scene::locations) {
 				double pressure = checkPressure(loc_it);
 				loc_it.setPressure(pressure);
-				if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-					if (loc_it.exactMatch(pressure)) {
+				if (loc_it.isOn() && loc_it.withinPressure(pressure)) 
+				{//if the pressure is within the range
+					if (loc_it.exactMatch(pressure)) 
+					{
 						loc_it.num_rounds_correct++;
 						loc_it.prev_correct_round = i;
 						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-						if (loc_it.num_rounds_correct > 1) {
+						if (loc_it.num_rounds_correct > 1) 
+						{
 							// Stop background sound
 							//PlaySound(NULL, 0, 0);
 							PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
@@ -133,7 +140,14 @@ void Game::run(char mode) {
 		{
 			for (auto& _pair : Scene::locpairs) 
 			{
-				
+				//1. check pressure at start ring
+				//2. check if start ring is "locked-in" (ready to draw the line)
+				//		a. if start ring is not locked in keep checking for locked in
+
+				//3. if start ring is locked in keep track of where she is pressing
+				//		a. 
+
+
 			}
 		}
 
@@ -164,7 +178,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
 }
 
-Location Game::createRandomLocation(int opt_x, int opt_y) {
+Location Game::createRandomLocation(int opt_x = -1, int opt_y = -1) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
@@ -220,5 +234,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }
