@@ -47,7 +47,7 @@ int glDriver(){
 	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
 
-	Scene::cursors.push_back({ 320, 240, 75});
+	Scene::cursors.push_back(GradientCircleCursor{ 320, 240, 75, colorScheme_rainbow, 100});
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){

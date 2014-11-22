@@ -122,9 +122,11 @@ void ColorSlideCircle::setGoalProgress(double percent){
 
 void Circle::draw(){
 
-	double ms = elapsed();
+	if (fadeDuration != 0.0){
+		double ms = elapsed();
 
-	color = (ms >= fadeDuration) ? WHITE : mix(startColor, WHITE, ms / fadeDuration);
+		color = (ms >= fadeDuration) ? WHITE : mix(startColor, WHITE, ms / fadeDuration);
+	}
 
 	glBegin(GL_TRIANGLE_FAN);
 

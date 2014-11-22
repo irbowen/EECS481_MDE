@@ -167,6 +167,15 @@ public:
 	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
 };
 
+class GradientCircleCursor : public RandomCircleCursor {
+	
+	ColorWheel gradient;
+
+public:
+	GradientCircleCursor(int x, int y, int r, const vector<Color>& g, int resolution) : RandomCircleCursor{ x, y, r }, gradient{ g, resolution } {}
+	inline Color nextColor() { return gradient.next(); }
+};
+
 /*
 class CircleSpiral : public CirclePath {
 	//using CirclePath::CirclePath;
