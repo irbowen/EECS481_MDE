@@ -74,24 +74,19 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
-
-	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 	int i = 0;
 	while (true) {
 		// Play background sound
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
-		
 		//Run Slide Ring Target Mode
-
 		if (mode == 's') {
 			runSlideRingMode(i);
 
 		}
-
 		//Run Kinect The Dots Mode
-		else if (mode == 'k')
-		{
+		else if (mode == 'k') {
+			//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 			runConnectMode();
 		}
 		i++;
@@ -129,9 +124,9 @@ void Game::runSlideRingMode(int i) {
 					loc_it.num_rounds_correct = 0;
 					num_triggered_spots++;
 				}
-				else if (i - loc_it.prev_correct_round > 1){
-					loc_it.num_rounds_correct = 0;
-				}
+			}
+			else if (i - loc_it.prev_correct_round > 1){
+				loc_it.num_rounds_correct = 0;
 			}
 		}
 	}
