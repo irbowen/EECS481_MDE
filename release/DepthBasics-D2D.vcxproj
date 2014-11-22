@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
+    <ClInclude Include="glDriver.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="Resource.h" />
