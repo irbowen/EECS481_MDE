@@ -24,6 +24,7 @@ class Game {
 	Location createRandomLocation(int opt_x1 = -1, int opt_y1 = -1);
 	LocPair createRandomLocPair(int opt_x1 = -1, int opt_y1 = -1, int opt_x2 = -1, int opt_y2 = -1);
 	double checkPressure(Location loc);
+	double checkPressure(LocPair loc);
 	CDepthBasics* kinect;
 public:
 	Game();
@@ -34,5 +35,6 @@ public:
 	void printRemainingLocations();
 	void printRemovedLocations();
 	void runSlideRingMode(int);
+	void runConnectMode();
 };
 #endif

@@ -94,17 +94,7 @@ void Game::run(char mode) {
 		//Run Kinect The Dots Mode
 		else if (mode == 'k')
 		{
-			for (auto& _pair : Scene::locpairs) 
-			{
-				//1. check pressure at start ring
-				//2. check if start ring is "locked-in" (ready to draw the line)
-				//		a. if start ring is not locked in keep checking for locked in
-
-				//3. if start ring is locked in keep track of where she is pressing
-				//		a. 
-
-
-			}
+			runConnectMode();
 		}
 		i++;
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -152,6 +142,26 @@ void Game::runSlideRingMode(int i) {
 		//redraw location
 	}
 	LocationLock.unlock();
+}
+
+void Game::runConnectMode()
+{
+	for (auto& _pair : Scene::locpairs)
+	{
+		//1. check pressure at start ring
+		
+		//****	double pressure = checkPressure(_pair);
+
+		//2. check if start ring is "locked-in" (ready to draw the line)
+		//		a. if start ring is not locked in keep checking for locked in
+		while (!_pair.locked)
+		{
+			//****	pressure = checkPressure(_pair);
+		}
+
+		//3. if start ring is locked in keep track of where she is pressing
+		//		a. 
+	}
 }
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)

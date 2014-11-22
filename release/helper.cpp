@@ -4,10 +4,10 @@
 
 using namespace std;
 
-double dist(int x1, int y1, int x2, int y2)
+double dist(double x1, double y1, double x2, double y2)
 {
-	int dist_x = x2 - x1;
-	int dist_y = y2 - y1;
+	double dist_x = x2 - x1;
+	double dist_y = y2 - y1;
 
 	double length = sqrt((dist_x*dist_x)+(dist_y*dist_y));
 

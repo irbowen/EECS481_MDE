@@ -277,6 +277,8 @@ public:
 class LocPair
 {
 public:
+
+	bool locked = false;
 	double TARGET_PRESSURE = 500;
 
 	ColorSlideRing start;
