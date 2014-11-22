@@ -76,6 +76,7 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
+<<<<<<< HEAD
 
 	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 
@@ -132,9 +133,18 @@ void Game::run(char mode) {
 				//redraw location
 			}
 			LocationLock.unlock();
+=======
+	int i = 0;
+	while (true) {
+		// Play background sound
+		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
+		std::cout << "Currently on round " << i << std::endl;
+		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
+		//Run Slide Ring Target Mode
+		if (mode == 's') {
+			runSlideRingMode(i);
+>>>>>>> origin/master
 		}
-
-
 		//Run Kinect The Dots Mode
 		else if (mode = 'k')
 		{
@@ -150,10 +160,52 @@ void Game::run(char mode) {
 
 			}
 		}
-
-
+		i++;
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
+}
+
+void Game::runSlideRingMode(int i) {
+	LocationLock.lock();
+	if (num_active_spots <= log(num_triggered_spots + 1)) {
+		Scene::locations.push_back(createRandomLocation());
+		auto& last = Scene::locations.at(Scene::locations.size() - 1);
+		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots)));
+		num_active_spots++;
+	}
+
+	for (auto& loc_it : Scene::locations) {
+		double pressure = checkPressure(loc_it);
+		loc_it.setPressure(pressure);
+		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+			if (loc_it.exactMatch(pressure)) {
+				loc_it.num_rounds_correct++;
+				loc_it.prev_correct_round = i;
+				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+				if (loc_it.num_rounds_correct > 1) {
+					// Stop background sound
+					//PlaySound(NULL, 0, 0);
+					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+					std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+					printRemainingLocations();
+					printRemovedLocations();
+					num_active_spots--;
+					loc_it.turnOff();
+					loc_it.fade(1000);
+					loc_it.num_rounds_correct = 0;
+					num_triggered_spots++;
+				}
+				else if (i - loc_it.prev_correct_round > 1){
+					loc_it.num_rounds_correct = 0;
+				}
+			}
+		}
+	}
+	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
+		loc_it.makeBigger(INCREASE_FACTOR);
+		//redraw location
+	}
+	LocationLock.unlock();
 }
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)

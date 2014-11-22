@@ -17,6 +17,7 @@ using std::milli;
 using std::vector;
 using std::deque;
 using std::unordered_set;
+using std::pair;
 
 using std::list;
 
@@ -44,9 +45,6 @@ std::ostream& operator<<(std::ostream& os, const Color& c);
 #define PURPLE Color{0.5, 0.12, 0.61}
 #define TURQUOISE Color{0.02, 0.76, 0.67}
 
-
-// TODO: motherfuckin RAINBOW SLIDER awwwwyeaaaaah
-//		 --use it in cursor with palette function for visual orgasm 
 
 // all predefined colors
 extern vector<Color> colors;
@@ -86,10 +84,10 @@ public:
 
 class CursorCircle : public Circle {
 	double startR;
-	std::pair<double, double> startPos;
-	std::pair<double, double> endPos;
+	pair<double, double> startPos;
+	pair<double, double> endPos;
 public:
-	CursorCircle(double xx, double yy, double rr, const Color& cc, const std::pair<double, double>& end, double ms);
+	CursorCircle(double xx, double yy, double rr, const Color& cc, const pair<double, double>& end, double ms);
 	void draw();
 };
 
@@ -124,6 +122,22 @@ public:
 
 	inline void fade(double ms) { ring.fade(ms), center.fade(ms); }
 };
+
+class ColorWheel {
+
+	int ticksPerColor, ticks;
+
+	vector<Color> gradient;
+	vector<Color>::iterator cur;
+
+public:
+
+	// resolution of 1 means that calls to next() will cycle through colors in gradient. Higher resolutions add inbetween colors.
+	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 } { gradient = colors, cur = gradient.begin(); }
+
+	Color next();
+};
+
 
 class RandomCircleCursor {
 public:
@@ -162,7 +176,7 @@ private:
 	vector<std::pair<int, int>> vertices;
 	Color color;
 public:
-	PolygonGL(vector<std::pair<int, int>> inVert, Color c) : color{ c } { vertices = inVert; }
+	PolygonGL(vector<pair<int, int>> inVert, Color c) : color{ c } { vertices = inVert; }
 	void draw();
 	bool inside(double, double);
 };
@@ -172,6 +186,16 @@ class Point {
 	Color color;
 public:
 	Point(double xx, double yy, Color c) : x{ xx }, y{ yy }, color{ c } {}
+	void draw();
+};
+
+class Line {
+	pair<double, double> p1;
+	pair<double, double> p2;
+	Color color;
+	double thickness;
+public:
+	Line(const pair<double, double>& pp1, const pair<double, double>& pp2, const Color& c, double thk) : p1{ pp1 }, p2{ pp2 }, color{ c }, thickness{ thk } {}
 	void draw();
 };
 
@@ -190,6 +214,7 @@ public:
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
 	static vector<Circle> circles;
+	static vector<Line> lines;
 
 
 	//draft

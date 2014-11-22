@@ -18,20 +18,6 @@
 std::vector<double> frame_data;
 bool buffer_valid;
 
-using std::thread;
-using std::mutex;
-using std::unique_lock;
-using std::condition_variable;
-
-
-int glDriver();
-
-extern int thisDepth;
-extern int lastDepth;
-
-extern condition_variable depth_cv;
-extern mutex depth_mtx;
-
 /// <summary>
 /// Entry point for the application
 /// </summary>
@@ -482,9 +468,6 @@ void CDepthBasics::ProcessDepth()
 	size_t newsize = strlen(orig) + 1;
 	//USHORT vIn = 0;
 
-	// Set values for graphics demo
-	lastDepth = thisDepth;
-	thisDepth = display_depth;
 
 	////////////////////////////////////////////    UNDER CONSTRUCTION       //////////////////////
 	//convert ushort to string

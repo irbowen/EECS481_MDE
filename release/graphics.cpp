@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <mutex>
-
+#include <iterator>
 
 #define PI 3.14159265
 
@@ -186,7 +186,7 @@ void RandomCircleCursor::addCircle(){
 
 	Color color = (*colorScheme)->at(rand() % (*colorScheme)->size());
 
-	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%4000 + 4000)});
+	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%4000 + 400)});
 
 }
 
@@ -277,7 +277,44 @@ void Scene::draw()
 	LocationLock.unlock();
 	for (auto& x : circles) x.draw();
 	for (auto& x : locpairs) x.draw();
+	for (auto& x : lines) x.draw();
 }
+
+Color ColorWheel::next(){
+	vector<Color>::iterator nxt = std::next(cur);
+	
+	if (nxt == gradient.end())
+		nxt == gradient.begin();
+
+	Color rtn = mix(*cur, *nxt, 1.0 * ticks++ / ticksPerColor);
+
+	if (ticks == ticksPerColor){
+		ticks = 0;
+		cur = nxt;
+	}
+
+	return rtn;
+
+}
+
+void Line::draw(){
+	glLineWidth(thickness);
+
+	glBegin(GL_LINES);
+
+	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
+
+
+	glVertex2f((GLfloat)p1.first, (GLfloat)p1.second);
+
+	glVertex2f((GLfloat)p2.first, (GLfloat)p2.second);
+
+	glEnd();
+
+	glLineWidth(1.0);
+}
+
+
 
 vector<LocPair> Scene::locpairs;
 vector<Location> Scene::locations;
@@ -287,6 +324,7 @@ vector<PolygonGL> Scene::polys;
 vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
 vector<Circle> Scene::circles;
+vector<Line> Scene::lines;
 
 vector<Color> colors{ RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, PINK, ORANGE, TEAL, PURPLE, TURQUOISE };
 
