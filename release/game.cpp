@@ -76,66 +76,92 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
-	for (int i = 0; i < NUM_ROUNDS; i++) {
+	int i = 0;
+	while (true) {
 		// Play background sound
 		//PlaySound(TEXT("sound.wav"), NULL, SND_LOOP || SND_ASYNC);
 		std::cout << "Currently on round " << i << std::endl;
-		int count = 0;
-
-		LocationLock.lock();
-
-		if (num_active_spots <= MAX_NUM_SPOTS) {
-			Scene::locations.push_back(createRandomLocation('s'));
-			num_active_spots++;
-		}
-
-		
+		Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 		//Run Slide Ring Target Mode
-		if (mode = 's')
-		{
-			for (auto& loc_it : Scene::locations) {
-				double pressure = checkPressure(loc_it);
-				loc_it.setPressure(pressure);
-				if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-					if (loc_it.exactMatch(pressure)) {
-						loc_it.num_rounds_correct++;
-						loc_it.prev_correct_round = i;
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-						if (loc_it.num_rounds_correct > 1) {
-							// Stop background sound
-							//PlaySound(NULL, 0, 0);
-							PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-							std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-							printRemainingLocations();
-							printRemovedLocations();
-							num_active_spots--;
-							loc_it.turnOff();
-							loc_it.fade(1000);
-							loc_it.num_rounds_correct = 0;
-						}
-						else if (i - loc_it.prev_correct_round > 1){
-							loc_it.num_rounds_correct = 0;
-						}
-					}
-				}
-			}
-			for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-				loc_it.makeBigger(INCREASE_FACTOR);
-				//redraw location
-			}
-			LocationLock.unlock();
+		if (mode == 's') {
+			runSlideRingMode(i);
 		}
-
-
 		//Run Kinect The Dots Mode
 		else if (mode = 'k')
 		{
-
+			for (auto& _pair : Scene::locpairs) 
+			{
+				
+			}
 		}
-
-
+		i++;
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
+}
+
+void Game::runSlideRingMode(int i) {
+	LocationLock.lock();
+	if (num_active_spots <= log(num_triggered_spots + 1)) {
+		Scene::locations.push_back(createRandomLocation());
+		auto& last = Scene::locations.at(Scene::locations.size() - 1);
+		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots)));
+		num_active_spots++;
+	}
+
+	for (auto& loc_it : Scene::locations) {
+		double pressure = checkPressure(loc_it);
+		loc_it.setPressure(pressure);
+		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
+			if (loc_it.exactMatch(pressure)) {
+				loc_it.num_rounds_correct++;
+				loc_it.prev_correct_round = i;
+				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+				if (loc_it.num_rounds_correct > 1) {
+					// Stop background sound
+					//PlaySound(NULL, 0, 0);
+					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+					std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+					printRemainingLocations();
+					printRemovedLocations();
+					num_active_spots--;
+					loc_it.turnOff();
+					loc_it.fade(1000);
+					loc_it.num_rounds_correct = 0;
+					num_triggered_spots++;
+				}
+				else if (i - loc_it.prev_correct_round > 1){
+					loc_it.num_rounds_correct = 0;
+				}
+			}
+		}
+	}
+	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
+		loc_it.makeBigger(INCREASE_FACTOR);
+		//redraw location
+	}
+	LocationLock.unlock();
+}
+
+LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
+{
+	int start_x, start_y, dest_x, dest_y;
+
+	start_x = rand() % MAX_X;
+	start_y = rand() % MAX_Y;
+
+	dest_x = rand() % MAX_X;
+	dest_y = rand() % MAX_Y;
+
+	if (opt_x1 > -1 && opt_y1 > -1 && opt_x2 > -1 && opt_y2 > -1)
+	{
+		start_x = opt_x1;
+		start_y = opt_y1;
+
+		dest_x = opt_x2;
+		dest_y = opt_y2;
+	}
+
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(int opt_x, int opt_y) {
@@ -148,7 +174,7 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
 
-		if (opt_x != -1 && opt_y != -1)
+		if (opt_x > -1 && opt_y > -1)
 		{
 			x_location = opt_x;
 			y_location = opt_y;
