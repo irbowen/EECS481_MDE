@@ -113,10 +113,10 @@ void Game::run(char mode) {
 
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
-	if (num_active_spots <= log(num_triggered_spots + 1)) {
+	if (num_active_spots <= log(num_triggered_spots + 2)) {
 		Scene::locations.push_back(createRandomLocation(-1, -1));
 		auto& last = Scene::locations.at(Scene::locations.size() - 1);
-		last.target.setR(last.target.getR() * (2 / log(num_triggered_spots)));
+		last.target.setR(last.target.getR() * (2 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
@@ -133,8 +133,8 @@ void Game::runSlideRingMode(int i) {
 					//PlaySound(NULL, 0, 0);
 					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
 					std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-					printRemainingLocations();
-					printRemovedLocations();
+				//	printRemainingLocations();
+					//printRemovedLocations();
 					num_active_spots--;
 					loc_it.turnOff();
 					loc_it.fade(1000);
