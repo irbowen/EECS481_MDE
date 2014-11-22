@@ -110,6 +110,7 @@ class ColorSlideRing {
 public:
 	ColorSlideCircle ring;
 	ColorSlideCircle center;
+
 	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
 
 	inline void setGoalProgress(double percent){ ring.setGoalProgress(percent), center.setGoalProgress(percent); }

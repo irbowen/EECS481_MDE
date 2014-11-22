@@ -37,7 +37,7 @@ bool line(LocPair loc){
 	int y2 = (int)loc2.getY();
 	
 	// draw current track and check whether the line is finished
-	while(dist(last_x,x2,last_y,y2)-(int)loc2.getRadius()>0){
+	while(dist(last_x,x2,last_y,y2)-(int)loc2.getR()>0){
 		// Assume minDepth is the cursor
 		int x = minDepth_index % MAX_X; // column
 		int y = minDepth_index / MAX_X; // row
