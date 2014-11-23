@@ -284,8 +284,20 @@ public:
 	//bool on;
 	double TARGET_PRESSURE = 500;
 
+	double pressure;
+
 	ColorSlideRing start;
 	ColorSlideRing destination;
+
+	Color start_color;
+	Color dest_color;
+
+	void start_setPressure(double);
+	double start_getPercentage(double);
+
+	void dest_setPressure(double);
+	double dest_getPercentage(double);
+
 	double rStart;
 	double start_pressure;
 	LocPair();

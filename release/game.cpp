@@ -165,7 +165,9 @@ void Game::runConnectMode()
 		//		a. if start ring is not locked in keep checking for locked in
 		while (!Scene::locpair.withinPressure(pressure))
 		{
+			//std::cout << "pressure req not met" << std::endl;
 			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
+			std::cout << "Inside pressure is " << pressure << std::endl;
 		}
 
 		Scene::locpair.locked = true;

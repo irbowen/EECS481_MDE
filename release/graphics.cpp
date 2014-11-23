@@ -474,3 +474,18 @@ bool LocPair::on_line(int x1, int y1, int x2, int y2, int x3, int y3)
 	else
 		return false;
 }
+
+double LocPair::start_getPercentage(double input) {
+	double deflection = abs(input - start_pressure);
+	return (deflection / TARGET_PRESSURE <= 1.0 &&
+		deflection / TARGET_PRESSURE >= 0.0) ?
+		deflection / TARGET_PRESSURE : 0.0;
+}
+
+void LocPair::start_setPressure(double in) {
+	pressure = in;
+	if (in == 0)
+		start.setGoalProgress(0);
+	else
+		start.setGoalProgress(start_getPercentage(in));
+}
