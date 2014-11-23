@@ -16,7 +16,7 @@
 
 
 std::vector<double> frame_data;
-std::vector<double> initial_frame;
+std::vector<double> initial_buffer;
 bool buffer_valid;
 
 /// <summary>
@@ -414,7 +414,7 @@ void CDepthBasics::ProcessDepth()
 			//frame_data.push_back(pStartScan->depth);
 			frame_data[i] = pBufferRun->depth;
 			if (buffer_valid==false){
-				initial_frame[i] = pBufferRun->depth;
+				initial_buffer[i] = pBufferRun->depth;
 			}
 			
 			//detect the max depth on the frame
