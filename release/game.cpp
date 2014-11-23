@@ -174,8 +174,8 @@ bool Game::line(LocPair& locpair)
 {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	ColorSlideRing loc1 = locpair.start;
-	ColorSlideRing loc2 = locpair.destination;
+	ColorSlideRing &loc1 = locpair.start;
+	ColorSlideRing &loc2 = locpair.destination;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();
