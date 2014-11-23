@@ -50,6 +50,7 @@ m_pNuiSensor(NULL)
 	// create heap storage for depth pixel data in RGBX format
 	m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
 	frame_data.resize(307200);
+	initial_buffer.resize(307200);
 }
 
 /// <summary>
