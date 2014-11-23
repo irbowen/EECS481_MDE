@@ -9,6 +9,7 @@
 #include "color.h"
 #include "location.h"
 #include <fstream>
+#include "LocPair.h"
 
 using std::mutex;
 
@@ -265,5 +266,5 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 }
 
 void Game::startGame() {
-	run('k');
+	run('s');
 }

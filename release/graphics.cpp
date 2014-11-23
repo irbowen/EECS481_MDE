@@ -6,14 +6,19 @@
 #include <mutex>
 #include <iterator>
 #include "color.h"
+#include "location.h"
+#include "Circle.h"
+#include "CursorCircle.h"
+#include "LocPair.h"
 
-#define PI 3.14159265
 
 //Isaac Bowen
 //eecs481 fall2014
 
 #include <math.h>
 #include <algorithm>
+#define PI 3.14159265
+
 
 using std::mutex;
 using std::cout;
@@ -31,67 +36,6 @@ vector<Circle> Scene::circles;
 vector<Line> Scene::lines;
 LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
 CursorContainer Scene::cursors;
-
-namespace {
-	std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct){
-		
-		return {p1.first + prct * (p2.first - p1.first),
-				p1.second + prct * (p2.second - p1.second)};
-
-	}
-}
-
-//START OF CIRCLE
-void Circle::draw(){
-	if (fadeDuration != 0.0){
-		double ms = elapsed();
-		color = (ms >= fadeDuration) ? WHITE : mix(startColor, WHITE, ms / fadeDuration);
-	}
-
-	glBegin(GL_TRIANGLE_FAN);
-	glColor3f((GLfloat)color.r, (GLfloat)color.g, (GLfloat)color.b);
-	glVertex2f((GLfloat)x, (GLfloat)y);
-
-	for (int angle = 0; angle <= 360; angle += 2){
-		glVertex2f((GLfloat)(x + sin(angle * PI / 180) * r),
-			(GLfloat)(y + cos(angle * PI / 180) * r));
-	}
-	glEnd();
-}
-
-void Circle::fade(double ms){
-	fadeStart = high_resolution_clock::now();
-	fadeDuration = ms;
-	startColor = color;
-}
-//END OF CIRCLE
-
-//START OF CURSORCIRCLE
-CursorCircle::CursorCircle(double xx, double yy, double rr, const Color& cc, const std::pair<double, double>& end, double ms) : Circle{ xx, yy, rr, cc }, startPos{ xx, yy }, endPos{ end } {
-	fade(ms);
-	startR = r;
-	startPos = { x, y };
-}
-
-void CursorCircle::draw(){
-	double ms = elapsed();
-
-	r = startR * ms / fadeDuration;
-	auto pos = between(endPos, startPos, ms / fadeDuration);
-	x = pos.first, y = pos.second;
-
-	if (color == WHITE)
-		return;
-
-	Circle::draw();
-}
-//END OF CURSORCIRCLE
-
-//START OF COLORSLIDECIRCLE
-void ColorSlideCircle::setGoalProgress(double percent){
-	color = mix(startColor, endColor, percent);
-}
-//END OF COLORSLIDECIRCLE
 
 // START OF RANDOMCIRCLECURSOR
 CursorCircle RandomCircleCursor::addCircle(){

@@ -7,75 +7,16 @@
 #include <utility>
 #include <unordered_set>
 #include <sstream>
-#include <chrono>
 #include <list>
 #include "color.h"
 #include "location.h"
+#include "CursorCircle.h"
 
-using namespace std::chrono;
-using std::milli;
 using std::vector;
 using std::deque;
 using std::unordered_set;
 using std::pair;
 using std::list;
-
-// START OF CIRCLE
-class Circle {
-protected:
-	high_resolution_clock::time_point fadeStart;
-	Color startColor;
-
-public:
-	double fadeDuration = 0.0;
-	inline double elapsed() const { return duration_cast<duration<double, milli>>(high_resolution_clock::now() - fadeStart).count(); }
-	double x, y;
-	double r;
-	Color color;
-	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color{ cc } {}
-	virtual void draw();
-	void fade(double);
-};
-//END OF CIRCLE
-
-//START OF CURSORCIRCLE
-class CursorCircle : public Circle {
-	double startR;
-	pair<double, double> startPos;
-	pair<double, double> endPos;
-public:
-	CursorCircle(double xx, double yy, double rr, const Color& cc, const pair<double, double>& end, double ms);
-	void draw();
-};
-//END OF CURSORCIRCLE
-
-
-//START OF COLORSLIDECIRCLE
-class ColorSlideCircle : public Circle {
-	Color startColor;
-	Color endColor;
-public:
-	ColorSlideCircle(double xx, double yy, double rr, Color cStart, Color cEnd) : Circle{ xx, yy, rr, cStart }, startColor{ cStart }, endColor{ cEnd } {}
-	void setGoalProgress(double percent);
-};
-//END OF COLORSLIDECIRCLE
-
-
-//START OF COLORSLIDERING
-class ColorSlideRing {
-public:
-	ColorSlideCircle ring;
-	ColorSlideCircle center;
-	ColorSlideRing(double x, double y, double r, Color centerStart, Color ringStart, Color end) : ring{ x, y, r, ringStart, end }, center{ x, y, r * 0.9, centerStart, end } {}
-	inline void setGoalProgress(double percent){ ring.setGoalProgress(percent), center.setGoalProgress(percent); }
-	inline void setR(double r) { ring.r = r, center.r = r * 0.9; }
-	inline double getR() const { return ring.r; }
-	inline double getX() const { return ring.x; }
-	inline double getY() const { return ring.y; }
-	inline void draw() { ring.draw(), center.draw(); }
-	inline void fade(double ms) { ring.fade(ms), center.fade(ms); }
-};
-//END OF COLORSLIDERING
 
 //START OF RANDOMCIRCLECURSOR
 class RandomCircleCursor {
