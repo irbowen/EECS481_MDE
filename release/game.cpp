@@ -233,14 +233,15 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 		// To detect overlap
 		int count_on = 0;
 		int count_not = 0;
-
+		int max_radius;
 
 
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
+			max_radius = loc_it.MAX_RADIUS;
 			if (loc_it.isOn()) {
 				count_on++;
 				double distance = loc_it.distance(x_location, y_location);
-				if (distance >= (radius + loc_it.getRadius())) {//to avoid overlap
+				if (distance >= (2 * max_radius) {//to avoid overlap
 					// check every circle 
 					count_not++;
 					//valid=true;
@@ -256,8 +257,8 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 			valid = true;
 		}
 		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	} while ((x_location <= radius || abs(x_location - MAX_X) <= radius
-		|| y_location <= radius || abs(y_location - MAX_Y) <= radius) || valid == false);
+	} while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
+		|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false);
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 
