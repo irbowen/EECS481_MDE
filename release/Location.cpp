@@ -101,17 +101,27 @@ LocPair::~LocPair(){
 	delete &destination;
 }
 
+LocPair::LocPair(const LocPair &l) : start{ *(new ColorSlideRing(l.start)) }, destination{ *(new ColorSlideRing(l.destination)) }, rStart{ l.rStart }, start_pressure{ l.start_pressure }{}
+
+LocPair& LocPair::operator=(const LocPair &l){
+	start = *(new ColorSlideRing(l.start));
+	destination = *(new ColorSlideRing(l.destination));
+	rStart = l.rStart;
+	start_pressure = l.start_pressure;
+	return *this;
+}
+
 bool LocPair::withinPressure(double input) {
 	double deflection = abs(input - start_pressure);
 	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
 
-bool LocPair::line(LocPair loc){
+bool LocPair::line(){
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	ColorSlideRing loc1 = loc.start;
-	ColorSlideRing loc2 = loc.destination;
+	ColorSlideRing loc1 = start;
+	ColorSlideRing loc2 = destination;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();

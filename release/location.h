@@ -47,7 +47,12 @@ public:
 //START LOCPAIR
 class LocPair{
 public:
+	LocPair();
+	LocPair(double, double, double, double, double, double);
 	~LocPair();
+	LocPair(const LocPair &l);
+	LocPair& operator=(const LocPair &l);
+
 	bool locked = false;
 	//bool on;
 	double TARGET_PRESSURE = 500;
@@ -62,10 +67,8 @@ public:
 	double dest_getPercentage(double);
 	double rStart;
 	double start_pressure;
-	LocPair();
-	LocPair(double, double, double, double, double, double);
 	void draw();
-	bool line(LocPair loc);
+	bool line();
 	bool withinPressure(double input);
 	double dist(int x1, int y1, int x2, int y2);
 	bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
