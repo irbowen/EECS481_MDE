@@ -214,6 +214,8 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 	double radius = start_radius;
 	int x_location, y_location;
 	bool valid = false;
+	Location temp(0,0,0,0);
+	int max_radius = temp.MAX_RADIUS;
 
 	
 	do {//check to make sure its not off the screen
@@ -233,15 +235,13 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 		// To detect overlap
 		int count_on = 0;
 		int count_not = 0;
-		int max_radius;
 
 
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
-			max_radius = loc_it.MAX_RADIUS;
 			if (loc_it.isOn()) {
 				count_on++;
 				double distance = loc_it.distance(x_location, y_location);
-				if (distance >= (2 * max_radius) {//to avoid overlap
+				if (distance >= (2 * max_radius)) {//to avoid overlap
 					// check every circle 
 					count_not++;
 					//valid=true;
