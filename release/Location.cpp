@@ -7,7 +7,9 @@
 
 
 //START OF LOCATION
-Location::Location(double x_in, double y_in, double r_in, double pressure_in) : rStart{ r_in }, start_pressure{ pressure_in }{
+Location::Location(double x_in, double y_in, double r_in, double pressure_in){
+	rStart = r_in;
+	start_pressure = pressure_in;
 	target = ColorSlideRing(x_in, y_in, r_in, WHITE, RED, GREEN);
 	std::cout << "Created a location at (x, y, r, z): " << x_in << " " << y_in << " " << r_in << pressure_in << std::endl;
 	turnOn();
@@ -98,6 +100,7 @@ bool LocPair::withinPressure(double input) {
 	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
+
 bool LocPair::line(LocPair loc){
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
@@ -157,5 +160,20 @@ bool LocPair::on_line(int x1, int y1, int x2, int y2, int x3, int y3)
 void LocPair::draw(){
 	start.draw();
 	destination.draw();
+}
+
+double LocPair::start_getPercentage(double input) {
+	double deflection = abs(input - start_pressure);
+	return (deflection / TARGET_PRESSURE <= 1.0 &&
+		deflection / TARGET_PRESSURE >= 0.0) ?
+		deflection / TARGET_PRESSURE : 0.0;
+}
+
+void LocPair::start_setPressure(double in) {
+	pressure = in;
+	if (in == 0)
+		start.setGoalProgress(0);
+	else
+		start.setGoalProgress(start_getPercentage(in));
 }
 //END OF LOCPAIR

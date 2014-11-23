@@ -12,8 +12,6 @@
 #include "color.h"
 #include "location.h"
 
-
-
 using namespace std::chrono;
 using std::milli;
 using std::vector;
@@ -21,8 +19,6 @@ using std::deque;
 using std::unordered_set;
 using std::pair;
 using std::list;
-
-
 
 // START OF CIRCLE
 class Circle {
@@ -81,7 +77,6 @@ public:
 };
 //END OF COLORSLIDERING
 
-
 //START OF RANDOMCIRCLECURSOR
 class RandomCircleCursor {
 public:
@@ -90,9 +85,8 @@ public:
 	int x, y, r;
 public:
 	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
-	void draw();
-	// Add different sized circle to path in random direction
-	void addCircle();
+	CursorCircle addCircle();
+
 	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
 	inline void chY(int dy) { y += dy; }
 	inline void chX(int dx) { x += dx; }
@@ -101,6 +95,18 @@ public:
 };
 //END OF RANDOMCIRCLECURSOR
 
+//START OF CURSORCONTAINER
+class CursorContainer {
+public:
+	list<CursorCircle> circles;
+public:
+	vector<RandomCircleCursor*> cs;
+
+	void draw();
+
+	inline void addCircle(int i) { circles.push_back(cs[i]->addCircle()); }
+};
+//END OF CURSORCONTAINER
 
 //START OF GRADIENTCIRCLECURSOR
 class GradientCircleCursor : public RandomCircleCursor {
@@ -153,15 +159,15 @@ class LocPair;
 //START OF SCENE
 class Scene {
 public:
+	static LocPair locpair;
 	static vector<Location> locations;
-	static vector<RandomCircleCursor> cursors;
 	//static vector<CircleSpiral> spirals;
 	static vector<PolygonGL> polys;
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
 	static vector<Circle> circles;
 	static vector<Line> lines;
-
+	static CursorContainer cursors;
 
 	//draft
 	static vector<LocPair> locpairs;
@@ -173,8 +179,4 @@ public:
 	void startSpiral(double x, double y, double r, Color c) { spirals.push_back(CircleSpiral{ x, y, r, c }); }*/
 };
 //END OF SCENE
-
-
-
-
 #endif

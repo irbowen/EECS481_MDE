@@ -41,20 +41,15 @@ Color mix(const Color& a, const Color& b, double percent){
 //END OF COLOR
 //START OF COLORWHEEL
 Color ColorWheel::next(){
-	vector<Color>::iterator nxt = std::next(cur);
+	int nxt_i = (cur_i == gradient.size() - 1) ? 0 : cur_i + 1;
+	Color rtn = mix(gradient[cur_i], gradient[nxt_i], 1.0 * ticks / ticksPerColor);
 
-	if (nxt == gradient.end())
-		nxt = gradient.begin();
-
-	Color rtn = mix(*cur, *nxt, 1.0 * ticks++ / ticksPerColor);
-
-	if (ticks == ticksPerColor){
+	if (++ticks == ticksPerColor){
 		ticks = 0;
-		cur = nxt;
+		cur_i = nxt_i;
 	}
 
 	return rtn;
-
 }
 //END OF COLORWHEEL
 //GLOBAL STATIC VECTORS

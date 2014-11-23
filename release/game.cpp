@@ -8,6 +8,7 @@
 #include <thread>
 #include "color.h"
 #include "location.h"
+#include <fstream>
 
 using std::mutex;
 
@@ -75,6 +76,17 @@ void Game::run(char mode) {
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
+	intial_buffer = frame_data;
+	std::ofstream out_file;
+	out_file.open("out3.txt");
+	for (int i = 0; i < MAX_Y; i++) {
+		for (int j = 0; j < MAX_X; j++) {
+			out_file << intial_buffer.at(i*MAX_X + j) << " ";
+		}
+		out_file << "\n";
+	}
+	out_file << std::endl;
+	out_file.close();
 	int i = 0;
 	while (true) {
 		// Play background sound
@@ -100,7 +112,7 @@ void Game::runSlideRingMode(int i) {
 	if (num_active_spots <= log(num_triggered_spots + 2)) {
 		Scene::locations.push_back(createRandomLocation(-1, -1));
 		auto& last = Scene::locations.at(Scene::locations.size() - 1);
-		last.target.setR(last.target.getR() * (2 / log(num_triggered_spots+2)));
+		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
@@ -108,7 +120,8 @@ void Game::runSlideRingMode(int i) {
 		loc_it.setPressure(pressure);
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
-			if (loc_it.exactMatch(pressure)) {
+			if (loc_it.exactMatch(pressure)) 
+			{
 				loc_it.num_rounds_correct++;
 				loc_it.prev_correct_round = i;
 				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
@@ -138,36 +151,40 @@ void Game::runSlideRingMode(int i) {
 	LocationLock.unlock();
 }
 
+
 void Game::runConnectMode()
 {
-	Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-	for (auto& _pair : Scene::locpairs)
-	{
-		_pair.draw();
+	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
+	Scene::locpair = createRandomLocPair(50, 50, 300, 300);
+
+		
 		//1. check pressure at start ring
 		
-		double pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
+		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 
+		std::cout << "Pressure is " << pressure << std::endl;
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!_pair.withinPressure(pressure))
+		while (!Scene::locpair.withinPressure(pressure))
 		{
-			pressure = checkPressure((int)_pair.start.getX(), (int)_pair.start.getY(), (int)_pair.start.getR());
+			//std::cout << "pressure req not met" << std::endl;
+			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
+			//std::cout << "Inside pressure is " << pressure << std::endl;
 		}
 
-		_pair.locked = true;
-
+		Scene::locpair.locked = true;
+		Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() }, 
+		{ (int)Scene::locpair.destination.getX(), (int)Scene::locpair.destination.getX() }, RED, 5.0 });
 		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
 		//		a. 
-		if (_pair.locked == true) 
+		if (Scene::locpair.locked == true) 
 		{
 			int i = 0;
-			while (_pair.line(_pair))
+			while (Scene::locpair.line())
 			{
 				if (i++ > 10) break;
 			}
 		}
-	}
 }
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
@@ -189,7 +206,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 		dest_y = opt_y2;
 	}
 
-	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, frame_data.at(MAX_X*start_y + start_x));
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, intial_buffer.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(int opt_x, int opt_y) {
@@ -243,10 +260,10 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 
-	return Location(x_location, y_location, radius, frame_data.at(MAX_X*y_location + x_location));
+	return Location(x_location, y_location, radius, intial_buffer.at(MAX_X*y_location + x_location));
 	
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }

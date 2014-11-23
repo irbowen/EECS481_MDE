@@ -13,20 +13,24 @@
 //eecs481 fall2014
 
 #include <math.h>
+#include <algorithm>
 
 using std::mutex;
 using std::cout;
 using std::endl;
+using std::sort;
+using std::merge;
 
 mutex LocationLock;
 vector<LocPair> Scene::locpairs;
 vector<Location> Scene::locations;
-vector<RandomCircleCursor> Scene::cursors;
 vector<PolygonGL> Scene::polys;
 vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
 vector<Circle> Scene::circles;
 vector<Line> Scene::lines;
+LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
+CursorContainer Scene::cursors;
 
 namespace {
 	std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct){
@@ -89,8 +93,8 @@ void ColorSlideCircle::setGoalProgress(double percent){
 }
 //END OF COLORSLIDECIRCLE
 
-//START OF RANDOMCIRCLECURSOR
-void RandomCircleCursor::addCircle(){
+// START OF RANDOMCIRCLECURSOR
+CursorCircle RandomCircleCursor::addCircle(){
 	double theta = (rand() % 360) * PI / 180;
 	double distanceToNew = 3*r/2/(rand()%5 + 1);
 	double dx = distanceToNew * cos(theta);
@@ -98,13 +102,13 @@ void RandomCircleCursor::addCircle(){
 	double newR = r / (rand() % 4 + 2);
 
 	Color color = nextColor();
-	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%1000 + 500)});
 
+	return{ dx + x, dy + y, newR, color, { x, y }, (double)(rand() % 1000 + 500) };
 }
 
-void RandomCircleCursor::draw() {
-	for (auto it = circles.rbegin(); it != circles.rend(); ++it)
-		it->draw();
+void CursorContainer::draw() {
+	for (auto& circle : circles)
+			circle.draw();
 	circles.remove_if([](const CursorCircle& c) { return c.elapsed() / c.fadeDuration >= 0.95; });
 }
 //END OF RANDOMCIRCLECURSOR
@@ -147,15 +151,18 @@ void Point::draw(){
 //END oF POINT
 
 //START OF SCENE
-void Scene::draw() {
-	for (auto& x : cursors) { x.draw(); }
-	//for (CircleSpiral cs : spirals) { cs.draw(); }
+void Scene::draw(){
+	cursors.draw();
+	locpair.draw();
+
 	for (auto& x : polys) x.draw();
 	for (auto& x : rings) x.draw();
 	for (auto& x : points) x.draw();
+
 	LocationLock.lock();
 	for (auto& x : locations) x.draw();
 	LocationLock.unlock();
+
 	for (auto& x : circles) x.draw();
 	for (auto& x : locpairs) x.draw();
 	for (auto& x : lines) x.draw();

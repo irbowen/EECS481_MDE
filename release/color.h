@@ -25,10 +25,10 @@ Color mix(const Color& a, const Color& b, double percent);
 class ColorWheel {
 	int ticksPerColor, ticks;
 	vector<Color> gradient;
-	vector<Color>::iterator cur;
+	int cur_i;
 public:
 	// resolution of 1 means that calls to next() will cycle through colors in gradient. Higher resolutions add inbetween colors.
-	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 } { gradient = colors, cur = gradient.begin(); }
+	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 }, cur_i{ 0 } { gradient = colors; }
 	Color next();
 };
 //END OF COLORWHEEL
