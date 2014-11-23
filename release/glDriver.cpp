@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <cmath>
 
 #include "graphics.h"
 #include "glDriver.h"
@@ -46,12 +47,22 @@ int glDriver(){
 	// Line ctor : Line(p1, p2, color, thickness)
 	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, colorScheme_rainbow, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 320, 240, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 });
+	for (int i = 0; i < 360; i += 60){
+		int d = 50;
+		double theta = i * 3.14 / 180;
+
+		int dx = d * cos(theta);
+		int dy = d * sin(theta);
+
+		cout << 320 + dx << ' ' << 240 + dy << endl;
+	}
+
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 });
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 });
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 });
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 });
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 });
+	Scene::cursors.cs.push_back(new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 });
 
 
 	while (!done){
