@@ -82,7 +82,7 @@ void Game::run(char mode) {
 	out_file.open("out3.txt");
 	for (int i = 0; i < MAX_Y; i++) {
 		for (int j = 0; j < MAX_X; j++) {
-			out_file << intial_buffer.at(i*MAX_X + j) << " ";
+			out_file << initial_buffer.at(i*MAX_X + j) << " ";
 		}
 		out_file << "\n";
 	}
@@ -207,7 +207,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 		dest_y = opt_y2;
 	}
 
-	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, intial_buffer.at(MAX_X*start_y + start_x));
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(int opt_x, int opt_y) {
@@ -262,7 +262,7 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 
-	return Location(x_location, y_location, radius, intial_buffer.at(MAX_X*y_location + x_location));
+	return Location(x_location, y_location, radius, initial_buffer.at(MAX_X*y_location + x_location));
 	
 }
 
