@@ -7,12 +7,13 @@
 
 
 //START OF LOCATION
-Location::Location(double x_in, double y_in, double r_in, double pressure_in){
-	rStart = r_in;
-	start_pressure = pressure_in;
-	target = ColorSlideRing(x_in, y_in, r_in, WHITE, RED, GREEN);
+Location::Location(double x_in, double y_in, double r_in, double pressure_in) : rStart{ r_in }, start_pressure{ pressure_in }, target{ *(new ColorSlideRing(x_in, y_in, r_in, WHITE, RED, GREEN)) }{
 	std::cout << "Created a location at (x, y, r, z): " << x_in << " " << y_in << " " << r_in << pressure_in << std::endl;
 	turnOn();
+}
+
+Location::~Location(){
+	delete &target;
 }
 
 void Location::makeBigger(double increase) {
@@ -88,11 +89,16 @@ void Location::fade(double ms){
 
 //START OF LOCPAIR
 LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double pressure_in)
-: start{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, destination{ x2_in, y2_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }
+: start{ *(new ColorSlideRing(x1_in, y1_in, r_in, WHITE, RED, GREEN)) }, destination{ *(new ColorSlideRing(x2_in, y2_in, r_in, WHITE, RED, GREEN)) }, rStart{ r_in }, start_pressure{ pressure_in }
 {
 	std::cout << "Created a location at (x, y, r): " << x1_in << " " << y1_in << " " << r_in << std::endl;
 	std::cout << "At depth: " << start_pressure << std::endl;
 	//on = true;
+}
+
+LocPair::~LocPair(){
+	delete &start;
+	delete &destination;
 }
 
 bool LocPair::withinPressure(double input) {

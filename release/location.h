@@ -13,6 +13,7 @@ class ColorSlideRing;
 //START LOCATION
 class Location {
 public:
+	~Location();
 	ColorSlideRing &target;
 	double rStart;
 	double TARGET_PRESSURE = 500;
@@ -46,6 +47,7 @@ public:
 //START LOCPAIR
 class LocPair{
 public:
+	~LocPair();
 	bool locked = false;
 	//bool on;
 	double TARGET_PRESSURE = 500;
