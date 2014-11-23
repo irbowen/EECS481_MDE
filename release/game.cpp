@@ -49,23 +49,23 @@ void Game::printRemovedLocations() {
 }
 
 double Game::checkPressure(int x, int y, int radius){
-	double pressure = intial_buffer.at(x + y*MAX_X);
-	if (y - radius / 2 >= 0 && intial_buffer.at(x + (y - radius / 2)*MAX_X) > pressure)
-		pressure = intial_buffer.at(x + (y - radius / 2)*MAX_X);
-	if (y - radius / 4 >= 0 && intial_buffer.at(x + (y - radius / 4)*MAX_X) > pressure)
-		pressure = intial_buffer.at(x + (y - radius / 4)*MAX_X);
-	if (y + radius / 2 < MAX_Y && intial_buffer.at(x + (y + radius / 2)*MAX_X) > pressure)
-		pressure = intial_buffer.at(x + (y + radius / 2)*MAX_X);
-	if (y + radius / 4 < MAX_Y && intial_buffer.at(x + (y + radius / 4)*MAX_X) > pressure)
-		pressure = intial_buffer.at(x + (y + radius / 4)*MAX_X);
-	if (x - radius / 2 >= 0 && intial_buffer.at((x - radius / 2) + y*MAX_X) > pressure)
-		pressure = intial_buffer.at((x - radius / 2) + y*MAX_X);
-	if (x - radius / 4 >= 0 && intial_buffer.at((x - radius / 4) + y*MAX_X) > pressure)
-		pressure = intial_buffer.at((x - radius / 4) + y*MAX_X);
-	if (x + radius / 2 < MAX_X && intial_buffer.at((x + radius / 2) + y*MAX_X) > pressure)
-		pressure = intial_buffer.at((x + radius / 2) + y*MAX_X);
-	if (x + radius / 4 < MAX_X && intial_buffer.at((x + radius / 4) + y*MAX_X) > pressure)
-		pressure = intial_buffer.at((x + radius / 4) + y*MAX_X);
+	double pressure = frame_data.at(x + y*MAX_X);
+	if (y - radius / 2 >= 0 && frame_data.at(x + (y - radius / 2)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y - radius / 2)*MAX_X);
+	if (y - radius / 4 >= 0 && frame_data.at(x + (y - radius / 4)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y - radius / 4)*MAX_X);
+	if (y + radius / 2 < MAX_Y && frame_data.at(x + (y + radius / 2)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y + radius / 2)*MAX_X);
+	if (y + radius / 4 < MAX_Y && frame_data.at(x + (y + radius / 4)*MAX_X) > pressure)
+		pressure = frame_data.at(x + (y + radius / 4)*MAX_X);
+	if (x - radius / 2 >= 0 && frame_data.at((x - radius / 2) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x - radius / 2) + y*MAX_X);
+	if (x - radius / 4 >= 0 && frame_data.at((x - radius / 4) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x - radius / 4) + y*MAX_X);
+	if (x + radius / 2 < MAX_X && frame_data.at((x + radius / 2) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x + radius / 2) + y*MAX_X);
+	if (x + radius / 4 < MAX_X && frame_data.at((x + radius / 4) + y*MAX_X) > pressure)
+		pressure = frame_data.at((x + radius / 4) + y*MAX_X);
 	return pressure;
 }
 
