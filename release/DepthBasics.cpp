@@ -413,6 +413,9 @@ void CDepthBasics::ProcessDepth()
 			//add pixel depth data to frame_data
 			//frame_data.push_back(pStartScan->depth);
 			frame_data[i] = pBufferRun->depth;
+			if (buffer_valid==false){
+				initial_frame[i] = pBufferRun->depth;
+			}
 			
 			//detect the max depth on the frame
 			// if (frame_data[i] > max_depth){
