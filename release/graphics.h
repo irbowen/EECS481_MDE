@@ -132,12 +132,12 @@ class ColorWheel {
 	int ticksPerColor, ticks;
 
 	vector<Color> gradient;
-	vector<Color>::iterator cur;
+	int cur_i;
 
 public:
 
 	// resolution of 1 means that calls to next() will cycle through colors in gradient. Higher resolutions add inbetween colors.
-	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 } { gradient = colors, cur = gradient.begin(); }
+	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 }, cur_i{ 0 } { gradient = colors; }
 
 	Color next();
 };
@@ -151,10 +151,7 @@ public:
 public:
 	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
 
-	void draw();
-
-	// Add different sized circle to path in random direction
-	void addCircle();
+	CursorCircle addCircle();
 
 	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
 
@@ -165,6 +162,17 @@ public:
 	inline void setPos(int xx, int yy) { x = xx, y = yy; }
 
 	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
+};
+
+class CursorContainer {
+public:
+	list<CursorCircle> circles;
+public:
+	vector<RandomCircleCursor*> cs;
+
+	void draw();
+
+	inline void addCircle(int i) { circles.push_back(cs[i]->addCircle()); }
 };
 
 class GradientCircleCursor : public RandomCircleCursor {
@@ -223,13 +231,13 @@ class LocPair;
 class Scene {
 public:
 	static vector<Location> locations;
-	static vector<RandomCircleCursor> cursors;
 	//static vector<CircleSpiral> spirals;
 	static vector<PolygonGL> polys;
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
 	static vector<Circle> circles;
 	static vector<Line> lines;
+	static CursorContainer cursors;
 
 
 	//draft

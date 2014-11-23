@@ -13,10 +13,13 @@
 
 #include "graphics.h"
 #include <math.h>
+#include <algorithm>
 
 using std::mutex;
 using std::cout;
 using std::endl;
+using std::sort;
+using std::merge;
 
 mutex LocationLock;
 
@@ -30,7 +33,6 @@ std::ostream& operator<<(std::ostream& os, const Color& c){
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : target{ x_in, y_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }{
 	std::cout << "Created a location at (x, y, r, z): " << x_in << " " << y_in << " " << r_in << pressure_in << std::endl;
 	turnOn();
-
 }
 
 void Location::makeBigger(double increase) {
@@ -177,7 +179,7 @@ void CursorCircle::draw(){
 	Circle::draw();
 }
 
-void RandomCircleCursor::addCircle(){
+CursorCircle RandomCircleCursor::addCircle(){
 
 	double theta = (rand() % 360) * PI / 180;
 	
@@ -185,18 +187,17 @@ void RandomCircleCursor::addCircle(){
 
 	double dx = distanceToNew * cos(theta);
 	double dy = distanceToNew * sin(theta);
-	
 
 	double newR = r / (rand() % 4 + 2);
 
 	Color color = nextColor();
 
-	circles.push_front({ dx + x, dy + y, newR, color, {x, y}, (double)(rand()%1000 + 500)});
+	return{ dx + x, dy + y, newR, color, { x, y }, (double)(rand() % 1000 + 500) };
 
 }
 
-void RandomCircleCursor::draw() {
-	for (auto it = circles.rbegin(); it != circles.rend(); ++it){ it->draw(); }
+void CursorContainer::draw() {
+	for (auto& circle : circles){ circle.draw(); }
 	circles.remove_if([](const CursorCircle& c) { return c.elapsed() / c.fadeDuration >= 0.95; });
 }
 
@@ -272,30 +273,31 @@ void Point::draw(){
 
 void Scene::draw() 
 {
-	for (auto& x : cursors) { x.draw(); }
-	//for (CircleSpiral cs : spirals) { cs.draw(); }
+	
+	cursors.draw();
+
 	for (auto& x : polys) x.draw();
 	for (auto& x : rings) x.draw();
 	for (auto& x : points) x.draw();
+
 	LocationLock.lock();
 	for (auto& x : locations) x.draw();
 	LocationLock.unlock();
+
 	for (auto& x : circles) x.draw();
 	for (auto& x : locpairs) x.draw();
 	for (auto& x : lines) x.draw();
 }
 
 Color ColorWheel::next(){
-	vector<Color>::iterator nxt = std::next(cur);
-	
-	if (nxt == gradient.end())
-		nxt = gradient.begin();
 
-	Color rtn = mix(*cur, *nxt, 1.0 * ticks++ / ticksPerColor);
+	int nxt_i = (cur_i == gradient.size() - 1) ? 0 : cur_i + 1;
 
-	if (ticks == ticksPerColor){
+	Color rtn = mix(gradient[cur_i], gradient[nxt_i], 1.0 * ticks / ticksPerColor);
+
+	if (++ticks == ticksPerColor){
 		ticks = 0;
-		cur = nxt;
+		cur_i = nxt_i;
 	}
 
 	return rtn;
@@ -323,13 +325,13 @@ void Line::draw(){
 
 vector<LocPair> Scene::locpairs;
 vector<Location> Scene::locations;
-vector<RandomCircleCursor> Scene::cursors;
 //vector<CircleSpiral> Scene::spirals;
 vector<PolygonGL> Scene::polys;
 vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
 vector<Circle> Scene::circles;
 vector<Line> Scene::lines;
+CursorContainer Scene::cursors;
 
 vector<Color> colors{ RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, PINK, ORANGE, TEAL, PURPLE, TURQUOISE };
 
