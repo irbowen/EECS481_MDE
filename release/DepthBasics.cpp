@@ -16,6 +16,7 @@
 
 
 std::vector<double> frame_data;
+std::vector<double> initial_frame;
 bool buffer_valid;
 
 /// <summary>
