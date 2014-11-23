@@ -6,6 +6,8 @@
 #include "graphics.h"
 #include <mutex>
 #include <thread>
+#include "color.h"
+#include "location.h"
 #include <fstream>
 
 using std::mutex;
