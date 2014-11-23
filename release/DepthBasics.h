@@ -17,6 +17,8 @@ extern std::vector<double> initial_buffer;
 //extern int max_depth;
 //extern int max_index;
 extern bool buffer_valid;
+extern int minDepth;
+extern int minDepth_index;
 
 class CDepthBasics
 {
