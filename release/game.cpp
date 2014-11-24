@@ -123,7 +123,7 @@ void Game::run(char mode) {
 		cursorLock.unlock();
 		for (int j = 0; j < frame_data.size(); j++){
 			int curVal = frame_data[j] - initial_buffer[j];
-			if (curVal < minDepth){
+			if (curVal < minDepth && frame_data[j]){
 				bool lessThanSurr = true;
 				if (j > 640 && curVal >= frame_data[j - 640] - initial_buffer[j - 640])
 					lessThanSurr = false;
