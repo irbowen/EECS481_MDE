@@ -1,4 +1,4 @@
-#include "LocPair.h"
+#include "LocPair2.h"
 #include <iostream>
 
 

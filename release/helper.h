@@ -39,10 +39,10 @@ void paircheckCursors()
 	{
 			int curs_x = cursor.getX();
 			int curs_y = cursor.getY();
-			if (pair.start.contains(curs_x, curs_y)) 
-			{
+			//if (pair.start.contains(curs_x, curs_y)) 
+			//{
 				
-			}
+			//}
 
 	}
 }
