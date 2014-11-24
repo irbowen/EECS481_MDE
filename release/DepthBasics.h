@@ -11,6 +11,7 @@
 #include "NuiApi.h"
 #include "ImageRenderer.h"
 #include <vector>
+#include <mutex>
 
 extern std::vector<double> frame_data;
 extern std::vector<double> initial_buffer;
@@ -19,6 +20,7 @@ extern std::vector<double> initial_buffer;
 extern bool buffer_valid;
 extern const int minDepth;
 extern std::vector<int> minDepth_index;
+extern std::mutex cursorLock;
 
 class CDepthBasics
 {

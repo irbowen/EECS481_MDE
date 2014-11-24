@@ -117,6 +117,12 @@ void Game::runSlideRingMode(int i) {
 		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
+	cursorLock.lock();
+	Scene::debugCursors.clear();
+	for (int j = 0; j < minDepth_index.size(); j++){
+		Scene::debugCursors.push_back({minDepth_index[j] % 640, minDepth_index[j] / 640, 20});
+	}
+	cursorLock.unlock();
 	for (auto& loc_it : Scene::locations) {
 		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 		loc_it.setPressure(pressure);
