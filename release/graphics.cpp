@@ -10,6 +10,7 @@
 #include "Circle.h"
 #include "CursorCircle.h"
 #include "LocPair.h"
+#include "geometry.h"
 
 
 //Isaac Bowen
@@ -17,45 +18,11 @@
 
 #include <math.h>
 #include <algorithm>
-#define PI 3.14159265
 
-
-using std::mutex;
 using std::cout;
 using std::endl;
-using std::sort;
-using std::merge;
 
-mutex LocationLock;
-vector<LocPair> Scene::locpairs;
-vector<Location> Scene::locations;
-vector<PolygonGL> Scene::polys;
-vector<ColorSlideRing> Scene::rings;
-vector<Point> Scene::points;
-vector<Circle> Scene::circles;
-vector<Line> Scene::lines;
-LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
-CursorContainer Scene::cursors;
 
-// START OF RANDOMCIRCLECURSOR
-CursorCircle RandomCircleCursor::addCircle(){
-	double theta = (rand() % 360) * PI / 180;
-	double distanceToNew = 3*r/2/(rand()%5 + 1);
-	double dx = distanceToNew * cos(theta);
-	double dy = distanceToNew * sin(theta);
-	double newR = r / (rand() % 4 + 2);
-
-	Color color = nextColor();
-
-	return{ dx + x, dy + y, newR, color, { x, y }, (double)(rand() % 1000 + 500) };
-}
-
-void CursorContainer::draw() {
-	for (auto& circle : circles)
-			circle.draw();
-	circles.remove_if([](const CursorCircle& c) { return c.elapsed() / c.fadeDuration >= 0.95; });
-}
-//END OF RANDOMCIRCLECURSOR
 
 //START OF POLYGONGL
 void PolygonGL::draw(){
@@ -94,24 +61,7 @@ void Point::draw(){
 }
 //END oF POINT
 
-//START OF SCENE
-void Scene::draw(){
-	cursors.draw();
-	locpair.draw();
 
-	for (auto& x : polys) x.draw();
-	for (auto& x : rings) x.draw();
-	for (auto& x : points) x.draw();
-
-	LocationLock.lock();
-	for (auto& x : locations) x.draw();
-	LocationLock.unlock();
-
-	for (auto& x : circles) x.draw();
-	for (auto& x : locpairs) x.draw();
-	for (auto& x : lines) x.draw();
-}
-//END OF SCENE
 
 //START OF LINE
 void Line::draw(){

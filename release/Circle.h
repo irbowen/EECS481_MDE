@@ -7,6 +7,7 @@
 #include "color.h"
 #include <chrono>
 #include <utility>
+#include "geometry.h"
 
 using namespace std::chrono;
 using std::milli;
@@ -26,8 +27,8 @@ public:
 	Circle(double xx, double yy, double rr, Color cc) : x{ xx }, y{ yy }, r{ rr }, color{ cc } {}
 	virtual void draw();
 	void fade(double);
+	bool faded = false;
 };
 //END OF CIRCLE
 
-std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct);
 #endif

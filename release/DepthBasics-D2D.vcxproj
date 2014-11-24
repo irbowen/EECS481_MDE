@@ -170,6 +170,7 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="ColorSlideCircle.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="glDriver.h" />
     <ClInclude Include="graphics.h" />
@@ -180,14 +181,18 @@
     <ClInclude Include="LocPair.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="DepthBasics.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ColorSlideCircle.cpp" />
+    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="CursorCircle.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="geometry.cpp" />
     <ClCompile Include="helper.h" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="DepthBasics.cpp" />
@@ -196,6 +201,7 @@
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="LocPair.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DepthBasics.rc" />

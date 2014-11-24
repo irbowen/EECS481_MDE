@@ -1,5 +1,6 @@
 #include <gl\glew.h>
 #include <Windows.h>
+#include "Scene.h"
 
 
 #define XRES 640	

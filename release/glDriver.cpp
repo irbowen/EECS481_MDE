@@ -51,19 +51,23 @@ int glDriver(){
 		int d = 50;
 		double theta = i * 3.14 / 180;
 
-		int dx = d * cos(theta);
-		int dy = d * sin(theta);
+		int dx = (int) (d * cos(theta));
+		int dy = (int) (d * sin(theta));
 
 		cout << 320 + dx << ' ' << 240 + dy << endl;
 	}
 
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 });
-	Scene::cursors.cs.push_back(new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 });
-
+	Scene::fancyCursors.push_back({ 320, 240, 200, 5, { /*new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
+														new GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
+														new GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
+														new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
+														new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
+														new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 } */
+		new GradientCircleCursor{ 0, 0, 100, colorScheme_melon, 100 },
+		new GradientCircleCursor{ 0, 0, 100, colorScheme_rainbow, 100 },
+		new GradientCircleCursor{ 0, 0, 100, colorScheme_goldfish, 100 }
+														} 
+															});
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -85,20 +89,20 @@ int glDriver(){
 
 						ctrl_last = keys[VK_CONTROL];
 
-						for (auto& cursor : Scene::cursors.cs){
+						auto& cursor = Scene::fancyCursors[0];
 
-							Scene::cursors.addCircle(&cursor - &*Scene::cursors.cs.begin());
+						Scene::fancyCursors[0].addCircle();
 
-							if (keys[VK_UP])
-								cursor->chY(-10);
-							else if (keys[VK_DOWN])
-								cursor->chY(10);
-							if (keys[VK_RIGHT])
-								cursor->chX(10);
-							else if (keys[VK_LEFT])
-								cursor->chX(-10);
+						if (keys[VK_UP])
+							cursor.chY(-10);
+						else if (keys[VK_DOWN])
+							cursor.chY(10);
+						if (keys[VK_RIGHT])
+							cursor.chX(10);
+						else if (keys[VK_LEFT])
+							cursor.chX(-10);
 
-						}
+						
 					}
 
 					/*

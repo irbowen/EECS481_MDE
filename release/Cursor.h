@@ -1,0 +1,71 @@
+#ifndef CURSOR_H
+#define CURSOR_H
+
+#include "graphics.h"
+
+
+//START OF RANDOMCIRCLECURSOR
+class RandomCircleCursor {
+public:
+	list<CursorCircle> circles;
+	vector<vector<Color>*>::iterator colorScheme;
+	int x, y, r;
+public:
+	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
+	CursorCircle addCircle();
+
+	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
+	inline void chY(int dy) { y += dy; }
+	inline void chX(int dx) { x += dx; }
+	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
+	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
+};
+//END OF RANDOMCIRCLECURSOR
+
+//START OF CURSORCONTAINER
+class CursorContainer {
+protected:
+	list<CursorCircle> circles;
+public:
+	vector<RandomCircleCursor*> cs;
+
+	virtual void draw();
+
+	inline void addCircle(int i) { circles.push_back(cs[i]->addCircle()); }
+};
+//END OF CURSORCONTAINER
+
+//START OF ROTATINGMULTICURSOR
+class RotatingMultiCursor : public CursorContainer {
+	double x, y, r;
+	int speed;
+	vector<int> cursorAngle;
+public:
+	RotatingMultiCursor(double, double, double, int, const vector<RandomCircleCursor*>&);
+
+	inline void chY(int dy) { y += dy; }
+	inline void chX(int dx) { x += dx; }
+	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
+
+	inline void addCircle(int i) = delete;
+	inline void addCircle() { for (auto x : cs) circles.push_back(x->addCircle()); }
+
+	void draw() override;
+};
+//END OF ROTATINGMULTICURSOR
+
+//START OF GRADIENTCIRCLECURSOR
+class GradientCircleCursor : public RandomCircleCursor {
+	ColorWheel gradient;
+
+public:
+	GradientCircleCursor(int x, int y, int r, const vector<Color>& g, int resolution) : RandomCircleCursor{ x, y, r }, gradient{ g, resolution } {}
+	inline Color nextColor() { return gradient.next(); }
+};
+//END OF GRADIENTCIRCLECURSOR
+
+
+
+
+
+#endif

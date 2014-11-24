@@ -10,6 +10,7 @@
 #include "location.h"
 #include <fstream>
 #include "LocPair.h"
+#include "Scene.h"
 
 using std::mutex;
 
@@ -112,7 +113,7 @@ void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 2)) {
 		Scene::locations.push_back(createRandomLocation(-1, -1));
-		auto& last = Scene::locations.at(Scene::locations.size() - 1);
+		auto& last = Scene::locations.back();
 		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
@@ -215,7 +216,7 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 	int x_location, y_location;
 	bool valid = false;
 	Location temp(0,0,0,0);
-	int max_radius = temp.MAX_RADIUS;
+	int max_radius = (int)temp.MAX_RADIUS;
 
 	
 	do {//check to make sure its not off the screen

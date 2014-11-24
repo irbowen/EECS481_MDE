@@ -10,6 +10,8 @@ void Circle::draw(){
 	if (fadeDuration != 0.0){
 		double ms = elapsed();
 		color = (ms >= fadeDuration) ? WHITE : mix(startColor, WHITE, ms / fadeDuration);
+		if (color == WHITE)
+			faded = true;
 	}
 
 	glBegin(GL_TRIANGLE_FAN);
@@ -30,10 +32,5 @@ void Circle::fade(double ms){
 }
 
 
-std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct){
 
-	return{ p1.first + prct * (p2.first - p1.first),
-		p1.second + prct * (p2.second - p1.second) };
-
-}
 //END OF CIRCLE

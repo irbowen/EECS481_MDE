@@ -5,21 +5,28 @@
 using std::pair;
 
 //START OF CURSORCIRCLE
-CursorCircle::CursorCircle(double xx, double yy, double rr, const Color& cc, const std::pair<double, double>& end, double ms) : Circle{ xx, yy, rr, cc }, startPos{ xx, yy }, endPos{ end } {
+CursorCircle::CursorCircle(double xx, double yy, double rr, const Color& cc, const pair<double, double>& start, double ms, double dCursor, int aCursor) : 
+								Circle{ xx, yy, rr, cc }, 
+								startPos{ start }, 
+								endPos{ xx, yy },
+								distanceToCursor{ dCursor },
+								angleToCursor{ aCursor }{
 	fade(ms);
 	startR = r;
-	startPos = { x, y };
 }
 
 void CursorCircle::draw(){
 	double ms = elapsed();
 
 	r = startR * ms / fadeDuration;
-	auto pos = between(endPos, startPos, ms / fadeDuration);
+
+	endPos = jump(startPos, distanceToCursor, angleToCursor--);
+
+	auto pos = between(startPos, endPos, ms / fadeDuration);
 	x = pos.first, y = pos.second;
 
-	if (color == WHITE)
-		return;
+	if (ms / fadeDuration >= 0.95)
+		faded = true;
 
 	Circle::draw();
 }
