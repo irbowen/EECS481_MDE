@@ -72,6 +72,7 @@ class RotatingMultiCursor : public CursorContainer {
 	vector<int> cursorAngle;
 public:
 	RotatingMultiCursor(double, double, double, int, const vector<GradientCircleCursor>&);
+	RotatingMultiCursor(){}
 
 	inline void chY(int dy) { y += dy; }
 	inline void chX(int dx) { x += dx; }
