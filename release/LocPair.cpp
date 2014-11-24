@@ -16,7 +16,7 @@ bool LocPair::withinPressure(double input) {
 	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
-
+/*
 bool LocPair::line(){
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
@@ -45,7 +45,7 @@ bool LocPair::line(){
 			//if(dist(x,y,x2,y2)<dist(last_x,last_y,x2,y2)){
 			last_x = x;
 			last_y = y;
-			// OpenGL draw line
+			//OpenGL draw line
 			//Scene::lines.push_back({ { x1, y1 }, { last_x, last_y }, RED, 5.0 });
 			//}
 		}
@@ -72,6 +72,7 @@ bool LocPair::on_line(int x1, int y1, int x2, int y2, int x3, int y3)
 	else
 		return false;
 }
+*/
 
 void LocPair::draw(){
 	start.draw();

@@ -17,6 +17,8 @@
 
 std::vector<double> frame_data;
 std::vector<double> initial_buffer;
+int minDepth;
+int minDepth_index;
 bool buffer_valid;
 
 /// <summary>
@@ -50,6 +52,9 @@ m_pNuiSensor(NULL)
 	// create heap storage for depth pixel data in RGBX format
 	m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
 	frame_data.resize(307200);
+	initial_buffer.resize(307200);
+	minDepth = INT_MAX;
+	minDepth_index = 0;
 }
 
 /// <summary>
@@ -418,10 +423,10 @@ void CDepthBasics::ProcessDepth()
 			}
 			
 			//detect the max depth on the frame
-			// if (frame_data[i] > max_depth){
-			//	max_depth = frame_data;
-			//	max_index = i;
-			//}
+			if (frame_data[i] != 0 && frame_data[i] < minDepth){
+				minDepth = frame_data[i];
+				minDepth_index = i;
+			}
 			
 			pStartScan++;
 			i++;

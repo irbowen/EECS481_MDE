@@ -26,10 +26,10 @@ public:
 	double rStart;
 	double start_pressure;
 	void draw();
-	bool line();
+	//bool line();
 	bool withinPressure(double input);
-	double dist(int x1, int y1, int x2, int y2);
-	bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
+	//double dist(int x1, int y1, int x2, int y2);
+	//bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
 };
 //END LOCPAIR
 
