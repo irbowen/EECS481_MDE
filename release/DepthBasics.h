@@ -112,4 +112,8 @@ private:
     /// </summary>
     /// <param name="szMessage">message to display</param>
     void                    SetStatusMessage(WCHAR* szMessage);
+
 };
+
+//returns the vector of minimal values from the kinect
+std::vector<int> getMinima();

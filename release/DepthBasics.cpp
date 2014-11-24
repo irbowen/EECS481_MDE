@@ -423,24 +423,22 @@ void CDepthBasics::ProcessDepth()
 			}
 			
 			//detect the max depth on the frame
-			cursorLock.lock();
-			if (buffer_valid){
+			/*if (buffer_valid){
 				int curVal = frame_data[i] - initial_buffer[i];
 				if (curVal < minDepth){
 					bool lessThanSurr = true;
 					if (i > 640 && curVal >= frame_data[i - 640] - initial_buffer[i - 640])
 						lessThanSurr = false;
-					if (i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
+					if (lessThanSurr && i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
 						lessThanSurr = false;
-					if (i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
+					if (lessThanSurr && i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
 						lessThanSurr = false;
-					if ((i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
+					if (lessThanSurr && (i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
 						lessThanSurr = false;
 					if (lessThanSurr)
 						minDepth_index.push_back(i);
 				}
-			}
-			cursorLock.unlock();
+			}*/
 			
 			pStartScan++;
 			i++;
@@ -525,4 +523,8 @@ ReleaseFrame:
 void CDepthBasics::SetStatusMessage(WCHAR * szMessage)
 {
 	SendDlgItemMessageW(m_hWnd, IDC_STATUS, WM_SETTEXT, 0, (LPARAM)szMessage);
+}
+
+std::vector<int> getMinima(){
+	return minDepth_index;
 }
