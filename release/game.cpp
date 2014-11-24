@@ -15,7 +15,11 @@
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
 
-//static vector<RandomCircle
+static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
+	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
+	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 }
+};
 
 using std::mutex;
 
