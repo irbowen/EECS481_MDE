@@ -114,16 +114,16 @@ void Game::run(char mode) {
 		Scene::debugCursors.clear();
 		cursorLock.unlock();
 		for (int j = 0; j < frame_data.size(); j++){
-			int curVal = frame_data[i] - initial_buffer[i];
+			int curVal = frame_data[j] - initial_buffer[j];
 			if (curVal < minDepth){
 				bool lessThanSurr = true;
-				if (i > 640 && curVal >= frame_data[i - 640] - initial_buffer[i - 640])
+				if (j > 640 && curVal >= frame_data[j - 640] - initial_buffer[j - 640])
 					lessThanSurr = false;
-				if (lessThanSurr && i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
+				if (lessThanSurr && j < 640 * 480 - 640 && curVal >= frame_data[j + 640] - initial_buffer[j + 640])
 					lessThanSurr = false;
-				if (lessThanSurr && i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
+				if (lessThanSurr && j % 640 && curVal >= frame_data[j - 1] - initial_buffer[j - 1])
 					lessThanSurr = false;
-				if (lessThanSurr && (i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
+				if (lessThanSurr && (j % 640 != 639) && curVal >= frame_data[j + 1] - initial_buffer[j + 1])
 					lessThanSurr = false;
 				if (lessThanSurr){
 					cursorLock.lock();
