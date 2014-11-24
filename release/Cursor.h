@@ -86,6 +86,9 @@ public:
 	void addCircle();
 
 	void draw() override;
+
+	void update();
+	void initAngles();
 };
 //END OF ROTATINGMULTICURSOR
 

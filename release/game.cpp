@@ -18,7 +18,10 @@
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 }
+	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 }
 };
 
 using std::mutex;
@@ -177,6 +180,14 @@ void Game::runSlideRingMode(int i) {
 					loc_it.turnOff();
 					loc_it.fade(1000);
 
+					// trigger rainbow bubbles
+					Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
+					Scene::targetHighlighters[loc_it.id].initAngles();
+					Scene::targetHighlighters[loc_it.id].update();
+
+					for (int i = 0; i < 10; ++i)
+						Scene::targetHighlighters[loc_it.id].addCircle();
+
 					loc_it.num_rounds_correct = 0;
 					num_triggered_spots++;
 				}
@@ -188,6 +199,7 @@ void Game::runSlideRingMode(int i) {
 	}
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
 		loc_it.makeBigger(INCREASE_FACTOR);
+		Scene::targetHighlighters[loc_it.id].setR(loc_it.getRadius());
 		//redraw location
 	}
 	LocationLock.unlock();
