@@ -35,7 +35,6 @@ int glDriver(){
 
 	FPSregulator timer(FPS);
 
-
 	// Check hardware support for openGL line width
 	/*
 	GLfloat LineRange[2];

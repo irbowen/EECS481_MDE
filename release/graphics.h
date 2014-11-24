@@ -25,9 +25,10 @@ private:
 	vector<std::pair<int, int>> vertices;
 	Color color;
 public:
-	PolygonGL(vector<pair<int, int>> inVert, Color c) : color{ c } { vertices = inVert; }
+	PolygonGL(const vector<pair<int, int>>& inVert, const Color &c) : color{ c } { vertices = inVert; }
 	void draw();
 	bool inside(double, double);
+	inline void translate(int dx, int dy){ for (auto& v : vertices) v.first += dx, v.second += dy; }
 };
 //END OF POLYGONGL
 

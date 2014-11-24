@@ -15,8 +15,11 @@ vector<Line> Scene::lines;
 LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
 CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
+DebugCursor Scene::debugCursor{ 320, 240, 50 };
 
 void Scene::draw(){
+
+	debugCursor.draw();
 	cursors.draw();
 	locpair.draw();
 

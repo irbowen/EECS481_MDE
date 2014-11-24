@@ -3,11 +3,22 @@
 
 #include "graphics.h"
 
+//START OF DEBUGCURSOR
+class DebugCursor {
+	PolygonGL square;
+	int x, y;
+public:
+	DebugCursor(int xx, int yy, int sz) : x{ xx }, y{ yy }, square{ { {xx - sz/2, yy - sz/2}, {xx + sz/2, yy - sz/2}, {xx + sz/2, yy + sz/2}, {xx - sz/2, yy + sz/2} }, BLUE}{}
+
+	inline void setPos(int xx, int yy) { square.translate(xx - x, yy - y), x = xx, y = yy; }
+
+	inline void draw() { square.draw(); }
+};
+//END OF DEBUGCURSOR
+
 
 //START OF RANDOMCIRCLECURSOR
 class RandomCircleCursor {
-public:
-	list<CursorCircle> circles;
 	vector<vector<Color>*>::iterator colorScheme;
 	int x, y, r;
 public:

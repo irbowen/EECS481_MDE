@@ -18,6 +18,8 @@ public:
 	static vector<RotatingMultiCursor> fancyCursors;
 	static CursorContainer cursors;
 
+	static DebugCursor debugCursor;
+
 	//draft
 	static vector<LocPair> locpairs;
 
