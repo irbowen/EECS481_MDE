@@ -29,6 +29,7 @@ void Scene::draw(){
 	locpair.draw();
 
 
+
 	for (auto& x : fancyCursors) x.draw();
 
 	for (auto& x : polys) x.draw();
@@ -45,5 +46,6 @@ void Scene::draw(){
 	for (auto& x : lines) x.draw();
 
 	for (auto& x : targetHighlighters) x.second.draw();
+
 
 }

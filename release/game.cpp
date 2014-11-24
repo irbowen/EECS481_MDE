@@ -18,7 +18,10 @@
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 }
+	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 }
 };
 
 using std::mutex;
@@ -159,12 +162,13 @@ void Game::runSlideRingMode(int i) {
 		if (!loc_it.isOn()) { //off, don't bother
 			continue;
 		}
+
 		double x = 0, y = 0, pressure = 0;
 		for (auto& cursor : Scene::debugCursors) {
 			x = cursor.getX();
 			y = cursor.getY();
 			if (loc_it.contains(x, y)) { //if cursor is inside location
-				pressure = initial_buffer.at(y*MAX_X + x);
+				pressure = frame_data.at(y*MAX_X + x);
 				loc_it.setPressure(pressure);
 				if (loc_it.exactMatch(pressure)) {
 					std::cout << "Triggered exact match\n";
@@ -179,6 +183,14 @@ void Game::runSlideRingMode(int i) {
 						loc_it.turnOff();
 						num_triggered_spots++;
 						num_active_spots--;
+
+						// trigger rainbow bubbles
+						Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
+						Scene::targetHighlighters[loc_it.id].initAngles();
+						Scene::targetHighlighters[loc_it.id].update();
+						for (int i = 0; i < 10; ++i)
+							Scene::targetHighlighters[loc_it.id].addCircle();
+
 					}
 					else if (i - loc_it.prev_correct_round > 1){
 						loc_it.num_rounds_correct = 0;
@@ -196,6 +208,7 @@ void Game::runSlideRingMode(int i) {
 		if (loc_it.isOn()) {
 			loc_it.makeBigger(INCREASE_FACTOR);
 		}
+		Scene::targetHighlighters[loc_it.id].setR(loc_it.getRadius());
 	}
 
 	LocationLock.unlock();
@@ -341,7 +354,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if ((distance*2) < loc_it->getRadius()) {
+				if (distance < loc_it->getRadius()*3) {
 					break;//bad location, times 2 just to be safe
 				}
 			}

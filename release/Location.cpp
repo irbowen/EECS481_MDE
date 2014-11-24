@@ -24,7 +24,7 @@ int Location::NEXT_LOC_ID = 0;
 Location::Location(double x_in, double y_in, double r_in, double pressure_in) : id{ NEXT_LOC_ID++ }, rStart{ r_in }, start_pressure{ pressure_in }, target{ x_in, y_in, r_in, WHITE, RED, GREEN }{
 	std::cout << "Created a location at (x, y, r, z): " << x_in << " " << y_in << " " << r_in << pressure_in << std::endl;
 	turnOn();
-	Scene::targetHighlighters.insert({ id, CREATE_LOCATION_HIGHLIGHTER(x_in, y_in, r_in * 5/4) });
+	Scene::targetHighlighters.insert({ id, CREATE_LOCATION_HIGHLIGHTER(x_in, y_in, r_in * 8 / 7) });
 }
 
 void Location::makeBigger(double increase) {
