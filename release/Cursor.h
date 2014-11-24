@@ -12,6 +12,9 @@ public:
 
 	inline void setPos(int xx, int yy) { square.translate(xx - x, yy - y), x = xx, y = yy; }
 
+	inline int getX() { return x; };
+	inline int getY() { return y; };
+
 	inline void draw() { square.draw(); }
 };
 //END OF DEBUGCURSOR

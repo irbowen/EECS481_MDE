@@ -83,6 +83,7 @@ double Game::checkPressure(int x, int y, int radius){
 }
 
 void Game::run(char mode) {
+	std::cout << "Running game in " << mode << " mode\n";
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -145,51 +146,56 @@ void Game::run(char mode) {
 }
 
 void Game::runSlideRingMode(int i) {
+	std::cout << "Running sliding ring mode\n";
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 2)) {
 		Scene::locations.push_back(createRandomLocation(log(num_triggered_spots + 2)));
 		num_active_spots++;
 	}
-	for (auto& loc_it : Scene::locations) {
-		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
-		loc_it.setPressure(pressure);
+	//	double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
+	//	loc_it.setPressure(pressure);
 
+	for (auto& loc_it : Scene::locations) {
+		if (!loc_it.isOn()) { //off, don't bother
+			continue;
+		}
+		double x = 0, y = 0, pressure = 0;
+		for (auto& cursor : Scene::debugCursors) {
+			x = cursor.getX();
+			y = cursor.getY();
+			if (loc_it.contains(x, y)) { //if cursor is inside location
+				pressure = initial_buffer.at(y*MAX_X + x);
+				loc_it.setPressure(pressure);
+				if (loc_it.exactMatch(pressure)) {
+					std::cout << "Triggered exact match\n";
+					loc_it.num_rounds_correct++;
+					loc_it.prev_correct_round = i;
+					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
+					if (loc_it.num_rounds_correct > 1) {
+						//PlaySound(NULL, 0, 0); //killz background sound
+						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+						loc_it.fade(1000);
+						loc_it.turnOff();
+						num_triggered_spots++;
+						num_active_spots--;
+					}
+					else if (i - loc_it.prev_correct_round > 1){
+						loc_it.num_rounds_correct = 0;
+					}
+				}
+			}
+		}
 		if (double progress = loc_it.getPercentage(pressure)){
 			Scene::targetHighlighters[loc_it.id].setCircleRadius(MIN_BUBBLE_RADIUS + progress*(MAX_BUBBLE_RADIUS - MIN_BUBBLE_RADIUS));
 			Scene::targetHighlighters[loc_it.id].addCircle();
 		}
-
-		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-			std::cout << "Within pressure\n";
-			if (loc_it.exactMatch(pressure)) 
-			{
-				loc_it.num_rounds_correct++;
-				loc_it.prev_correct_round = i;
-				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-				if (loc_it.num_rounds_correct > 1) {
-					// Stop background sound
-					//PlaySound(NULL, 0, 0);
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-					std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-				//	printRemainingLocations();
-					//printRemovedLocations();
-					num_active_spots--;
-					loc_it.turnOff();
-					loc_it.fade(1000);
-
-					loc_it.num_rounds_correct = 0;
-					num_triggered_spots++;
-				}
-			}
-			else if (i - loc_it.prev_correct_round > 1){
-				loc_it.num_rounds_correct = 0;
-			}
-		}
 	}
+
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
 		loc_it.makeBigger(INCREASE_FACTOR);
-		//redraw location
 	}
+
 	LocationLock.unlock();
 }
 
