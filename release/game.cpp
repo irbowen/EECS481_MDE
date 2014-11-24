@@ -148,7 +148,7 @@ void Game::run(char mode) {
 void Game::runSlideRingMode(int i) {
 	std::cout << "Running sliding ring mode\n";
 	LocationLock.lock();
-	if (num_active_spots <= log(num_triggered_spots + 2)) {
+	if ((num_active_spots <= log(num_triggered_spots + 2)) && (num_active_spots <= 4)) {
 		Scene::locations.push_back(createRandomLocation(log(num_triggered_spots + 2)));
 		num_active_spots++;
 	}
@@ -193,7 +193,9 @@ void Game::runSlideRingMode(int i) {
 	}
 
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-		loc_it.makeBigger(INCREASE_FACTOR);
+		if (loc_it.isOn()) {
+			loc_it.makeBigger(INCREASE_FACTOR);
+		}
 	}
 
 	LocationLock.unlock();
@@ -348,7 +350,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			valid = true;//if no issues with other locatiosn, location is good
 		}
 	} while (!valid);
-	double new_radius = start_radius * radius_scale_factor;
+	double new_radius = start_radius / radius_scale_factor;
 	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
 	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
