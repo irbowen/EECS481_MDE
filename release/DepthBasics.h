@@ -19,7 +19,6 @@ extern std::vector<double> initial_buffer;
 //extern int max_index;
 extern bool buffer_valid;
 extern const int minDepth;
-extern std::vector<int> minDepth_index;
 extern std::mutex cursorLock;
 
 class CDepthBasics
@@ -114,6 +113,3 @@ private:
     void                    SetStatusMessage(WCHAR* szMessage);
 
 };
-
-//returns the vector of minimal values from the kinect
-std::vector<int> getMinima();
