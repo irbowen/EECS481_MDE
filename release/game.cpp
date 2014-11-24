@@ -353,7 +353,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if ((distance*2) < loc_it->getRadius()) {
+				if (distance < loc_it->getRadius()*3) {
 					break;//bad location, times 2 just to be safe
 				}
 			}
