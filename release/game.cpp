@@ -147,9 +147,7 @@ void Game::run(char mode) {
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
 	if (num_active_spots <= log(num_triggered_spots + 2)) {
-		Scene::locations.push_back(createRandomLocation(-1, -1));
-		auto& last = Scene::locations.back();
-		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
+		Scene::locations.push_back(createRandomLocation(log(num_triggered_spots + 2)));
 		num_active_spots++;
 	}
 	for (auto& loc_it : Scene::locations) {
@@ -310,60 +308,53 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x));
 }
 
-Location Game::createRandomLocation(int opt_x, int opt_y) {
-	double radius = start_radius;
+Location Game::createRandomLocation(double radius_scale_factor) {
 	int x_location, y_location;
 	bool valid = false;
-	Location temp(0,0,0,0);
-	int max_radius = (int)temp.MAX_RADIUS;
 
-	
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
-
-		if (opt_x > -1 && opt_y > -1)
-		{
-			x_location = opt_x;
-			y_location = opt_y;
+		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
 		}
-
-		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
+			std::cout << "Zero at location where game tried to create a location, trying another one\n";
+		}
 		if (Scene::locations.size() == 0) {
 			valid = true;
 		}
-		// To detect overlap
-		int count_on = 0;
-		int count_not = 0;
-
-
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
-				count_on++;
 				double distance = loc_it.distance(x_location, y_location);
-				if (distance >= (2 * max_radius)) {//to avoid overlap
-					// check every circle 
-					count_not++;
-					//valid=true;
-					//break;
+				if ((distance*2) < loc_it.getRadius()) {
+					break;//bad location, times 2 just to be safe
 				}
-				//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
-				//	continue;
-				//}
 			}
 		}
-		// If not overlap with all the circle, that is valid
-		if (count_on == count_not){
-			valid = true;
-		}
-		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	} while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
-		|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
-		|| initial_buffer.at(MAX_X*y_location + x_location) == 0);
+		valid = true;//if no issues with other locatiosn, location is good
+	} while (!valid);
+	double new_radius = start_radius * radius_scale_factor;
+	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
-	std::cout << "x,y: " << x_location << " " << y_location;
+	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
+	|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
+	|| initial_buffer.at(MAX_X*y_location + x_location) == 0);*/
 
-	return Location(x_location, y_location, radius, initial_buffer.at(MAX_X*y_location + x_location));
+	/*	if (distance >= (2 * max_radius)) {//to avoid overlap
+	count_not++;
+
+	}*/
+	//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
+	//	continue;
+	//}
+	// If not overlap with all the circle, that is valid
+	/*	if (count_on == count_not){
+	valid = true;
+	}*/
 	
 }
 

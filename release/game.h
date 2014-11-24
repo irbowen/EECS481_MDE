@@ -18,11 +18,12 @@ class Game {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
 	const int MAX_NUM_SPOTS = 3;
+	const int MAX_RADIUS = 50;
 	const int SAMPLE_MILLISECONDS = 100;
 	double start_radius = 20;
 	//std::vector<double> intial_buffer;
 	int num_active_spots = 0, num_triggered_spots = 0;
-	Location createRandomLocation(int opt_x1 = -1, int opt_y1 = -1);
+	Location createRandomLocation(double radius_scale_factor = 20);
 	LocPair createRandomLocPair(int opt_x1 = -1, int opt_y1 = -1, int opt_x2 = -1, int opt_y2 = -1);
 	double checkPressure(int x, int y, int radius);
 	CDepthBasics* kinect;
