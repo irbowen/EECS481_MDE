@@ -13,12 +13,13 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <vector>
 
 
 std::vector<double> frame_data;
 std::vector<double> initial_buffer;
-int minDepth;
-int minDepth_index;
+const int minDepth = -50;
+std::vector<int> minDepth_index;
 bool buffer_valid;
 
 /// <summary>
@@ -53,8 +54,6 @@ m_pNuiSensor(NULL)
 	m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
 	frame_data.resize(307200);
 	initial_buffer.resize(307200);
-	minDepth = INT_MAX;
-	minDepth_index = 0;
 }
 
 /// <summary>
@@ -418,14 +417,26 @@ void CDepthBasics::ProcessDepth()
 			//add pixel depth data to frame_data
 			//frame_data.push_back(pStartScan->depth);
 			frame_data[i] = pBufferRun->depth;
-			if (buffer_valid==false){
+			if (!buffer_valid){
 				initial_buffer[i] = pBufferRun->depth;
 			}
 			
 			//detect the max depth on the frame
-			if (frame_data[i] != 0 && frame_data[i] < minDepth){
-				minDepth = frame_data[i];
-				minDepth_index = i;
+			if (buffer_valid){
+				int curVal = frame_data[i] - initial_buffer[i];
+				if (curVal < minDepth){
+					bool lessThanSurr = true;
+					if (i > 640 && curVal >= frame_data[i - 640] - initial_buffer[i - 640])
+						lessThanSurr = false;
+					if (i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
+						lessThanSurr = false;
+					if (i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
+						lessThanSurr = false;
+					if ((i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
+						lessThanSurr = false;
+					if (lessThanSurr)
+						minDepth_index.push_back(i);
+				}
 			}
 			
 			pStartScan++;
