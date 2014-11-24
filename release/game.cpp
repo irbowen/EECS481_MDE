@@ -120,6 +120,7 @@ void Game::runSlideRingMode(int i) {
 	for (auto& loc_it : Scene::locations) {
 		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 		loc_it.setPressure(pressure);
+
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
 			if (loc_it.exactMatch(pressure)) 
@@ -137,6 +138,7 @@ void Game::runSlideRingMode(int i) {
 					num_active_spots--;
 					loc_it.turnOff();
 					loc_it.fade(1000);
+
 					loc_it.num_rounds_correct = 0;
 					num_triggered_spots++;
 				}
@@ -316,7 +318,8 @@ Location Game::createRandomLocation(int opt_x, int opt_y) {
 		}
 		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
 	} while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
-		|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false);
+		|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
+		|| initial_buffer.at(MAX_X*y_location + x_location) == 0);
 
 	std::cout << "x,y: " << x_location << " " << y_location;
 

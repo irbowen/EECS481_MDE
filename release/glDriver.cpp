@@ -46,26 +46,17 @@ int glDriver(){
 	// Line ctor : Line(p1, p2, color, thickness)
 	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
-	for (int i = 0; i < 360; i += 60){
-		int d = 50;
-		double theta = i * 3.14 / 180;
-
-		int dx = (int) (d * cos(theta));
-		int dy = (int) (d * sin(theta));
-
-		cout << 320 + dx << ' ' << 240 + dy << endl;
-	}
-
-	Scene::fancyCursors.push_back({ 320, 240, 200, 5, { /*new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
+	
+	Scene::fancyCursors.push_back({ 320, 240, 50, 5, { /*new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 														new GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
 														new GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
 														new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
 														new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
 														new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 } */
-		new GradientCircleCursor{ 0, 0, 100, colorScheme_melon, 100 },
-		new GradientCircleCursor{ 0, 0, 100, colorScheme_rainbow, 100 },
-		new GradientCircleCursor{ 0, 0, 100, colorScheme_goldfish, 100 }
-														} 
+		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+		//new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
+													} 
 															});
 
 	while (!done){
@@ -88,6 +79,7 @@ int glDriver(){
 
 						ctrl_last = keys[VK_CONTROL];
 
+						
 						auto& cursor = Scene::fancyCursors[0];
 
 						Scene::fancyCursors[0].addCircle();
@@ -100,7 +92,7 @@ int glDriver(){
 							cursor.chX(10);
 						else if (keys[VK_LEFT])
 							cursor.chX(-10);
-
+							
 						
 					}
 

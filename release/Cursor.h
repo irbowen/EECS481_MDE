@@ -43,6 +43,8 @@ public:
 	virtual void draw();
 
 	inline void addCircle(int i) { circles.push_back(cs[i]->addCircle()); }
+
+	//inline ~CursorContainer() { for (auto& x : cs) delete x; }
 };
 //END OF CURSORCONTAINER
 
@@ -56,6 +58,7 @@ public:
 
 	inline void chY(int dy) { y += dy; }
 	inline void chX(int dx) { x += dx; }
+	inline void setR(int rr) { r = rr; }
 	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
 
 	inline void addCircle(int i) = delete;

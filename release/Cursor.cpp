@@ -23,7 +23,7 @@ void CursorContainer::draw() {
 		circle.draw();
 }
 
-
+// START OF ROTATINGMULTICURSOR
 RotatingMultiCursor::RotatingMultiCursor(double xx, double yy, double rr, int s, const vector<RandomCircleCursor*>& in) : 
 											x{ xx },
 											y{ yy },
@@ -42,4 +42,4 @@ void RotatingMultiCursor::draw(){
 
 	CursorContainer::draw();
 }
-
+// END OF ROTATINGMULTICURSOR

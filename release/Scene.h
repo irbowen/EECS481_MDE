@@ -5,6 +5,10 @@
 #include "Circle.h"
 #include "Cursor.h"
 
+#include <unordered_map>
+
+using std::unordered_map;
+
 //START OF SCENE
 class Scene {
 public:
@@ -19,6 +23,8 @@ public:
 	static CursorContainer cursors;
 
 	static DebugCursor debugCursor;
+
+	//static unordered_map<Location*, RotatingMultiCursor> targetHighlighters;
 
 	//draft
 	static vector<LocPair> locpairs;

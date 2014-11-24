@@ -4,6 +4,14 @@ using std::mutex;
 using std::cout;
 using std::endl;
 
+#define NEVER_DO_THIS RotatingMultiCursor{ 320, 240, 50, 5, \
+{\
+	new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },\
+		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },\
+		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }\
+}\
+}
+
 mutex LocationLock;
 vector<LocPair> Scene::locpairs;
 list<Location> Scene::locations;
@@ -16,12 +24,15 @@ LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
 CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
 DebugCursor Scene::debugCursor{ 320, 240, 50 };
+///unordered_map<Location*, RotatingMultiCursor> Scene::targetHighlighters;
 
 void Scene::draw(){
 
 	debugCursor.draw();
 	cursors.draw();
 	locpair.draw();
+
+	//for (auto& x : targetHighlighters) x.second.draw();
 
 	for (auto& x : fancyCursors) x.draw();
 
