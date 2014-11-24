@@ -323,9 +323,11 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		}
 		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
 			std::cout << "Zero at location where game tried to create a location, trying another one\n";
+			continue;
 		}
 		if (Scene::locations.size() == 0) {
 			valid = true;
+			break;
 		}
 		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
 			if (loc_it.isOn()) {
