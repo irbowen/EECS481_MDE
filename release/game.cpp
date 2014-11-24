@@ -168,7 +168,7 @@ void Game::runSlideRingMode(int i) {
 			x = cursor.getX();
 			y = cursor.getY();
 			if (loc_it.contains(x, y)) { //if cursor is inside location
-				pressure = initial_buffer.at(y*MAX_X + x);
+				pressure = frame_data.at(y*MAX_X + x);
 				loc_it.setPressure(pressure);
 				if (loc_it.exactMatch(pressure)) {
 					std::cout << "Triggered exact match\n";
