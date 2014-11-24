@@ -19,7 +19,6 @@ extern std::vector<double> initial_buffer;
 //extern int max_index;
 extern bool buffer_valid;
 extern const int minDepth;
-extern std::vector<int> minDepth_index;
 extern std::mutex cursorLock;
 
 class CDepthBasics
@@ -112,4 +111,5 @@ private:
     /// </summary>
     /// <param name="szMessage">message to display</param>
     void                    SetStatusMessage(WCHAR* szMessage);
+
 };

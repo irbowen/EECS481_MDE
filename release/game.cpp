@@ -114,6 +114,28 @@ void Game::run(char mode) {
 			runConnectMode();
 		}
 		i++;
+		cursorLock.lock();
+		Scene::debugCursors.clear();
+		cursorLock.unlock();
+		for (int j = 0; j < frame_data.size(); j++){
+			int curVal = frame_data[i] - initial_buffer[i];
+			if (curVal < minDepth){
+				bool lessThanSurr = true;
+				if (i > 640 && curVal >= frame_data[i - 640] - initial_buffer[i - 640])
+					lessThanSurr = false;
+				if (lessThanSurr && i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
+					lessThanSurr = false;
+				if (lessThanSurr && i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
+					lessThanSurr = false;
+				if (lessThanSurr && (i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
+					lessThanSurr = false;
+				if (lessThanSurr){
+					cursorLock.lock();
+					Scene::debugCursors.push_back({ j % 640, j / 640, 20 });
+					cursorLock.unlock();
+				}	
+			}
+		}	
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
@@ -126,12 +148,6 @@ void Game::runSlideRingMode(int i) {
 		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
 		num_active_spots++;
 	}
-	cursorLock.lock();
-	Scene::debugCursors.clear();
-	for (int j = 0; j < minDepth_index.size(); j++){
-		Scene::debugCursors.push_back({minDepth_index[j] % 640, minDepth_index[j] / 640, 20});
-	}
-	cursorLock.unlock();
 	for (auto& loc_it : Scene::locations) {
 		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 		loc_it.setPressure(pressure);

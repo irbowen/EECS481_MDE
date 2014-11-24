@@ -18,10 +18,10 @@
 
 std::vector<double> frame_data;
 std::vector<double> initial_buffer;
-const int minDepth = -50;
-std::vector<int> minDepth_index;
 bool buffer_valid;
 std::mutex cursorLock;
+const int minDepth = -50;
+
 
 /// <summary>
 /// Entry point for the application
@@ -422,25 +422,6 @@ void CDepthBasics::ProcessDepth()
 				initial_buffer[i] = pBufferRun->depth;
 			}
 			
-			//detect the max depth on the frame
-			cursorLock.lock();
-			if (buffer_valid){
-				int curVal = frame_data[i] - initial_buffer[i];
-				if (curVal < minDepth){
-					bool lessThanSurr = true;
-					if (i > 640 && curVal >= frame_data[i - 640] - initial_buffer[i - 640])
-						lessThanSurr = false;
-					if (i < 640 * 480 - 640 && curVal >= frame_data[i + 640] - initial_buffer[i + 640])
-						lessThanSurr = false;
-					if (i % 640 && curVal >= frame_data[i - 1] - initial_buffer[i - 1])
-						lessThanSurr = false;
-					if ((i % 640 != 639) && curVal >= frame_data[i + 1] - initial_buffer[i + 1])
-						lessThanSurr = false;
-					if (lessThanSurr)
-						minDepth_index.push_back(i);
-				}
-			}
-			cursorLock.unlock();
 			
 			pStartScan++;
 			i++;
