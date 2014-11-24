@@ -28,7 +28,6 @@ void Scene::draw(){
 	cursors.draw();
 	locpair.draw();
 
-	for (auto& x : targetHighlighters) x.second.draw();
 
 	for (auto& x : fancyCursors) x.draw();
 
@@ -44,4 +43,7 @@ void Scene::draw(){
 	for (auto& x : circles) x.draw();
 	for (auto& x : locpairs) x.draw();
 	for (auto& x : lines) x.draw();
+
+	for (auto& x : targetHighlighters) x.second.draw();
+
 }

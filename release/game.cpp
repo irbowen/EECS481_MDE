@@ -88,6 +88,8 @@ void Game::run(char mode) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
 	}
 	//intial_buffer = frame_data;
+
+	/*
 	std::ofstream out_file;
 	out_file.open("out3.txt");
 	for (int i = 0; i < MAX_Y; i++) {
@@ -98,6 +100,8 @@ void Game::run(char mode) {
 	}
 	out_file << std::endl;
 	out_file.close();
+	*/
+
 	int i = 0;
 	while (true) {
 		// Play background sound
