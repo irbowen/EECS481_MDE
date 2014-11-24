@@ -335,15 +335,18 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			valid = true;
 			break;
 		}
-		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
-			if (loc_it.isOn()) {
-				double distance = loc_it.distance(x_location, y_location);
-				if ((distance*2) < loc_it.getRadius()) {
+		auto& loc_it = Scene::locations.begin();
+		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
+			if (loc_it->isOn()) {
+				double distance = loc_it->distance(x_location, y_location);
+				if ((distance*2) < loc_it->getRadius()) {
 					break;//bad location, times 2 just to be safe
 				}
 			}
 		}
-		valid = true;//if no issues with other locatiosn, location is good
+		if (loc_it == Scene::locations.end()) {
+			valid = true;//if no issues with other locatiosn, location is good
+		}
 	} while (!valid);
 	double new_radius = start_radius * radius_scale_factor;
 	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
