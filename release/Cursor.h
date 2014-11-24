@@ -21,6 +21,9 @@ public:
 class RandomCircleCursor {
 	vector<vector<Color>*>::iterator colorScheme;
 	int x, y, r;
+
+	friend class RotatingMultiCursor;
+
 public:
 	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
 	CursorCircle addCircle();
@@ -43,9 +46,7 @@ public:
 };
 //END OF GRADIENTCIRCLECURSOR
 
-
 // SUPER-CURSORS - ie, containers of multiple cursors
-
 
 //START OF CURSORCONTAINER
 class CursorContainer {
@@ -78,6 +79,8 @@ public:
 	inline void chX(int dx) { x += dx; }
 	inline void setR(int rr) { r = rr; }
 	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
+
+	inline void setCircleRadius(int r) { for (auto& cursor : cs) cursor.r = r; }
 
 	inline void addCircle(int i) = delete;
 	void addCircle();

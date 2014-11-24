@@ -12,6 +12,11 @@
 #include "LocPair.h"
 #include "Scene.h"
 
+#define MIN_BUBBLE_RADIUS 25
+#define MAX_BUBBLE_RADIUS 50
+
+//static vector<RandomCircle
+
 using std::mutex;
 
 extern mutex LocationLock;
@@ -126,6 +131,11 @@ void Game::runSlideRingMode(int i) {
 	for (auto& loc_it : Scene::locations) {
 		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 		loc_it.setPressure(pressure);
+
+		if (double progress = loc_it.getPercentage(pressure)){
+			Scene::targetHighlighters[loc_it.id].setCircleRadius(MIN_BUBBLE_RADIUS + progress*(MAX_BUBBLE_RADIUS - MIN_BUBBLE_RADIUS));
+			Scene::targetHighlighters[loc_it.id].addCircle();
+		}
 
 		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
 			std::cout << "Within pressure\n";
