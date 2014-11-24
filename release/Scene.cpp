@@ -23,16 +23,19 @@ vector<Line> Scene::lines;
 LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
 CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
-DebugCursor Scene::debugCursor{ 320, 240, 50 };
-///unordered_map<Location*, RotatingMultiCursor> Scene::targetHighlighters;
+vector<DebugCursor> Scene::debugCursors;
+unordered_map<Location*, RotatingMultiCursor> Scene::targetHighlighters;
 
 void Scene::draw(){
 
-	debugCursor.draw();
+	
+	for (auto& x : debugCursors) x.draw();
+
+
 	cursors.draw();
 	locpair.draw();
 
-	//for (auto& x : targetHighlighters) x.second.draw();
+	for (auto& x : targetHighlighters) x.second.draw();
 
 	for (auto& x : fancyCursors) x.draw();
 

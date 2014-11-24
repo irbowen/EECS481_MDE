@@ -24,22 +24,28 @@ void CursorContainer::draw() {
 }
 
 // START OF ROTATINGMULTICURSOR
-RotatingMultiCursor::RotatingMultiCursor(double xx, double yy, double rr, int s, const vector<RandomCircleCursor*>& in) : 
+RotatingMultiCursor::RotatingMultiCursor(double xx, double yy, double rr, int s, const vector<GradientCircleCursor>& in) : 
+											CursorContainer{in},
 											x{ xx },
 											y{ yy },
 											r{ rr },
 											speed{ s }{
-	cs = in;
 
 	for (int a = 0; a < 360; a += 360 / cs.size())
 		cursorAngle.push_back(a);
 }
 
 void RotatingMultiCursor::draw(){
-	for (auto& cursor : cs){
-		cursor->setPos(jump({ x, y }, r, cursorAngle[&cursor - &*cs.begin()] += speed));
+	for (GradientCircleCursor& cursor : cs){
+		cursor.setPos(jump({ x, y }, r, cursorAngle[&cursor - &*cs.begin()] += speed));
 	}
 
 	CursorContainer::draw();
 }
+
+void RotatingMultiCursor::addCircle() { 
+	for (auto& x : cs) 
+		circles.push_back(x.addCircle()); 
+}
+
 // END OF ROTATINGMULTICURSOR

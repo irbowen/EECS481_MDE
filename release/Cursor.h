@@ -33,41 +33,6 @@ public:
 };
 //END OF RANDOMCIRCLECURSOR
 
-//START OF CURSORCONTAINER
-class CursorContainer {
-protected:
-	list<CursorCircle> circles;
-public:
-	vector<RandomCircleCursor*> cs;
-
-	virtual void draw();
-
-	inline void addCircle(int i) { circles.push_back(cs[i]->addCircle()); }
-
-	//inline ~CursorContainer() { for (auto& x : cs) delete x; }
-};
-//END OF CURSORCONTAINER
-
-//START OF ROTATINGMULTICURSOR
-class RotatingMultiCursor : public CursorContainer {
-	double x, y, r;
-	int speed;
-	vector<int> cursorAngle;
-public:
-	RotatingMultiCursor(double, double, double, int, const vector<RandomCircleCursor*>&);
-
-	inline void chY(int dy) { y += dy; }
-	inline void chX(int dx) { x += dx; }
-	inline void setR(int rr) { r = rr; }
-	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
-
-	inline void addCircle(int i) = delete;
-	inline void addCircle() { for (auto x : cs) circles.push_back(x->addCircle()); }
-
-	void draw() override;
-};
-//END OF ROTATINGMULTICURSOR
-
 //START OF GRADIENTCIRCLECURSOR
 class GradientCircleCursor : public RandomCircleCursor {
 	ColorWheel gradient;
@@ -79,7 +44,45 @@ public:
 //END OF GRADIENTCIRCLECURSOR
 
 
+// SUPER-CURSORS - ie, containers of multiple cursors
 
 
+//START OF CURSORCONTAINER
+class CursorContainer {
+protected:
+	list<CursorCircle> circles;
+public:
+	vector<GradientCircleCursor> cs;
+
+	CursorContainer(const vector<GradientCircleCursor>& in) { cs = in; }
+	CursorContainer(){}
+
+	virtual void draw();
+
+	inline void addCircle(int i) { circles.push_back(cs[i].addCircle()); }
+
+	//inline ~CursorContainer() { for (auto& x : cs) delete x; }
+};
+//END OF CURSORCONTAINER
+
+//START OF ROTATINGMULTICURSOR
+class RotatingMultiCursor : public CursorContainer {
+	double x, y, r;
+	int speed;
+	vector<int> cursorAngle;
+public:
+	RotatingMultiCursor(double, double, double, int, const vector<GradientCircleCursor>&);
+
+	inline void chY(int dy) { y += dy; }
+	inline void chX(int dx) { x += dx; }
+	inline void setR(int rr) { r = rr; }
+	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
+
+	inline void addCircle(int i) = delete;
+	void addCircle();
+
+	void draw() override;
+};
+//END OF ROTATINGMULTICURSOR
 
 #endif

@@ -53,9 +53,9 @@ int glDriver(){
 														new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
 														new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
 														new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 } */
-		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+		GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
 		//new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
-		new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
+		GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
 													} 
 															});
 

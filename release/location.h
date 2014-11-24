@@ -45,6 +45,9 @@ public:
 	std::string toString() const;
 
 	void fade(double ms);
+
+	static int NEXT_LOC_ID;
+	int id;
 };
 //END LOCATION
 
