@@ -35,7 +35,7 @@ Sorry for the weird military time. Makes it easier to suss out AM vs PM
 8. Good sounds for target game                  - (DONE)
 
 
------NOT FOR BETA-----
+(NOT FOR BETA)
 9. For kinect-the-dots (ktd) game, detecting continuous depth + motion
 10. For ktd, animation of line
 11. Generating patterns for ktd
