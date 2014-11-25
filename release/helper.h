@@ -34,9 +34,8 @@ bool on_line(int x1, int y1, int x2, int y2, int x3, int y3)
 void paircheckCursors()
 {
 	LocPair& pair = Scene::locpair;
-
-	for (auto& cursor : Scene::debugCursors) 
-	{
+	/*
+	for (auto& cursor : Scene::debugCursors) {
 			int curs_x = cursor.getX();
 			int curs_y = cursor.getY();
 			//if (pair.start.contains(curs_x, curs_y)) 
@@ -45,6 +44,7 @@ void paircheckCursors()
 			//}
 
 	}
+	*/
 }
 
 

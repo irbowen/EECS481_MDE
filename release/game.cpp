@@ -266,7 +266,7 @@ void Game::runSlideRingMode(int i) {
 					loc_it.num_rounds_correct++;
 					loc_it.prev_correct_round = i;
 					if (loc_it.num_rounds_correct > 10) {
-						//PlaySound(NULL, 0, 0); //killz background sound
+						PlaySound(NULL, 0, 0); //killz background sound
 						PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						loc_it.fade(1000);
