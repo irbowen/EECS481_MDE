@@ -13,6 +13,7 @@
 #include "Scene.h"
 #include <vector>
 #include <queue>
+#include <math.h>
 
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
@@ -26,7 +27,10 @@ const int GRID_HEIGHT = 480 / PARTITION_HEIGHT;
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 }
+	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
+	GradientCircleCursor{ 296, 283, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 }
 };
 
 
@@ -153,14 +157,14 @@ void Game::run(char mode) {
 				}
 			}
 			gridMins[j % GRID_WIDTH][j / GRID_WIDTH] = minVal;
-			cursorLock.lock();
+			/*cursorLock.lock();
 			if (minVal.index != -1)
 				Scene::debugCursors.push_back({ minVal.index % 640, minVal.index / 640, 20 });
-			cursorLock.unlock();
+			cursorLock.unlock();*/
 		}
 
 	
-		/*for (int j = 0; j < GRID_WIDTH; j++){
+		for (int j = 0; j < GRID_WIDTH; j++){
 			for (int k = 0; k < GRID_HEIGHT; k++){
 				if (!gridMins[j][k].checked){
 					CursorDepth minimumPoint = gridMins[j][k];
@@ -202,7 +206,7 @@ void Game::run(char mode) {
 							temp_l = l;
 							temp_m = m + 1;
 							foundMax = true;
-							if (gridMins[l][m - 1].checked){
+							if (gridMins[l][m + 1].checked){
 								addCursor = false;
 							}
 						}
@@ -228,59 +232,77 @@ void Game::run(char mode) {
 				}
 
 			}
-		}*/
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
 
 void Game::runSlideRingMode(int i) {
 	LocationLock.lock();
-	if (num_active_spots <= log(num_triggered_spots + 2)) {
-		Scene::locations.push_back(createRandomLocation(-1, -1));
-		auto& last = Scene::locations.back();
-		last.target.setR(last.target.getR() * (1 / log(num_triggered_spots+2)));
+	if ((num_active_spots <= i/75) && (num_active_spots < 4)) {
+		double r_scale = log(num_active_spots + 3);
+		std::cout << "Num active: " << num_active_spots << " " << r_scale << std::endl;
+		Scene::locations.push_back(createRandomLocation(r_scale));
 		num_active_spots++;
 	}
-	for (auto& loc_it : Scene::locations) {
-		double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
-		loc_it.setPressure(pressure);
+	//	double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
+	//	loc_it.setPressure(pressure);
 
+	for (auto& loc_it : Scene::locations) {
+		if (!loc_it.isOn()) { //off, don't bother
+			continue;
+		}
+
+		double x = 0, y = 0, pressure = 0;
+		for (auto& cursor : Scene::debugCursors) {
+			x = cursor.getX();
+			y = cursor.getY();
+			if (loc_it.contains(x, y)) { //if cursor is inside location
+				pressure = frame_data.at(y*MAX_X + x);
+				loc_it.setPressure(pressure);
+				PlaySound(TEXT("bubbles_sfx.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a first sound
+				if (loc_it.exactMatch(pressure)) {
+					std::cout << "Triggered exact match\n";
+					loc_it.num_rounds_correct++;
+					loc_it.prev_correct_round = i;
+					if (loc_it.num_rounds_correct > 10) {
+						//PlaySound(NULL, 0, 0); //killz background sound
+						PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a second sound
+						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
+						loc_it.fade(1000);
+						loc_it.turnOff();
+						num_triggered_spots++;
+						num_active_spots--;
+						loc_it.num_rounds_correct = 0;
+
+						// trigger rainbow bubbles
+						Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
+						Scene::targetHighlighters[loc_it.id].initAngles();
+						Scene::targetHighlighters[loc_it.id].update();
+						for (int i = 0; i < 10; ++i)
+							Scene::targetHighlighters[loc_it.id].addCircle();
+						break;
+
+					}
+					else if (i - loc_it.prev_correct_round > 1){
+						loc_it.num_rounds_correct = 0;
+					}
+				}
+			}
+		}
 		if (double progress = loc_it.getPercentage(pressure)){
 			Scene::targetHighlighters[loc_it.id].setCircleRadius(MIN_BUBBLE_RADIUS + progress*(MAX_BUBBLE_RADIUS - MIN_BUBBLE_RADIUS));
 			Scene::targetHighlighters[loc_it.id].addCircle();
 		}
-
-		if (loc_it.isOn() && loc_it.withinPressure(pressure)) {//if the pressure is within the range
-			std::cout << "Within pressure\n";
-			if (loc_it.exactMatch(pressure)) 
-			{
-				loc_it.num_rounds_correct++;
-				loc_it.prev_correct_round = i;
-				PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-				if (loc_it.num_rounds_correct > 1) {
-					// Stop background sound
-					//PlaySound(NULL, 0, 0);
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
-					std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
-				//	printRemainingLocations();
-					//printRemovedLocations();
-					num_active_spots--;
-					loc_it.turnOff();
-					loc_it.fade(1000);
-
-					loc_it.num_rounds_correct = 0;
-					num_triggered_spots++;
-				}
-			}
-			else if (i - loc_it.prev_correct_round > 1){
-				loc_it.num_rounds_correct = 0;
-			}
-		}
 	}
+
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-		loc_it.makeBigger(INCREASE_FACTOR);
-		//redraw location
+		if (loc_it.isOn()) {
+			loc_it.makeBigger(INCREASE_FACTOR);
+		}
+		Scene::targetHighlighters[loc_it.id].setR(loc_it.getRadius());
 	}
+
 	LocationLock.unlock();
 }
 
@@ -399,60 +421,60 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x));
 }
 
-Location Game::createRandomLocation(int opt_x, int opt_y) {
-	double radius = start_radius;
+Location Game::createRandomLocation(double radius_scale_factor) {
+	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
 	int x_location, y_location;
 	bool valid = false;
-	Location temp(0,0,0,0);
-	int max_radius = (int)temp.MAX_RADIUS;
 
-	
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
-
-		if (opt_x > -1 && opt_y > -1)
-		{
-			x_location = opt_x;
-			y_location = opt_y;
+		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
 		}
-
-		//	std::cout << "X and Y: " << x_location << " " << y_location << std::endl;
+		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
+			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " <<  std::endl;
+			continue;
+		}
 		if (Scene::locations.size() == 0) {
 			valid = true;
+			break;
 		}
-		// To detect overlap
-		int count_on = 0;
-		int count_not = 0;
-
-
-		for (auto& loc_it : Scene::locations) {//now check that it doesn't overlap with any already created
-			if (loc_it.isOn()) {
-				count_on++;
-				double distance = loc_it.distance(x_location, y_location);
-				if (distance >= (2 * max_radius)) {//to avoid overlap
-					// check every circle 
-					count_not++;
-					//valid=true;
-					//break;
+		auto& loc_it = Scene::locations.begin();
+		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
+			if (loc_it->isOn()) {
+				double distance = loc_it->distance(x_location, y_location);
+				if (distance < loc_it->getRadius()*3) {
+					break;//bad location, times 2 just to be safe
 				}
-				//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
-				//	continue;
-				//}
 			}
 		}
-		// If not overlap with all the circle, that is valid
-		if (count_on == count_not){
-			valid = true;
+		if (loc_it == Scene::locations.end()) {
+			valid = true;//if no issues with other locatiosn, location is good
 		}
-		//} while (abs(x_location - MAX_X) <= radius || abs(y_location - MAX_Y) <= radius);
-	} while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
-		|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
-		|| initial_buffer.at(MAX_X*y_location + x_location) == 0);
+	} while (!valid);
+	double new_radius = start_radius / radius_scale_factor;
+	std::cout << "New radius is: " << new_radius << std::endl;
+	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
-	std::cout << "x,y: " << x_location << " " << y_location;
+	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
+	|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
+	|| initial_buffer.at(MAX_X*y_location + x_location) == 0);*/
 
-	return Location(x_location, y_location, radius, initial_buffer.at(MAX_X*y_location + x_location));
+	/*	if (distance >= (2 * max_radius)) {//to avoid overlap
+	count_not++;
+
+	}*/
+	//if (distance < radius || distance < loc_it->getRadius()) {//overlaps with another location
+	//	continue;
+	//}
+	// If not overlap with all the circle, that is valid
+	/*	if (count_on == count_not){
+	valid = true;
+	}*/
 	
 }
 

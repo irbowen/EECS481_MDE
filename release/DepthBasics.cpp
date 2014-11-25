@@ -20,7 +20,7 @@ std::vector<double> frame_data;
 std::vector<double> initial_buffer;
 bool buffer_valid;
 std::mutex cursorLock;
-const int minDepth = -50;
+const int minDepth = -100;
 
 
 /// <summary>
