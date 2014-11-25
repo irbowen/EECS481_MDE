@@ -7,6 +7,10 @@
 
 using std::vector;
 
+class ColorWheel;
+
+extern vector<ColorWheel*> CursorGradients;
+
 //START OF COLOR
 struct Color {
 	double r, g, b;
@@ -26,9 +30,13 @@ class ColorWheel {
 	int ticksPerColor, ticks;
 	vector<Color> gradient;
 	int cur_i;
+
+	friend class GradientCircleCursor;
+
 public:
 	// resolution of 1 means that calls to next() will cycle through colors in gradient. Higher resolutions add inbetween colors.
 	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 }, cur_i{ 0 } { gradient = colors; }
+	inline void chGradient(const vector<Color>& g) { gradient = g, cur_i = ticks = 0; }
 	Color next();
 };
 //END OF COLORWHEEL

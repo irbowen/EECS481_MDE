@@ -173,6 +173,7 @@
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="glDriver.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="CursorCircle.h" />
     <ClInclude Include="ColorSlideRing.h" />

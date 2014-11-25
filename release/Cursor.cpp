@@ -16,7 +16,6 @@ CursorCircle RandomCircleCursor::addCircle(){
 }
 //END OF RANDOMCIRCLECURSOR
 
-
 void CursorContainer::draw() {
 	circles.remove_if([](const CursorCircle& c) { return c.faded; });
 	for (auto& circle : circles)
@@ -55,4 +54,18 @@ void RotatingMultiCursor::initAngles() {
 		cursorAngle.push_back(a);
 }
 
+void RotatingMultiCursor::chCursors(const vector<GradientCircleCursor>& cs_in){
+	cs = cs_in;
+	initAngles();
+	update();
+}
+
 // END OF ROTATINGMULTICURSOR
+
+
+void GameCursors::draw() {
+	circles.remove_if([](const CursorCircle& c) { return c.faded; });
+	for (auto& circle : circles)
+		circle.draw();
+}
+

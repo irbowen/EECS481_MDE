@@ -21,13 +21,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	CDepthBasics kinect;
 	Game g(kinect);
 
-	std::thread glThread(glDriver), gameThread(startGame, g);
-
+	std::thread glThread(glDriver) , gameThread(startGame, g);
 
 	kinect.Run(hInstance, nCmdShow);
 	gameThread.join();
 	glThread.join();
-	//kinectThread.join();
 
 	return 0;
 }

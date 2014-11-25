@@ -4,6 +4,7 @@
 #include "color.h"
 
 
+
 // START OF COLOR
 bool operator==(const Color& a, const Color& b) {
 	return	a.r == b.r &&
@@ -118,4 +119,14 @@ vector<vector<Color>*> colorSchemes{
 	&colorScheme_goldfish,
 	&colorScheme_ocean,
 	&colorScheme_melon
+};
+
+vector<ColorWheel*> CursorGradients{
+		new ColorWheel{ colorScheme_rainbow, 15 },
+		new ColorWheel{ colorScheme_bleu, 15 },
+		new ColorWheel{ colorScheme_ocean, 15 },
+		new ColorWheel{ colorScheme_desert, 15 },
+		new ColorWheel{ colorScheme_goldfish, 15 },
+		new ColorWheel{ colorScheme_emo, 15 },
+		new ColorWheel{ colorScheme_melon, 15 }
 };

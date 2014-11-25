@@ -24,6 +24,8 @@ public:
 
 	static vector<DebugCursor> debugCursors;
 
+	static GameCursors gameCursors;
+
 	// loc-id -> highlighter
 	static unordered_map<int, RotatingMultiCursor> targetHighlighters;
 

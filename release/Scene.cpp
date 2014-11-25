@@ -18,6 +18,7 @@ CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
 vector<DebugCursor> Scene::debugCursors;
 unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
+GameCursors Scene::gameCursors;
 
 void Scene::draw(){
 
@@ -46,6 +47,8 @@ void Scene::draw(){
 	for (auto& x : lines) x.draw();
 
 	for (auto& x : targetHighlighters) x.second.draw();
+
+	gameCursors.draw();
 
 
 }

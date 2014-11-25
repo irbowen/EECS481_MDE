@@ -10,6 +10,7 @@
 #include "Mmsystem.h"
 #include "DepthBasics.h"
 #include "graphics.h"
+#include "global.h"
 
 struct CursorDepth{
 	int index;

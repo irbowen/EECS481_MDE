@@ -47,17 +47,19 @@ int glDriver(){
 	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
 	
-	Scene::fancyCursors.push_back({ 320, 240, 50, 5, { /*new GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
-														new GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
-														new GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
-														new GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
-														new GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
-														new GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 } */
-		GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+	Scene::fancyCursors.push_back({ 320, 240, 50, 5, {GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
+														GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
+														GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
+														GradientCircleCursor{ 271, 240, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
+														GradientCircleCursor{ 295, 197, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
+														GradientCircleCursor{ 344, 197, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 } 
+		/*GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
 		//new GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
-		GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
+		GradientCircleCursor{ 0, 0, 24, { GREEN, palette(GREEN), palette(GREEN) }, 100 }*/
 													} 
 															});
+
+	Scene::gameCursors.cs.push_back(GameCursor());
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -80,9 +82,9 @@ int glDriver(){
 						ctrl_last = keys[VK_CONTROL];
 
 						
-						auto& cursor = Scene::fancyCursors[0];
+						auto& cursor = Scene::gameCursors.cs[0];
 
-						Scene::fancyCursors[0].addCircle();
+						Scene::gameCursors.addCircle(0);
 
 						if (keys[VK_UP])
 							cursor.chY(-10);
@@ -96,10 +98,10 @@ int glDriver(){
 						
 					}
 
-					/*
+					
 					if (keys[VK_SHIFT] && !shift_last)
-						Scene::cursors[0].rotateScheme();
-					*/
+						Scene::gameCursors.cs[0].rotateScheme();
+					
 
 
 					shift_last = keys[VK_SHIFT];

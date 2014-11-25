@@ -14,6 +14,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <iostream>
 
 
 std::vector<double> frame_data;
@@ -130,6 +131,7 @@ int CDepthBasics::Run(HINSTANCE hInstance, int nCmdShow)
 
 	const int eventCount = 1;
 	HANDLE hEvents[eventCount];
+
 
 	// Main message loop
 	while (WM_QUIT != msg.message)
