@@ -239,6 +239,9 @@ void Game::run(char mode) {
 }
 
 void Game::runSlideRingMode(int i) {
+	
+	//Location random = createRandomLocation(5);
+
 	LocationLock.lock();
 	if ((num_active_spots <= i/75) && (num_active_spots < 4)) {
 		double r_scale = log(num_active_spots + 3);
@@ -266,7 +269,7 @@ void Game::runSlideRingMode(int i) {
 					std::cout << "Triggered exact match\n";
 					loc_it.num_rounds_correct++;
 					loc_it.prev_correct_round = i;
-					if (loc_it.num_rounds_correct > 10) {
+					if (loc_it.num_rounds_correct > 7) {
 						PlaySound(NULL, 0, 0); //killz background sound
 						PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
@@ -405,5 +408,5 @@ Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
 }
 
 void Game::startGame() {
-	run('k');
+	run('s');
 }

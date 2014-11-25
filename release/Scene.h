@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "Circle.h"
 #include "Cursor.h"
+#include "LocPair.h"
 
 #include <unordered_map>
 
