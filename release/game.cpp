@@ -11,9 +11,18 @@
 #include <fstream>
 #include "LocPair.h"
 #include "Scene.h"
+#include <vector>
+#include <queue>
+#include <math.h>
 
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
+#define ABSOLUTE_INDEX(i,j) (((i / GRID_WIDTH) * PARTITION_HEIGHT * 640) + ((i % GRID_WIDTH) * PARTITION_WIDTH) + (j % PARTITION_WIDTH) + ((j / PARTITION_WIDTH) * 640))
+
+const int PARTITION_WIDTH = 32;
+const int PARTITION_HEIGHT = 32;
+const int GRID_WIDTH = 640 / PARTITION_WIDTH;
+const int GRID_HEIGHT = 480 / PARTITION_HEIGHT;
 
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
@@ -23,6 +32,8 @@ static const vector<GradientCircleCursor> RAINBOW_CURSORS{
 	GradientCircleCursor{ 296, 283, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
 	GradientCircleCursor{ 296, 283, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 }
 };
+
+
 
 using std::mutex;
 
@@ -86,7 +97,6 @@ double Game::checkPressure(int x, int y, int radius){
 }
 
 void Game::run(char mode) {
-	std::cout << "Running game in " << mode << " mode\n";
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -125,34 +135,114 @@ void Game::run(char mode) {
 		cursorLock.lock();
 		Scene::debugCursors.clear();
 		cursorLock.unlock();
-		for (int j = 0; j < frame_data.size(); j++){
-			int curVal = frame_data[j] - initial_buffer[j];
-			if (curVal < minDepth && frame_data[j]){
-				bool lessThanSurr = true;
-				if (j > 640 && curVal >= frame_data[j - 640] - initial_buffer[j - 640])
-					lessThanSurr = false;
-				if (lessThanSurr && j < 640 * 480 - 640 && curVal >= frame_data[j + 640] - initial_buffer[j + 640])
-					lessThanSurr = false;
-				if (lessThanSurr && j % 640 && curVal >= frame_data[j - 1] - initial_buffer[j - 1])
-					lessThanSurr = false;
-				if (lessThanSurr && (j % 640 != 639) && curVal >= frame_data[j + 1] - initial_buffer[j + 1])
-					lessThanSurr = false;
-				if (lessThanSurr){
-					cursorLock.lock();
-					Scene::debugCursors.push_back({ j % 640, j / 640, 20 });
-					cursorLock.unlock();
-				}	
+		std::vector<std::vector<CursorDepth>> gridMins(GRID_WIDTH, std::vector<CursorDepth>(GRID_HEIGHT));
+		for (int j = 0; j < GRID_HEIGHT * GRID_WIDTH; j++){
+			CursorDepth minVal = { -1, minDepth, true };
+			for (int k = 0; k < PARTITION_HEIGHT * PARTITION_WIDTH; k++){
+				int l = ABSOLUTE_INDEX(j, k);
+				int curVal = frame_data[l] - initial_buffer[l];
+				if (curVal < minVal.depth && frame_data[l]){
+					bool lessThanSurr = true;
+					if (l > 640 && curVal >= frame_data[l - 640] - initial_buffer[l - 640])
+						lessThanSurr = false;
+					if (lessThanSurr && l < 640 * 480 - 640 && curVal >= frame_data[l + 640] - initial_buffer[l + 640])
+						lessThanSurr = false;
+					if (lessThanSurr && l % 640 && curVal >= frame_data[l - 1] - initial_buffer[l - 1])
+						lessThanSurr = false;
+					if (lessThanSurr && (l % 640 != 639) && curVal >= frame_data[l + 1] - initial_buffer[l + 1])
+						lessThanSurr = false;
+					if (lessThanSurr){
+						minVal = { l, frame_data[l], false };
+					}
+				}
 			}
-		}	
+			gridMins[j % GRID_WIDTH][j / GRID_WIDTH] = minVal;
+			/*cursorLock.lock();
+			if (minVal.index != -1)
+				Scene::debugCursors.push_back({ minVal.index % 640, minVal.index / 640, 20 });
+			cursorLock.unlock();*/
+		}
+
+	
+		for (int j = 0; j < GRID_WIDTH; j++){
+			for (int k = 0; k < GRID_HEIGHT; k++){
+				if (!gridMins[j][k].checked){
+					CursorDepth minimumPoint = gridMins[j][k];
+					gridMins[j][k].checked = true;
+					int l = j, temp_l = 0;
+					int m = k, temp_m = 0; //so we can look through the array w/o messing everything up
+					bool addCursor = true;
+					while (1){
+						bool foundMax = false;
+						if (l && gridMins[l - 1][m].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l - 1][m];
+							temp_l = l - 1;
+							temp_m = m;
+							foundMax = true;
+							if (gridMins[l - 1][m].checked){
+								addCursor = false;
+							}
+						}
+						if (l < GRID_WIDTH - 1 && gridMins[l + 1][m].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l + 1][m];
+							temp_l = l + 1;
+							temp_m = m;
+							foundMax = true;
+							if (gridMins[l + 1][m].checked){
+								addCursor = false;
+							}
+						}
+						if (m && gridMins[l][m - 1].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l][m - 1];
+							temp_l = l;
+							temp_m = m - 1;
+							foundMax = true;
+							if (gridMins[l][m - 1].checked){
+								addCursor = false;
+							}
+						}
+						if (m < GRID_HEIGHT - 1 && gridMins[l][m + 1].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l][m + 1];
+							temp_l = l;
+							temp_m = m + 1;
+							foundMax = true;
+							if (gridMins[l][m + 1].checked){
+								addCursor = false;
+							}
+						}
+						if (!addCursor){
+							break;
+						}
+						else{
+							gridMins[temp_l][temp_m].checked = true;
+							if (!foundMax){
+								break;
+							}
+							foundMax = false;
+							l = temp_l;
+							m = temp_m;
+						}
+					}
+
+					if (addCursor){
+						cursorLock.lock();
+						Scene::debugCursors.push_back({ minimumPoint.index % 640, minimumPoint.index / 640, 20 });
+						cursorLock.unlock();
+					}
+				}
+
+			}
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
 
 void Game::runSlideRingMode(int i) {
-	std::cout << "Running sliding ring mode\n";
 	LocationLock.lock();
-	if (num_active_spots <= log(num_triggered_spots + 2)) {
-		Scene::locations.push_back(createRandomLocation(log(num_triggered_spots + 2)));
+	if ((num_active_spots <= i/75) && (num_active_spots < 4)) {
+		double r_scale = log(num_active_spots + 3);
+		std::cout << "Num active: " << num_active_spots << " " << r_scale << std::endl;
+		Scene::locations.push_back(createRandomLocation(r_scale));
 		num_active_spots++;
 	}
 	//	double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
@@ -170,19 +260,20 @@ void Game::runSlideRingMode(int i) {
 			if (loc_it.contains(x, y)) { //if cursor is inside location
 				pressure = frame_data.at(y*MAX_X + x);
 				loc_it.setPressure(pressure);
+				PlaySound(TEXT("bubbles_sfx.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a first sound
 				if (loc_it.exactMatch(pressure)) {
 					std::cout << "Triggered exact match\n";
 					loc_it.num_rounds_correct++;
 					loc_it.prev_correct_round = i;
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it.num_rounds_correct > 1) {
-						//PlaySound(NULL, 0, 0); //killz background sound
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+					if (loc_it.num_rounds_correct > 10) {
+						PlaySound(NULL, 0, 0); //killz background sound
+						PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						loc_it.fade(1000);
 						loc_it.turnOff();
 						num_triggered_spots++;
 						num_active_spots--;
+						loc_it.num_rounds_correct = 0;
 
 						// trigger rainbow bubbles
 						Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
@@ -190,6 +281,7 @@ void Game::runSlideRingMode(int i) {
 						Scene::targetHighlighters[loc_it.id].update();
 						for (int i = 0; i < 10; ++i)
 							Scene::targetHighlighters[loc_it.id].addCircle();
+						break;
 
 					}
 					else if (i - loc_it.prev_correct_round > 1){
@@ -205,9 +297,10 @@ void Game::runSlideRingMode(int i) {
 	}
 
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
-		loc_it.makeBigger(INCREASE_FACTOR);
+		if (loc_it.isOn()) {
+			loc_it.makeBigger(INCREASE_FACTOR);
+		}
 		Scene::targetHighlighters[loc_it.id].setR(loc_it.getRadius());
-		//redraw location
 	}
 
 	LocationLock.unlock();
@@ -236,7 +329,7 @@ bool Game::line(LocPair& locpair)
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
 	ColorSlideRing &loc1 = locpair.start;
-	ColorSlideRing &loc2 = locpair.destination;
+	ColorSlideRing &loc2 = locpair.dest;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();
@@ -274,7 +367,7 @@ bool Game::line(LocPair& locpair)
 void Game::runConnectMode()
 {
 	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-	Scene::locpair = createRandomLocPair(50, 50, 300, 300);
+	Scene::locpair= createRandomLocPair(50, 50, 300, 300);
 
 		
 		//1. check pressure at start ring
@@ -284,24 +377,27 @@ void Game::runConnectMode()
 		std::cout << "Pressure is " << pressure << std::endl;
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!Scene::locpair.withinPressure(pressure))
+		if (!Scene::locpair.withinPressure(pressure))
 		{
 			//std::cout << "pressure req not met" << std::endl;
 			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 			//std::cout << "Inside pressure is " << pressure << std::endl;
 		}
 
-		Scene::locpair.locked = true;
-		Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() }, 
-		{ (int)Scene::locpair.destination.getX(), (int)Scene::locpair.destination.getX() }, RED, 5.0 });
-		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
-		//		a. 
-		if (Scene::locpair.locked == true) 
+		else if (Scene::locpair.withinPressure(pressure))
 		{
-			int i = 0;
-			while (line(Scene::locpair))
+			Scene::locpair.locked = true;
+			Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() },
+			{ (int)Scene::locpair.dest.getX(), (int)Scene::locpair.dest.getY() }, RED, 5.0 });
+			//3. if start ring is locked in keep track of the cursor (Ara's Hand)
+			//		a. 
+			if (Scene::locpair.locked == true)
 			{
-				if (i++ > 10) break;
+				int i = 0;
+				while (line(Scene::locpair))
+				{
+					if (i++ > 10) break;
+				}
 			}
 		}
 }
@@ -329,6 +425,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 }
 
 Location Game::createRandomLocation(double radius_scale_factor) {
+	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
 	int x_location, y_location;
 	bool valid = false;
 
@@ -342,7 +439,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			continue;//bad location, do the loop again
 		}
 		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
-			std::cout << "Zero at location where game tried to create a location, trying another one\n";
+			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " <<  std::endl;
 			continue;
 		}
 		if (Scene::locations.size() == 0) {
@@ -353,7 +450,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if ((distance*2) < loc_it->getRadius()) {
+				if (distance < loc_it->getRadius()*3) {
 					break;//bad location, times 2 just to be safe
 				}
 			}
@@ -362,7 +459,8 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			valid = true;//if no issues with other locatiosn, location is good
 		}
 	} while (!valid);
-	double new_radius = start_radius * radius_scale_factor;
+	double new_radius = start_radius / radius_scale_factor;
+	std::cout << "New radius is: " << new_radius << std::endl;
 	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
 	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
@@ -383,6 +481,46 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 	
 }
 
+Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
+	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
+	int x_location, y_location;
+	bool valid = false;
+
+	do {//check to make sure its not off the screen
+		x_location = xx;
+		y_location = yy;
+		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
+			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " << std::endl;
+			continue;
+		}
+		if (Scene::locations.size() == 0) {
+			valid = true;
+			break;
+		}
+		auto& loc_it = Scene::locations.begin();
+		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
+			if (loc_it->isOn()) {
+				double distance = loc_it->distance(x_location, y_location);
+				if (distance < loc_it->getRadius() * 3) {
+					break;//bad location, times 2 just to be safe
+				}
+			}
+		}
+		if (loc_it == Scene::locations.end()) {
+			valid = true;//if no issues with other locatiosn, location is good
+		}
+	} while (!valid);
+	double new_radius = start_radius / radius_scale_factor;
+	std::cout << "New radius is: " << new_radius << std::endl;
+	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
+}
+
 void Game::startGame() {
-	run('s');
+	run('k');
 }

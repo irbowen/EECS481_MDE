@@ -1,7 +1,6 @@
 #ifndef LOCPAIR_H
 #define LOCPAIR_H
 
-#include "location.h"
 #include "Color.h"
 #include "ColorSlideRing.h"
 
@@ -17,11 +16,9 @@ public:
 	double TARGET_PRESSURE = 500;
 	double pressure;
 	ColorSlideRing start;
-	ColorSlideRing dest;
+	ColorSlideRing destination;
 	Color start_color;
 	Color dest_color;
-
-	bool withinPressure(double input);
 	void start_setPressure(double);
 	double start_getPercentage(double);
 	void dest_setPressure(double);
@@ -29,6 +26,10 @@ public:
 	double rStart;
 	double start_pressure;
 	void draw();
+	//bool line();
+	bool withinPressure(double input);
+	//double dist(int x1, int y1, int x2, int y2);
+	//bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
 };
 //END LOCPAIR
 

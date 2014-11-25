@@ -11,6 +11,12 @@
 #include "DepthBasics.h"
 #include "graphics.h"
 
+struct CursorDepth{
+	int index;
+	int depth;
+	bool checked;
+};
+
 class Game {
 	const int NUM_ROUNDS = 1000;
 	const double INCREASE_FACTOR = 4;
@@ -23,7 +29,9 @@ class Game {
 	double start_radius = 20;
 	//std::vector<double> intial_buffer;
 	int num_active_spots = 0, num_triggered_spots = 0;
-	Location createRandomLocation(double radius_scale_factor = 20);
+	Location createRandomLocation(double radius_scale_factor);
+
+	Location createLocation(int xx, int yy, double radius_scale_factor);
 	LocPair createRandomLocPair(int opt_x1 = -1, int opt_y1 = -1, int opt_x2 = -1, int opt_y2 = -1);
 	double checkPressure(int x, int y, int radius);
 	CDepthBasics* kinect;
