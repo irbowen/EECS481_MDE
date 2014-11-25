@@ -41,7 +41,6 @@ Sorry for the weird military time. Makes it easier to suss out AM vs PM
 11. Generating patterns for ktd
 13. Graphics for ktd
 14. Sounds for ktd
------------------------
 
 15. Making the beta presentable
 16. User interface to modify game. (sudo)
