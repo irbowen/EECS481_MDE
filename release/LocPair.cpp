@@ -3,15 +3,35 @@
 
 
 //START OF LOCPAIR
-LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double start_init_depth, double end_init_depth)
-	: start{ x1_in, y1_in, r_in, start_init_depth }, end{ x2_in, y2_in, r_in, end_init_depth }
+LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double pressure_in)
+	: start{ x1_in, y1_in, r_in, WHITE, RED, GREEN }, dest{ x2_in, y2_in, r_in, WHITE, RED, GREEN }, rStart{ r_in }, start_pressure{ pressure_in }
 {
 	//on = true;
 }
 
 void LocPair::draw(){
 	start.draw();
-	end.draw();
+	dest.draw();
+}
+
+double LocPair::start_getPercentage(double input) {
+	double deflection = abs(input - start_pressure);
+	return (deflection / TARGET_PRESSURE <= 1.0 &&
+		deflection / TARGET_PRESSURE >= 0.0) ?
+		deflection / TARGET_PRESSURE : 0.0;
+}
+
+void LocPair::start_setPressure(double in) {
+	pressure = in;
+	if (in == 0)
+		start.setGoalProgress(0);
+	else
+		start.setGoalProgress(start_getPercentage(in));
+}
+
+bool LocPair::withinPressure(double input) {
+	double deflection = abs(input - start_pressure);
+	return deflection <= TARGET_PRESSURE + 250 && deflection >= TARGET_PRESSURE - 250;
 }
 
 

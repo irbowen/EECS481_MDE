@@ -13,7 +13,7 @@ vector<ColorSlideRing> Scene::rings;
 vector<Point> Scene::points;
 vector<Circle> Scene::circles;
 vector<Line> Scene::lines;
-LocPair Scene::locpair(-1, -1, -1, -1, -1, -1, -1);
+LocPair Scene::locpair(-1, -1, -1, -1, -1, -1);
 CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
 vector<DebugCursor> Scene::debugCursors;

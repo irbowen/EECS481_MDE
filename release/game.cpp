@@ -328,8 +328,8 @@ bool Game::line(LocPair& locpair)
 {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	Location &loc1 = locpair.start;
-	Location &loc2 = locpair.end;
+	ColorSlideRing &loc1 = locpair.start;
+	ColorSlideRing &loc2 = locpair.dest;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();
@@ -338,7 +338,7 @@ bool Game::line(LocPair& locpair)
 	int y2 = (int)loc2.getY();
 
 	// draw current track and check whether the line is finished
-	while (dist(last_x, x2, last_y, y2) - (int)loc2.getRadius()>0){
+	while (dist(last_x, x2, last_y, y2) - (int)loc2.getR()>0){
 		// Assume minDepth is the cursor
 
 		//get cursor location (400,400) is example for now
@@ -367,34 +367,37 @@ bool Game::line(LocPair& locpair)
 void Game::runConnectMode()
 {
 	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-	Scene::locpair = createRandomLocPair(50, 50, 300, 300);
+	Scene::locpair= createRandomLocPair(50, 50, 300, 300);
 
 		
 		//1. check pressure at start ring
 		
-		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getRadius());
+		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 
 		std::cout << "Pressure is " << pressure << std::endl;
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!Scene::locpair.start.withinPressure(pressure))
+		if (!Scene::locpair.withinPressure(pressure))
 		{
 			//std::cout << "pressure req not met" << std::endl;
-			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getRadius());
+			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
 			//std::cout << "Inside pressure is " << pressure << std::endl;
 		}
 
-		Scene::locpair.locked = true;
-		Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() }, 
-		{ (int)Scene::locpair.end.getX(), (int)Scene::locpair.end.getY() }, RED, 5.0 });
-		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
-		//		a. 
-		if (Scene::locpair.locked == true) 
+		else if (Scene::locpair.withinPressure(pressure))
 		{
-			int i = 0;
-			while (line(Scene::locpair))
+			Scene::locpair.locked = true;
+			Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() },
+			{ (int)Scene::locpair.dest.getX(), (int)Scene::locpair.dest.getY() }, RED, 5.0 });
+			//3. if start ring is locked in keep track of the cursor (Ara's Hand)
+			//		a. 
+			if (Scene::locpair.locked == true)
 			{
-				if (i++ > 10) break;
+				int i = 0;
+				while (line(Scene::locpair))
+				{
+					if (i++ > 10) break;
+				}
 			}
 		}
 }
@@ -418,7 +421,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 		dest_y = opt_y2;
 	}
 
-	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x), initial_buffer.at(MAX_X*dest_y + dest_x));
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x));
 }
 
 Location Game::createRandomLocation(double radius_scale_factor) {
@@ -476,6 +479,46 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 	valid = true;
 	}*/
 	
+}
+
+Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
+	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
+	int x_location, y_location;
+	bool valid = false;
+
+	do {//check to make sure its not off the screen
+		x_location = xx;
+		y_location = yy;
+		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+			continue;//bad location, do the loop again
+		}
+		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
+			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " << std::endl;
+			continue;
+		}
+		if (Scene::locations.size() == 0) {
+			valid = true;
+			break;
+		}
+		auto& loc_it = Scene::locations.begin();
+		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
+			if (loc_it->isOn()) {
+				double distance = loc_it->distance(x_location, y_location);
+				if (distance < loc_it->getRadius() * 3) {
+					break;//bad location, times 2 just to be safe
+				}
+			}
+		}
+		if (loc_it == Scene::locations.end()) {
+			valid = true;//if no issues with other locatiosn, location is good
+		}
+	} while (!valid);
+	double new_radius = start_radius / radius_scale_factor;
+	std::cout << "New radius is: " << new_radius << std::endl;
+	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 }
 
 void Game::startGame() {
