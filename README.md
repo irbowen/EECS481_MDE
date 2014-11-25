@@ -26,7 +26,7 @@ Sorry for the weird military time. Makes it easier to suss out AM vs PM
 
 ### Order of attack
 1. Fine-tuning of fabric and depth detection    - BY 11/25
-2. Figuring out bounds for success/failure      - BY 11/25
+2. Figuring out bounds for success/failure      - BY 11/25 (DONE)
 3. How long it takes to "lock in" a circle      - BY 11/25
 4. Calibration/Responsiveness                   - initial_buffer[] DONE / Cursor Responsiveness BY 11/26
 5. Expansion rate for objects on screen         - Easily Adjusted by changing GameIncreaseFactor in GAME.h or GAME.cpp
