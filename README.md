@@ -25,15 +25,15 @@ Sorry for the weird military time. Makes it easier to suss out AM vs PM
 *David will be unavailable from 12:00-6:00*
 
 ### Order of attack
-1. Fine-tuning of fabric and depth detection
-2. Figuring out bounds for success/failure
-3. How long it takes to "lock in" a circle
-4. Calibration/Responsiveness
-5. Expansion rate for objects on screen
-6. For target game: Format and direction of game
-7. Pretty graphics for target game
-8. Good sounds for target game
-9. For kinect-the-dots (ktd) game, detecting continuous depth + motion
+1. Fine-tuning of fabric and depth detection    - BY 11/25
+2. Figuring out bounds for success/failure      - BY 11/25
+3. How long it takes to "lock in" a circle      - BY 11/25
+4. Calibration/Responsiveness                   - initial_buffer[] DONE / Cursor Responsiveness BY 11/26
+5. Expansion rate for objects on screen         - Easily Adjusted by changing GameIncreaseFactor in GAME.h or GAME.cpp
+6. For target game: Format and direction of game  - ENOUGH DONE FOR BETA, "round variable"
+7. Pretty graphics for target game              - ENOUGH DONE FOR BETA
+8. Good sounds for target game                  - BY 11/24
+9. For kinect-the-dots (ktd) game, detecting continuous depth + motion    - NOT FOR BETA
 10. For ktd, animation of line
 11. Generating patterns for ktd
 13. Graphics for ktd
