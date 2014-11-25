@@ -193,6 +193,7 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="CursorCircle.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="game_connect.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="helper.h" />
     <ClCompile Include="ImageRenderer.cpp" />
