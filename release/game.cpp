@@ -97,6 +97,7 @@ double Game::checkPressure(int x, int y, int radius){
 }
 
 void Game::run(char mode) {
+
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -276,11 +277,11 @@ void Game::runSlideRingMode(int i) {
 						loc_it.num_rounds_correct = 0;
 
 						// trigger rainbow bubbles
-						Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
-						Scene::targetHighlighters[loc_it.id].initAngles();
-						Scene::targetHighlighters[loc_it.id].update();
+						Scene::targetHighlighters[loc_it.id].chCursors(RAINBOW_CURSORS);
+
 						for (int i = 0; i < 10; ++i)
 							Scene::targetHighlighters[loc_it.id].addCircle();
+
 						break;
 
 					}
