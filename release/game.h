@@ -11,6 +11,12 @@
 #include "DepthBasics.h"
 #include "graphics.h"
 
+struct CursorDepth{
+	int index;
+	int depth;
+	bool checked;
+};
+
 class Game {
 	const int NUM_ROUNDS = 1000;
 	const double INCREASE_FACTOR = 4;

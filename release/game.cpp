@@ -11,15 +11,25 @@
 #include <fstream>
 #include "LocPair.h"
 #include "Scene.h"
+#include <vector>
+#include <queue>
 
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
+#define ABSOLUTE_INDEX(i,j) (((i / GRID_WIDTH) * PARTITION_HEIGHT * 640) + ((i % GRID_WIDTH) * PARTITION_WIDTH) + (j % PARTITION_WIDTH) + ((j / PARTITION_WIDTH) * 640))
+
+const int PARTITION_WIDTH = 32;
+const int PARTITION_HEIGHT = 32;
+const int GRID_WIDTH = 640 / PARTITION_WIDTH;
+const int GRID_HEIGHT = 480 / PARTITION_HEIGHT;
 
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
 	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 }
 };
+
+
 
 using std::mutex;
 
@@ -121,25 +131,104 @@ void Game::run(char mode) {
 		cursorLock.lock();
 		Scene::debugCursors.clear();
 		cursorLock.unlock();
-		for (int j = 0; j < frame_data.size(); j++){
-			int curVal = frame_data[j] - initial_buffer[j];
-			if (curVal < minDepth && frame_data[j]){
-				bool lessThanSurr = true;
-				if (j > 640 && curVal >= frame_data[j - 640] - initial_buffer[j - 640])
-					lessThanSurr = false;
-				if (lessThanSurr && j < 640 * 480 - 640 && curVal >= frame_data[j + 640] - initial_buffer[j + 640])
-					lessThanSurr = false;
-				if (lessThanSurr && j % 640 && curVal >= frame_data[j - 1] - initial_buffer[j - 1])
-					lessThanSurr = false;
-				if (lessThanSurr && (j % 640 != 639) && curVal >= frame_data[j + 1] - initial_buffer[j + 1])
-					lessThanSurr = false;
-				if (lessThanSurr){
-					cursorLock.lock();
-					Scene::debugCursors.push_back({ j % 640, j / 640, 20 });
-					cursorLock.unlock();
-				}	
+		std::vector<std::vector<CursorDepth>> gridMins(GRID_WIDTH, std::vector<CursorDepth>(GRID_HEIGHT));
+		for (int j = 0; j < GRID_HEIGHT * GRID_WIDTH; j++){
+			CursorDepth minVal = { -1, minDepth, true };
+			for (int k = 0; k < PARTITION_HEIGHT * PARTITION_WIDTH; k++){
+				int l = ABSOLUTE_INDEX(j, k);
+				int curVal = frame_data[l] - initial_buffer[l];
+				if (curVal < minVal.depth && frame_data[l]){
+					bool lessThanSurr = true;
+					if (l > 640 && curVal >= frame_data[l - 640] - initial_buffer[l - 640])
+						lessThanSurr = false;
+					if (lessThanSurr && l < 640 * 480 - 640 && curVal >= frame_data[l + 640] - initial_buffer[l + 640])
+						lessThanSurr = false;
+					if (lessThanSurr && l % 640 && curVal >= frame_data[l - 1] - initial_buffer[l - 1])
+						lessThanSurr = false;
+					if (lessThanSurr && (l % 640 != 639) && curVal >= frame_data[l + 1] - initial_buffer[l + 1])
+						lessThanSurr = false;
+					if (lessThanSurr){
+						minVal = { l, frame_data[l], false };
+					}
+				}
 			}
-		}	
+			gridMins[j % GRID_WIDTH][j / GRID_WIDTH] = minVal;
+			cursorLock.lock();
+			if (minVal.index != -1)
+				Scene::debugCursors.push_back({ minVal.index % 640, minVal.index / 640, 20 });
+			cursorLock.unlock();
+		}
+
+	
+		/*for (int j = 0; j < GRID_WIDTH; j++){
+			for (int k = 0; k < GRID_HEIGHT; k++){
+				if (!gridMins[j][k].checked){
+					CursorDepth minimumPoint = gridMins[j][k];
+					gridMins[j][k].checked = true;
+					int l = j, temp_l = 0;
+					int m = k, temp_m = 0; //so we can look through the array w/o messing everything up
+					bool addCursor = true;
+					while (1){
+						bool foundMax = false;
+						if (l && gridMins[l - 1][m].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l - 1][m];
+							temp_l = l - 1;
+							temp_m = m;
+							foundMax = true;
+							if (gridMins[l - 1][m].checked){
+								addCursor = false;
+							}
+						}
+						if (l < GRID_WIDTH - 1 && gridMins[l + 1][m].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l + 1][m];
+							temp_l = l + 1;
+							temp_m = m;
+							foundMax = true;
+							if (gridMins[l + 1][m].checked){
+								addCursor = false;
+							}
+						}
+						if (m && gridMins[l][m - 1].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l][m - 1];
+							temp_l = l;
+							temp_m = m - 1;
+							foundMax = true;
+							if (gridMins[l][m - 1].checked){
+								addCursor = false;
+							}
+						}
+						if (m < GRID_HEIGHT - 1 && gridMins[l][m + 1].depth < minimumPoint.depth){
+							minimumPoint = gridMins[l][m + 1];
+							temp_l = l;
+							temp_m = m + 1;
+							foundMax = true;
+							if (gridMins[l][m - 1].checked){
+								addCursor = false;
+							}
+						}
+						if (!addCursor){
+							break;
+						}
+						else{
+							gridMins[temp_l][temp_m].checked = true;
+							if (!foundMax){
+								break;
+							}
+							foundMax = false;
+							l = temp_l;
+							m = temp_m;
+						}
+					}
+
+					if (addCursor){
+						cursorLock.lock();
+						Scene::debugCursors.push_back({ minimumPoint.index % 640, minimumPoint.index / 640, 20 });
+						cursorLock.unlock();
+					}
+				}
+
+			}
+		}*/
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
 	}
 }
