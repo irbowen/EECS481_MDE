@@ -50,3 +50,8 @@ BETA IS DONE!!!!!!! WORK ON KINECT-THE-DOTS
 ### Stretch Goals
 * MSPaint
 * Mode of final game
+
+### Graphics TODO
+* Make GameCursor pressure sensitive: try 1) bigger circles 2) more small circles
+* Adjust rainbow explosion -- more drawn out, big -> small, try spinning more
+* implement game player to more easily test gfx
