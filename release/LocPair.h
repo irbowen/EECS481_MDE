@@ -1,7 +1,7 @@
 #ifndef LOCPAIR_H
 #define LOCPAIR_H
 
-#include "location.h"
+#include "graphics.h"
 #include "Color.h"
 #include "ColorSlideRing.h"
 
@@ -22,8 +22,8 @@ public:
 	Color dest_color;
 
 
-	//Location init;
-	//Location end;
+	Location init;
+	Location end;
 
 
 

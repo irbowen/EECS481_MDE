@@ -20,7 +20,7 @@ public:
 	//~Location();
 	ColorSlideRing target;
 	double rStart;
-	double TARGET_PRESSURE = 250;
+	double TARGET_PRESSURE = 240;
 	const double MAX_RADIUS = 50;
 	double pressure, start_pressure;
 	bool on;
