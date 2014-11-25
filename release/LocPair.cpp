@@ -4,7 +4,7 @@
 
 //START OF LOCPAIR
 LocPair::LocPair(double x1_in, double y1_in, double x2_in, double y2_in, double r_in, double start_init_depth, double end_init_depth)
-	: start{ x1_in, y1_in, r_in, start_init_depth }, end{ x2_in, y2_in, r_in, end_init_depth }, rStart{ r_in }
+	: start{ x1_in, y1_in, r_in, start_init_depth }, end{ x2_in, y2_in, r_in, end_init_depth }
 {
 	//on = true;
 }

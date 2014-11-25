@@ -328,8 +328,8 @@ bool Game::line(LocPair& locpair)
 {
 	const int MAX_X = 640;
 	const int MAX_Y = 480;
-	ColorSlideRing &loc1 = locpair.start;
-	ColorSlideRing &loc2 = locpair.destination;
+	Location &loc1 = locpair.start;
+	Location &loc2 = locpair.end;
 	int last_x = (int)loc1.getX();
 	int last_y = (int)loc1.getY();
 	int x1 = (int)loc1.getX();
@@ -338,7 +338,7 @@ bool Game::line(LocPair& locpair)
 	int y2 = (int)loc2.getY();
 
 	// draw current track and check whether the line is finished
-	while (dist(last_x, x2, last_y, y2) - (int)loc2.getR()>0){
+	while (dist(last_x, x2, last_y, y2) - (int)loc2.getRadius()>0){
 		// Assume minDepth is the cursor
 
 		//get cursor location (400,400) is example for now
@@ -372,21 +372,21 @@ void Game::runConnectMode()
 		
 		//1. check pressure at start ring
 		
-		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
+		double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getRadius());
 
 		std::cout << "Pressure is " << pressure << std::endl;
 		//2. check if start ring is "locked-in" (ready to draw the line)
 		//		a. if start ring is not locked in keep checking for locked in
-		while (!Scene::locpair.withinPressure(pressure))
+		while (!Scene::locpair.start.withinPressure(pressure))
 		{
 			//std::cout << "pressure req not met" << std::endl;
-			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
+			pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getRadius());
 			//std::cout << "Inside pressure is " << pressure << std::endl;
 		}
 
 		Scene::locpair.locked = true;
 		Scene::lines.push_back({ { (int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY() }, 
-		{ (int)Scene::locpair.destination.getX(), (int)Scene::locpair.destination.getX() }, RED, 5.0 });
+		{ (int)Scene::locpair.end.getX(), (int)Scene::locpair.end.getY() }, RED, 5.0 });
 		//3. if start ring is locked in keep track of the cursor (Ara's Hand)
 		//		a. 
 		if (Scene::locpair.locked == true) 
@@ -418,7 +418,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 		dest_y = opt_y2;
 	}
 
-	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x));
+	return LocPair(start_x, start_y, dest_x, dest_y, start_radius, initial_buffer.at(MAX_X*start_y + start_x), initial_buffer.at(MAX_X*dest_y + dest_x));
 }
 
 Location Game::createRandomLocation(double radius_scale_factor) {
@@ -479,5 +479,5 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }
