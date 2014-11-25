@@ -11,6 +11,7 @@
 #include <fstream>
 #include "LocPair.h"
 #include "Scene.h"
+#include <math.h>
 
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
@@ -86,7 +87,6 @@ double Game::checkPressure(int x, int y, int radius){
 }
 
 void Game::run(char mode) {
-	std::cout << "Running game in " << mode << " mode\n";
 	while (!buffer_valid) {//sleep while kinect boots up
 		std::cout << "waiting for buffer" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(5*SAMPLE_MILLISECONDS));
@@ -149,10 +149,11 @@ void Game::run(char mode) {
 }
 
 void Game::runSlideRingMode(int i) {
-	std::cout << "Running sliding ring mode\n";
 	LocationLock.lock();
-	if ((num_active_spots <= log(num_triggered_spots + 2)) && (num_active_spots <= 4)) {
-		Scene::locations.push_back(createRandomLocation(log(num_triggered_spots + 2)));
+	if ((num_active_spots <= i/75) && (num_active_spots < 4)) {
+		double r_scale = log(num_active_spots + 3);
+		std::cout << "Num active: " << num_active_spots << " " << r_scale << std::endl;
+		Scene::locations.push_back(createRandomLocation(r_scale));
 		num_active_spots++;
 	}
 	//	double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
@@ -170,19 +171,20 @@ void Game::runSlideRingMode(int i) {
 			if (loc_it.contains(x, y)) { //if cursor is inside location
 				pressure = frame_data.at(y*MAX_X + x);
 				loc_it.setPressure(pressure);
+				PlaySound(TEXT("bubbles_sfx.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a first sound
 				if (loc_it.exactMatch(pressure)) {
 					std::cout << "Triggered exact match\n";
 					loc_it.num_rounds_correct++;
 					loc_it.prev_correct_round = i;
-					PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a first sound
-					if (loc_it.num_rounds_correct > 1) {
+					if (loc_it.num_rounds_correct > 10) {
 						//PlaySound(NULL, 0, 0); //killz background sound
-						PlaySound(TEXT("jamesbond.wav"), NULL, SND_FILENAME || SND_ASYNC);//play a second sound
+						PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a second sound
 						std::cout << "Matches at " << loc_it.getX() << " " << loc_it.getY() << " pressure: " << pressure << std::endl;
 						loc_it.fade(1000);
 						loc_it.turnOff();
 						num_triggered_spots++;
 						num_active_spots--;
+						loc_it.num_rounds_correct = 0;
 
 						// trigger rainbow bubbles
 						Scene::targetHighlighters[loc_it.id].cs = RAINBOW_CURSORS;
@@ -190,6 +192,7 @@ void Game::runSlideRingMode(int i) {
 						Scene::targetHighlighters[loc_it.id].update();
 						for (int i = 0; i < 10; ++i)
 							Scene::targetHighlighters[loc_it.id].addCircle();
+						break;
 
 					}
 					else if (i - loc_it.prev_correct_round > 1){
@@ -330,6 +333,7 @@ LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2
 }
 
 Location Game::createRandomLocation(double radius_scale_factor) {
+	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
 	int x_location, y_location;
 	bool valid = false;
 
@@ -343,7 +347,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			continue;//bad location, do the loop again
 		}
 		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
-			std::cout << "Zero at location where game tried to create a location, trying another one\n";
+			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " <<  std::endl;
 			continue;
 		}
 		if (Scene::locations.size() == 0) {
@@ -364,6 +368,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		}
 	} while (!valid);
 	double new_radius = start_radius / radius_scale_factor;
+	std::cout << "New radius is: " << new_radius << std::endl;
 	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
 	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
