@@ -13,6 +13,9 @@
 #include "global.h"
 #include <vector>
 #include <mutex>
+#include <atomic>
+
+using std::atomic;
 
 extern std::vector<int> frame_data;
 extern std::vector<int> initial_buffer;
@@ -21,6 +24,7 @@ extern std::vector<int> initial_buffer;
 extern bool buffer_valid;
 extern const int minDepth;
 extern std::mutex cursorLock;
+extern atomic<bool> newFrameReady;
 
 class CDepthBasics
 {

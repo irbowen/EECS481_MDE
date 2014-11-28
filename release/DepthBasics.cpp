@@ -23,6 +23,8 @@ std::vector<int> frame_data;
 std::vector<int> initial_buffer;
 bool buffer_valid;
 const int minDepth = -140;
+atomic<bool> newFrameReady{ true };
+
 
 
 /// <summary>
@@ -471,6 +473,7 @@ void CDepthBasics::ProcessDepth()
 			++pBufferRun;
 		}
 		buffer_valid = true;
+		newFrameReady = true;
 
 		// Draw the data with Direct2D
 		m_pDrawDepth->Draw(m_depthRGBX, cDepthWidth * cDepthHeight * cBytesPerPixel);

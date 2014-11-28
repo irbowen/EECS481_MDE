@@ -25,9 +25,7 @@ void Scene::draw(){
 
 	debugCursors.clear();
 
-	auto pts = getCursorPoints();
-
-	for (const auto& pt : pts)
+	for (const auto& pt : getCursorPoints())
 		debugCursors.push_back({(int)pt.first, (int)pt.second, 20});
 
 

@@ -135,11 +135,10 @@ void Game::runSlideRingMode(int i) {
 	//Location random = createRandomLocation(5);
 
 	LocationLock.lock();
-	if ((num_active_spots <= i/75) && (num_active_spots < 4)) {
+	if ((num_active_spots <= num_triggered_spots/4) && (num_active_spots < 4)) {
 		double r_scale = log(num_active_spots + 3);
 		std::cout << "Num active: " << num_active_spots << " " << r_scale << std::endl;
-		Scene::locations.push_back(createRandomLocation(r_scale));
-		num_active_spots++;
+		Scene::locations.push_back(createRandomLocation(Location::MAX_RADIUS/++num_active_spots + 20));
 	}
 	//	double pressure = checkPressure((int)loc_it.getX(), (int)loc_it.getY(), (int)loc_it.getRadius());
 	//	loc_it.setPressure(pressure);
@@ -150,11 +149,8 @@ void Game::runSlideRingMode(int i) {
 		}
 
 		double x = 0, y = 0, pressure = 0;
-		//cursorLock.lock();
 
-		auto pts = getCursorPoints();
-
-		for (const auto& pt : pts) {
+		for (const auto& pt : getCursorPoints()) {
 			x = pt.first;
 			y = pt.second;
 			if (loc_it.contains(x, y)) { //if cursor is inside location
@@ -194,35 +190,37 @@ void Game::runSlideRingMode(int i) {
 			}
 
 		}
-		//cursorLock.unlock();
 		if (double progress = loc_it.getPercentage(pressure)){
 			Scene::targetHighlighters[loc_it.id].setCircleRadius((int)(MIN_BUBBLE_RADIUS + progress*(MAX_BUBBLE_RADIUS - MIN_BUBBLE_RADIUS)));
 			Scene::targetHighlighters[loc_it.id].addCircle();
 		}
 	}
 
+	// handle growing in constructor & Location::draw instead.
+	/*
 	for (auto& loc_it : Scene::locations) {//Increase size of all existing locations
 		if (loc_it.isOn()) {
 			loc_it.makeBigger(INCREASE_FACTOR);
 		}
 		Scene::targetHighlighters[loc_it.id].setR((int)loc_it.getRadius());
 	}
+	*/
 
 	LocationLock.unlock();
 }
 
-Location Game::createRandomLocation(double radius_scale_factor) {
-	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
+Location Game::createRandomLocation(double final_radius) {
+	//std::cout << "Scale factor: " << radius_scale_factor << std::endl;
 	int x_location, y_location;
 	bool valid = false;
 
 	do {//check to make sure its not off the screen
 		x_location = rand() % MAX_X;
 		y_location = rand() % MAX_Y;
-		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+		if (x_location <= final_radius || x_location >= (MAX_X - final_radius)) {
 			continue;//bad location, do the loop again
 		}
-		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+		if (y_location <= final_radius || y_location >= (MAX_Y - final_radius)) {
 			continue;//bad location, do the loop again
 		}
 		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
@@ -237,7 +235,7 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if (distance < loc_it->getRadius()*3) {
+				if (distance < loc_it->endRadius*2) {
 					break;//bad location, times 2 just to be safe
 				}
 			}
@@ -246,9 +244,9 @@ Location Game::createRandomLocation(double radius_scale_factor) {
 			valid = true;//if no issues with other locatiosn, location is good
 		}
 	} while (!valid);
-	double new_radius = start_radius / radius_scale_factor;
-	std::cout << "New radius is: " << new_radius << std::endl;
-	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
+	//double new_radius = start_radius / radius_scale_factor;
+	//std::cout << "New radius is: " << new_radius << std::endl;
+	return Location(x_location, y_location, final_radius, initial_buffer.at(MAX_X*y_location + x_location));
 
 	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
 	|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false

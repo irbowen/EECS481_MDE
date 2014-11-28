@@ -1,18 +1,36 @@
 #include "cursor_heuristic.h"
 #include "DepthBasics.h"
 #include <cmath>
+#include <thread>
+#include <deque>
+#include <iterator>
+#include <iostream>
 
-#define MIN_CURSOR_SEPARATION 100
+#define MIN_CURSOR_SEPARATION 250
+#define MAX_CURSORS 4
+#define CURSOR_HISTORY_DEPTH 10
+#define CURSOR_NOISE_THRESH 150
+#define PREVIOUS_CURSOR_DEPTH 10
 
-const int PARTITION_WIDTH = 32;
-const int PARTITION_HEIGHT = 32;
+// % of the past CURSOR_HISTORY_DEPTH frames there must be
+// a cursor within CURSOR_NOISE_THRESH
+#define CURSOR_BLINK_TOLERANCE 0.8
+
+using std::deque;
+using std::next;
+
+const int PARTITION_WIDTH = 16;
+const int PARTITION_HEIGHT = 16;
 const int GRID_WIDTH = 640 / PARTITION_WIDTH;
 const int GRID_HEIGHT = 480 / PARTITION_HEIGHT;
 
 mutex cursorLock;
 
+static deque<vector<pair<double, double>>> prevCursors;
 
-set<Cursor> sortedCursors;
+static set<Cursor> sortedCursors;
+
+static deque<vector<pair<double, double>>> cursorHistory;
 
 bool operator<(const Cursor& a, const Cursor& b){
 	return a.depth < b.depth;
@@ -27,24 +45,134 @@ static double distance(const pair<double, double>& p1, const pair<double, double
 	return sqrt(dx*dx + dy*dy);
 }
 
+// running average of cursor points
 vector<pair<double, double>> getCursorPoints(){
-	
-	if (sortedCursors.empty())
-		return vector < pair<double, double> > {};
 
-	cursorLock.lock();
-	auto cpy = sortedCursors;
-	cursorLock.unlock();
+	if (cursorHistory.size() != CURSOR_HISTORY_DEPTH)
+		return vector < pair < double, double > > {};
 
 	vector<pair<double, double>> rtn;
-	rtn.push_back({ cpy.begin()->x, cpy.begin()->y });
 
-	for (const auto& cursor : cpy){
+	cursorLock.lock();
+	auto cpy = cursorHistory;
+	auto prevFrames = prevCursors;
+	cursorLock.unlock();
+
+	for (const auto& frame : prevFrames){
+
+		for (const auto& prev : frame){
+
+			bool blinked = true;
+
+			for (const auto& candidate : cpy.front()){
+				if (distance({ prev.first, prev.second },
+				{ candidate.first, candidate.second })
+				<= CURSOR_NOISE_THRESH){
+					blinked = false;
+					break;
+				}
+			}
+
+			if (blinked)
+				cpy.front().push_back({ prev.first, prev.second });
+		}
+
+	}
+
+	for (const auto& candidate : cpy.front()){
+
+		double xTot = candidate.first,
+			   yTot = candidate.second;
+
+		int matched = 0;
+
+		for (auto& frame = next(cpy.begin()); frame != cpy.end(); ++frame){
+
+			for (const auto& cursor : *frame){
+
+				if (distance({ cursor.first, cursor.second },
+							 { candidate.first, candidate.second })
+							 <= CURSOR_NOISE_THRESH){
+					xTot += cursor.first;
+					yTot += cursor.second;
+					++matched;
+					break;
+				}
+				
+			}
+
+		}
+
+		if (matched >= (int)(CURSOR_BLINK_TOLERANCE * (cpy.size() - 1)))
+			rtn.push_back({ xTot / matched,
+							yTot / matched });
+	}
+	/*
+	// handle blinking cursor case [cursor missing from latest frame but present in others]
+	for (const auto& candidate : *next(cpy.begin())){
+
+		double xTot = candidate.first,
+			   yTot = candidate.second;
+
+		for (const auto& placed : rtn){
+			if (distance({ xTot, yTot },
+			{ placed.first, placed.second })
+			< CURSOR_NOISE_THRESH)
+				continue;
+		}
+
+		int matched = 0;
+
+		for (auto& frame = next(cpy.begin()); frame != cpy.end(); ++frame){
+
+			for (const auto& cursor : *frame){
+
+				if (distance({ cursor.first, cursor.second },
+				{ candidate.first, candidate.second })
+				<= CURSOR_NOISE_THRESH){
+					xTot += cursor.first;
+					yTot += cursor.second;
+					++matched;
+					break;
+				}
+
+			}
+
+		}
+
+		if (matched >= (int)(CURSOR_BLINK_TOLERANCE * (cpy.size() - 1)))
+			rtn.push_back({ xTot / matched,
+			yTot / matched });
+	}
+	*/
+
+	cursorLock.lock();
+	prevCursors.push_front(rtn);
+	if (prevCursors.size() == PREVIOUS_CURSOR_DEPTH)
+		prevCursors.pop_back();
+	cursorLock.unlock();
+
+	return rtn;
+}
+
+static vector<pair<double, double>> getCursorPointsFrame(){
+
+	if (sortedCursors.empty())
+		return vector < pair<double, double> > {};
+	
+	vector<pair<double, double>> rtn;
+	rtn.push_back({ sortedCursors.begin()->x, sortedCursors.begin()->y });
+
+	for (const auto& cursor : sortedCursors){
 
 		bool add = true;
 
 		for (const auto& placed : rtn){
-			if (distance({ cursor.x, cursor.y }, { placed.first, placed.second }) <= MIN_CURSOR_SEPARATION){
+
+			if (distance({ cursor.x, cursor.y },
+						 { placed.first, placed.second }) 
+						 <= MIN_CURSOR_SEPARATION){
+
 				add = false;
 				break;
 			}
@@ -52,6 +180,9 @@ vector<pair<double, double>> getCursorPoints(){
 
 		if (add)
 			rtn.push_back({cursor.x, cursor.y});
+
+		if (rtn.size() == MAX_CURSORS)
+			break;
 
 	}
 
@@ -61,43 +192,31 @@ vector<pair<double, double>> getCursorPoints(){
 int cursorThread(){
 
 	while (true){
+
+		// make sure consecutive processed frames are unique
+		while (!newFrameReady)
+			std::this_thread::yield();
+
+		newFrameReady = false;
+		sortedCursors.clear();
 	
 		std::vector<std::vector<CursorDepthSquare>> gridMins(GRID_WIDTH, std::vector<CursorDepthSquare>(GRID_HEIGHT));
+
 		for (int j = 0; j < GRID_HEIGHT * GRID_WIDTH; j++){
+
 			CursorDepthSquare minVal = { -1, minDepth, true };
+
 			for (int k = 0; k < PARTITION_HEIGHT * PARTITION_WIDTH; k++){
+
 				int l = ABSOLUTE_INDEX(j, k);
 				int curVal = (int)(frame_data[l] - initial_buffer[l]);
-				if (curVal < minVal.depth && frame_data[l]){
 
+				if (curVal < minVal.depth && frame_data[l])
 					minVal = { l, (int)frame_data[l], false };
 
-
-					/*
-					bool lessThanSurr = true;
-					if (l > 640 && curVal >= frame_data[l - 640] - initial_buffer[l - 640])
-					lessThanSurr = false;
-					if (lessThanSurr && l < 640 * 480 - 640 && curVal >= frame_data[l + 640] - initial_buffer[l + 640])
-					lessThanSurr = false;
-					if (lessThanSurr && l % 640 && curVal >= frame_data[l - 1] - initial_buffer[l - 1])
-					lessThanSurr = false;
-					if (lessThanSurr && (l % 640 != 639) && curVal >= frame_data[l + 1] - initial_buffer[l + 1])
-					lessThanSurr = false;
-					if (lessThanSurr){
-					minVal = { l, frame_data[l], false };
-					}
-					*/
-				}
 			}
 			gridMins[j % GRID_WIDTH][j / GRID_WIDTH] = minVal;
-			/*cursorLock.lock();
-			if (minVal.index != -1)
-			Scene::debugCursors.push_back({ minVal.index % 640, minVal.index / 640, 20 });
-			cursorLock.unlock();*/
 		}
-
-		
-		set<Cursor> temp;
 
 		for (int j = 0; j < GRID_WIDTH; j++){
 			for (int k = 0; k < GRID_HEIGHT; k++){
@@ -160,7 +279,7 @@ int cursorThread(){
 					}
 
 					if (addCursor){
-						temp.insert({ minimumPoint.index % 640, minimumPoint.index / 640, minimumPoint.depth});
+						sortedCursors.insert({ minimumPoint.index % 640, minimumPoint.index / 640, minimumPoint.depth});
 					}
 				}
 
@@ -168,8 +287,9 @@ int cursorThread(){
 		}
 
 		cursorLock.lock();
-		sortedCursors = temp;
+		cursorHistory.push_front(getCursorPointsFrame());
+		if (cursorHistory.size() > CURSOR_HISTORY_DEPTH)
+			cursorHistory.pop_back();
 		cursorLock.unlock();
-
 	}
 }

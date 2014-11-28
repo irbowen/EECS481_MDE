@@ -16,18 +16,22 @@ using std::pair;
 
 //START LOCATION
 class Location {
+	high_resolution_clock::time_point growStart;
+	double growDuration;
 public:
+	double endRadius;
+
 	//~Location();
+	inline double elapsed() const { return duration_cast<duration<double, milli>>(high_resolution_clock::now() - growStart).count(); }
 	ColorSlideRing target;
 	double rStart;
 	double TARGET_PRESSURE = 240;
-	const double MAX_RADIUS = 50;
 	double pressure, start_pressure;
 	bool on;
 	int num_rounds_correct = 0, prev_correct_round = 0;
 	Color color;
 	Location(double, double, double, double);
-	void makeBigger(double);
+	//void makeBigger(double);
 	void makeSmaller(double);
 	bool contains(double, double);
 	bool withinPressure(double);
@@ -48,6 +52,8 @@ public:
 
 	static int NEXT_LOC_ID;
 	int id;
+
+	static const double MAX_RADIUS;
 };
 //END LOCATION
 
