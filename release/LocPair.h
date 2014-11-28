@@ -21,10 +21,10 @@ public:
 	Color start_color;
 	Color dest_color;
 
-
+	/*
 	Location init;
 	Location end;
-
+	*/
 
 
 	bool withinPressure(double input);

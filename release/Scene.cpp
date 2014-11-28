@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "DepthBasics.h"
+#include "cursor_heuristic.h"
 
 using std::mutex;
 using std::cout;
@@ -22,9 +23,15 @@ GameCursors Scene::gameCursors;
 
 void Scene::draw(){
 
-	cursorLock.lock();
+	debugCursors.clear();
+
+	auto pts = getCursorPoints();
+
+	for (const auto& pt : pts)
+		debugCursors.push_back({(int)pt.first, (int)pt.second, 20});
+
+
 	for (auto& x : debugCursors) x.draw();
-	cursorLock.unlock();
 
 	cursors.draw();
 	locpair.draw();

@@ -11,12 +11,9 @@
 #include "DepthBasics.h"
 #include "graphics.h"
 #include "global.h"
+#include "cursor_heuristic.h"
 
-struct CursorDepth{
-	int index;
-	int depth;
-	bool checked;
-};
+
 
 class Game {
 	const int NUM_ROUNDS = 1000;

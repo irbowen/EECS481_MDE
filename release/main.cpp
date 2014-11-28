@@ -4,6 +4,7 @@
 #include "game.h"
 #include "DepthBasics.h"
 #include "Resource.h"
+#include "cursor_heuristic.h"
 #include "stdafx.h"
 #include <strsafe.h>
 #include <thread>
@@ -21,7 +22,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	CDepthBasics kinect;
 	Game g(kinect);
 
-	std::thread glThread(glDriver) , gameThread(startGame, g);
+	std::thread glThread(glDriver),
+		gameThread(startGame, g),
+		cursorThread(cursorThread);
 
 	kinect.Run(hInstance, nCmdShow);
 	gameThread.join();

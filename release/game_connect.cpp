@@ -15,26 +15,6 @@
 #include <queue>
 #include <math.h>
 
-#define MIN_BUBBLE_RADIUS 25
-#define MAX_BUBBLE_RADIUS 50
-#define ABSOLUTE_INDEX(i,j) (((i / GRID_WIDTH) * PARTITION_HEIGHT * 640) + ((i % GRID_WIDTH) * PARTITION_WIDTH) + (j % PARTITION_WIDTH) + ((j / PARTITION_WIDTH) * 640))
-
-const int PARTITION_WIDTH = 32;
-const int PARTITION_HEIGHT = 32;
-const int GRID_WIDTH = 640 / PARTITION_WIDTH;
-const int GRID_HEIGHT = 480 / PARTITION_HEIGHT;
-
-static const vector<GradientCircleCursor> RAINBOW_CURSORS{
-	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
-	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { YELLOW, GREEN, BLUE, PURPLE, RED, ORANGE }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { GREEN, BLUE, PURPLE, RED, ORANGE, YELLOW }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { BLUE, PURPLE, RED, ORANGE, YELLOW, GREEN }, 100 },
-	GradientCircleCursor{ 296, 283, 75, { PURPLE, RED, ORANGE, YELLOW, GREEN, BLUE }, 100 }
-};
-
-
-
 using std::mutex;
 
 Color palette(Color& c);
@@ -42,7 +22,7 @@ Color palette(Color& c);
 void Game::runConnectMode()
 {
 	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
-	Scene::locpair = createRandomLocPair(50, 50, 300, 300);
+	//Scene::locpair = createRandomLocPair(50, 50, 300, 300);
 
 
 	//1. check pressure at start ring

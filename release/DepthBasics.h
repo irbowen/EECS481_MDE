@@ -10,11 +10,12 @@
 #include "Windows.h"
 #include "NuiApi.h"
 #include "ImageRenderer.h"
+#include "global.h"
 #include <vector>
 #include <mutex>
 
-extern std::vector<double> frame_data;
-extern std::vector<double> initial_buffer;
+extern std::vector<int> frame_data;
+extern std::vector<int> initial_buffer;
 //extern int max_depth;
 //extern int max_index;
 extern bool buffer_valid;

@@ -16,11 +16,12 @@
 #include <vector>
 #include <iostream>
 
+// convert 1d - 2d array index to mirrored-x index
+#define MIRROR_INDEX(i) (i / 640) * 640 + 639 - i % 640
 
-std::vector<double> frame_data;
-std::vector<double> initial_buffer;
+std::vector<int> frame_data;
+std::vector<int> initial_buffer;
 bool buffer_valid;
-std::mutex cursorLock;
 const int minDepth = -140;
 
 
@@ -415,16 +416,24 @@ void CDepthBasics::ProcessDepth()
 		//reset frame_data
 		//frame_data.resize(307200);
 		int i = 0;
+
 		while (pBufferRun < pBufferEnd)
 		{
 			//add pixel depth data to frame_data
 			//frame_data.push_back(pStartScan->depth);
+
+#ifndef PROJECTOR
 			frame_data[i] = pBufferRun->depth;
 			if (!buffer_valid){
 				initial_buffer[i] = pBufferRun->depth;
 			}
-			
-			
+#endif
+#ifdef PROJECTOR
+			frame_data[MIRROR_INDEX(i)] = pBufferRun->depth;
+			if (!buffer_valid)
+				initial_buffer[MIRROR_INDEX(i)] = pBufferRun->depth;
+#endif
+
 			pStartScan++;
 			i++;
 			
