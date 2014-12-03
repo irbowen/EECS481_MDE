@@ -24,6 +24,7 @@ std::vector<int> initial_buffer;
 bool buffer_valid;
 const int minDepth = -140;
 atomic<bool> newFrameReady{ true };
+extern std::mutex cursorLock;
 
 
 
