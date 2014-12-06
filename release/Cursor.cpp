@@ -63,7 +63,7 @@ void RotatingMultiCursor::chCursors(const vector<GradientCircleCursor>& cs_in){
 // END OF ROTATINGMULTICURSOR
 
 
-void GameCursors::draw() {
+void GameCursor::draw() {
 	circles.remove_if([](const CursorCircle& c) { return c.faded; });
 	for (auto& circle : circles)
 		circle.draw();

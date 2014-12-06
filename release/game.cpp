@@ -150,11 +150,17 @@ void Game::runSlideRingMode(int i) {
 
 		double x = 0, y = 0, pressure = 0;
 
+
+
+
 		for (const auto& pt : getCursorPoints()) {
 			x = pt.first;
 			y = pt.second;
 			if (loc_it.contains(x, y)) { //if cursor is inside location
 				pressure = frame_data.at((unsigned)(y*MAX_X + x));
+
+				auto forward = initial_buffer.at(MAX_X*y + x) - pressure;
+
 				loc_it.setPressure(pressure);
 				PlaySound(TEXT("bubbles_sfx.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a first sound
 				if (loc_it.exactMatch(pressure)) {

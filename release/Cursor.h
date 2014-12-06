@@ -28,13 +28,17 @@ class RandomCircleCursor {
 	friend class RotatingMultiCursor;
 
 public:
-	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, colorScheme{ colorSchemes.begin() } {}
+
+	int startR;
+
+	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, startR{ r }, colorScheme{ colorSchemes.begin() } {}
 	RandomCircleCursor() {}
 	CursorCircle addCircle();
 
 	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
 	inline void chY(int dy) { y += dy; }
 	inline void chX(int dx) { x += dx; }
+	inline void setR(int rr) { r = rr; }
 	inline void setPos(const std::pair<double, double>& p) { x = (int)p.first, y = (int)p.second; }
 	std::pair<double, double> getPos() { return{ x, y }; }
 	inline void rotateScheme() { ++colorScheme; if (colorScheme == colorSchemes.end()) colorScheme = colorSchemes.begin(); }
@@ -56,14 +60,17 @@ public:
 //END OF GRADIENTCIRCLECURSOR
 
 class GameCursor {
-	GradientCircleCursor cursor;
 	int i;
+	list<CursorCircle> circles;
 public:
+	GradientCircleCursor cursor;
 	GameCursor() : cursor{ 320, 240, 35, *CursorGradients.front() }, i{ 0 } {}
 	inline Color nextColor() { return cursor.gradient.next(); }
 	inline void rotateScheme(){ if (++i == CursorGradients.size()) i = 0; cursor.chColor(*CursorGradients[i]); }
 
-	inline CursorCircle addCircle() { return cursor.addCircle(); }
+	inline void addCircle() { circles.push_back(cursor.addCircle()); }
+
+	void draw();
 
 	inline void chY(int dy) { cursor.chY(dy); }
 	inline void chX(int dx) { cursor.chX(dx); }
@@ -73,17 +80,17 @@ public:
 
 
 // SUPER-CURSORS - ie, containers of multiple cursors
-
+/*
 class GameCursors {
 	list<CursorCircle> circles;
 public:
 	vector<GameCursor> cs;
 
-	void draw();
+	//void draw();
 
 	inline void addCircle(int i) { circles.push_back(cs[i].addCircle()); }
 };
-
+*/
 //START OF CURSORCONTAINER
 class CursorContainer {
 protected:

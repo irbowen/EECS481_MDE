@@ -19,14 +19,22 @@ CursorContainer Scene::cursors;
 vector<RotatingMultiCursor> Scene::fancyCursors;
 vector<DebugCursor> Scene::debugCursors;
 unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
-GameCursors Scene::gameCursors;
+GameCursor Scene::gameCursor;
 
 void Scene::draw(){
 
 	debugCursors.clear();
 
-	for (const auto& pt : getCursorPoints())
-		debugCursors.push_back({(int)pt.first, (int)pt.second, 20});
+	for (const auto& pt : getCursorPoints()){
+		gameCursor.setPos({ pt.first, pt.second });
+		auto pressure = frame_data.at((unsigned)(pt.second*640+ pt.first));
+
+		// normalized to shallowest possible cursor
+		auto forward = initial_buffer.at(640*pt.second + pt.first) - pressure + minDepth;
+		gameCursor.cursor.setR(gameCursor.cursor.startR + forward / 10);
+
+		gameCursor.addCircle();
+	}
 
 
 	for (auto& x : debugCursors) x.draw();
@@ -53,7 +61,7 @@ void Scene::draw(){
 
 	for (auto& x : targetHighlighters) x.second.draw();
 
-	gameCursors.draw();
+	gameCursor.draw();
 
 
 }

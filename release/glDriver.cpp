@@ -59,7 +59,6 @@ int glDriver(){
 													} 
 															});
 
-	Scene::gameCursors.cs.push_back(GameCursor());
 
 	while (!done){
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
@@ -82,9 +81,10 @@ int glDriver(){
 						ctrl_last = keys[VK_CONTROL];
 
 						
-						auto& cursor = Scene::gameCursors.cs[0];
+						auto& cursor = Scene::fancyCursors[0];
 
-						Scene::gameCursors.addCircle(0);
+
+						cursor.addCircle();
 
 						if (keys[VK_UP])
 							cursor.chY(-10);
@@ -99,9 +99,9 @@ int glDriver(){
 					}
 
 					
-					if (keys[VK_SHIFT] && !shift_last)
-						Scene::gameCursors.cs[0].rotateScheme();
-					
+					/*if (keys[VK_SHIFT] && !shift_last)
+						Scene::gameCursor.rotateScheme();
+					*/
 
 
 					shift_last = keys[VK_SHIFT];
