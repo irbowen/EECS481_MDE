@@ -38,7 +38,6 @@ public:
 	ColorWheel(const vector<Color>& colors, int resolution) : ticksPerColor{ resolution }, ticks{ 0 }, cur_i{ 0 } { gradient = colors; }
 	inline void chGradient(const vector<Color>& g) { gradient = g, cur_i = ticks = 0; }
 	Color next();
-	inline vector<Color> getColors() { return gradient; }
 };
 //END OF COLORWHEEL
 

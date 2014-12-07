@@ -25,13 +25,8 @@ bool buffer_valid;
 const int minDepth = -140;
 atomic<bool> newFrameReady{ true };
 extern std::mutex cursorLock;
-bool fabricPulled = false;
-bool fabricPulledLast = false;
-int pull_index;
 
-bool pullRegistered(){
-	return fabricPulled && !fabricPulledLast;
-}
+
 
 /// <summary>
 /// Entry point for the application
@@ -424,36 +419,27 @@ void CDepthBasics::ProcessDepth()
 		//reset frame_data
 		//frame_data.resize(307200);
 		int i = 0;
-		
-		bool pulled = false;
 
 		while (pBufferRun < pBufferEnd)
 		{
 			//add pixel depth data to frame_data
 			//frame_data.push_back(pStartScan->depth);
 
-			int ind;
-
 #ifndef PROJECTOR
-			ind = i;
+			frame_data[i] = pBufferRun->depth;
+			if (!buffer_valid){
+				initial_buffer[i] = pBufferRun->depth;
+			}
 #endif
 #ifdef PROJECTOR
-			ind = MIRROR_INDEX(i);
+			frame_data[MIRROR_INDEX(i)] = pBufferRun->depth;
+			if (!buffer_valid)
+				initial_buffer[MIRROR_INDEX(i)] = pBufferRun->depth;
 #endif
-
-			frame_data[ind] = pBufferRun->depth;
-			if (!buffer_valid){
-				initial_buffer[ind] = pBufferRun->depth;
-			}
 
 			pStartScan++;
 			i++;
-
-			if (frame_data[ind] - initial_buffer[ind] >= minDepth * -1){
-				pulled = true;
-				pull_index = ind;
-			}
-
+			
 
 			// discard the portion of the depth that contains only the player index
 			USHORT depth = pBufferRun->depth;
@@ -490,15 +476,9 @@ void CDepthBasics::ProcessDepth()
 		buffer_valid = true;
 		newFrameReady = true;
 
-		if (pulled){
-			fabricPulledLast = fabricPulled;
-			fabricPulled = pulled;
-		}
-
 		// Draw the data with Direct2D
 		m_pDrawDepth->Draw(m_depthRGBX, cDepthWidth * cDepthHeight * cBytesPerPixel);
 	}
-
 
 	//SetStatusMessage(L"Hellooooooooooooooooooooooooooooooooooooooooo");
 	//SetStatusMessage(L"Goodbye");

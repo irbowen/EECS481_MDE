@@ -103,9 +103,23 @@ vector<pair<double, double>> getCursorPoints(){
 
 		}
 
-		if (matched >= (int)(CURSOR_BLINK_TOLERANCE * (cpy.size() - 1)))
-			rtn.push_back({ xTot / matched,
-							yTot / matched });
+		if (matched >= (int)(CURSOR_BLINK_TOLERANCE * (cpy.size() - 1))){
+			
+			auto x = xTot / matched;
+			auto y = yTot / matched;
+
+			if (x < 0)
+				x = 0;
+			if (y < 0)
+				y = 0;
+
+			if (x > 639)
+				x = 639;
+			if (y > 479)
+				y = 479;
+
+			rtn.push_back({ x, y });
+		}
 	}
 	/*
 	// handle blinking cursor case [cursor missing from latest frame but present in others]
