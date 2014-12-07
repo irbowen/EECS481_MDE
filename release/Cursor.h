@@ -56,6 +56,7 @@ public:
 	GradientCircleCursor(int x, int y, int r, const ColorWheel& cw) : RandomCircleCursor{ x, y, r }, gradient{ cw } {}
 	inline Color nextColor() { return gradient.next(); }
 	inline void chColor(const ColorWheel& cw) { gradient.chGradient(cw.gradient); }
+	inline vector<Color> getColors() { return gradient.getColors(); }
 };
 //END OF GRADIENTCIRCLECURSOR
 
@@ -132,6 +133,8 @@ public:
 
 	void update();
 	void initAngles();
+
+	bool exploding = false;
 
 	void chCursors(const vector<GradientCircleCursor>&);
 };

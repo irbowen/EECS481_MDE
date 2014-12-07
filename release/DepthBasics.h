@@ -25,6 +25,10 @@ extern bool buffer_valid;
 extern const int minDepth;
 extern std::mutex cursorLock;
 extern atomic<bool> newFrameReady;
+extern bool fabricPulled;
+extern bool fabricPulledLast;
+bool pullRegistered();
+extern int pull_index;
 
 class CDepthBasics
 {

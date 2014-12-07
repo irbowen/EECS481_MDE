@@ -180,8 +180,7 @@ void Game::runSlideRingMode(int i) {
 						// trigger rainbow bubbles
 						Scene::targetHighlighters[loc_it.id].chCursors(RAINBOW_CURSORS);
 
-						for (int i = 0; i < 10; ++i)
-							Scene::targetHighlighters[loc_it.id].addCircle();
+						Scene::targetHighlighters[loc_it.id].exploding = true;
 
 						break;
 
