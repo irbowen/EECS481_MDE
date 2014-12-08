@@ -14,6 +14,18 @@ CursorCircle RandomCircleCursor::addCircle(){
 
 	return{ pt.first, pt.second, newR, color, { x, y }, (double)(rand() % 1000 + 500), distanceToNew, angle };
 }
+CursorCircle RandomCircleCursor::addCircle(double ms){
+	int angle = rand() % 360;
+
+	double distanceToNew = 3 * r / 2 / (rand() % 5 + 1);
+	double newR = r / (rand() % 4 + 2);
+
+	auto pt = jump({ x, y }, distanceToNew, angle);
+
+	Color color = nextColor();
+
+	return{ pt.first, pt.second, newR, color, { x, y }, ms, distanceToNew, angle };
+}
 //END OF RANDOMCIRCLECURSOR
 
 void CursorContainer::draw() {
@@ -48,6 +60,12 @@ void RotatingMultiCursor::addCircle() {
 	for (auto& x : cs) 
 		circles.push_back(x.addCircle()); 
 }
+
+void RotatingMultiCursor::addCircle(double ms) {
+	for (auto& x : cs)
+		circles.push_back(x.addCircle(ms));
+}
+
 
 void RotatingMultiCursor::initAngles() {
 	for (int a = 0; a < 360; a += 360 / cs.size())

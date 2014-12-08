@@ -28,8 +28,9 @@ void Game::runConnectMode()
 	//1. check pressure at start ring
 
 	double pressure = checkPressure((int)Scene::locpair.start.getX(), (int)Scene::locpair.start.getY(), (int)Scene::locpair.start.getR());
-
+#ifdef DEBUG
 	std::cout << "Pressure is " << pressure << std::endl;
+#endif
 	//2. check if start ring is "locked-in" (ready to draw the line)
 	//		a. if start ring is not locked in keep checking for locked in
 	if (!Scene::locpair.withinPressure(pressure))

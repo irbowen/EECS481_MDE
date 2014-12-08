@@ -31,7 +31,7 @@ void Scene::draw(){
 
 	debugCursors.clear();
 
-	/*
+	
 	if (pullRegistered()){
 		int x = pull_index % 640;
 		int y = pull_index / 640;
@@ -48,7 +48,7 @@ void Scene::draw(){
 
 			circles.back().fade(2000);
 		}
-	}*/
+	}
 
 	for (const auto& pt : getCursorPoints()){
 		gameCursor.setPos({ pt.first, pt.second });
@@ -89,13 +89,13 @@ void Scene::draw(){
 	highlightLock.lock();
 	for (auto it = targetHighlighters.begin(); it != targetHighlighters.end();){
 		
-		/*if (deadLocations.count(it->first)){
+		if (deadLocations.count(it->first)){
 			it = targetHighlighters.erase(it);
 			continue;
-		}*/
+		}
 
 		if (it->second.exploding)
-			it->second.addCircle();
+			it->second.addCircle(6000.0);
 		
 		it->second.draw();
 		++it;

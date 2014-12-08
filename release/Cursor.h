@@ -34,6 +34,7 @@ public:
 	RandomCircleCursor(int x, int y, int r) : x{ x }, y{ y }, r{ r }, startR{ r }, colorScheme{ colorSchemes.begin() } {}
 	RandomCircleCursor() {}
 	CursorCircle addCircle();
+	CursorCircle addCircle(double);
 
 	inline virtual Color nextColor() { return (*colorScheme)->at(rand() % (*colorScheme)->size()); }
 	inline void chY(int dy) { y += dy; }
@@ -105,6 +106,7 @@ public:
 	virtual void draw();
 
 	inline void addCircle(int i) { circles.push_back(cs[i].addCircle()); }
+	inline void addCircle(int i, double ms) { circles.push_back(cs[i].addCircle(ms)); }
 
 	//inline ~CursorContainer() { for (auto& x : cs) delete x; }
 };
@@ -128,6 +130,7 @@ public:
 
 	inline void addCircle(int i) = delete;
 	void addCircle();
+	void addCircle(double);
 
 	void draw() override;
 
