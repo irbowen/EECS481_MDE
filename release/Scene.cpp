@@ -56,9 +56,11 @@ void Scene::draw(){
 
 		// normalized to shallowest possible cursor
 		auto forward = initial_buffer.at(640*pt.second + pt.first) - pressure + minDepth;
-		//gameCursor.cursor.setR(gameCursor.cursor.startR + forward / 10);
+		auto r = gameCursor.cursor.startR + forward / 10;
+		r = r > 2 * gameCursor.cursor.startR ? 2 * gameCursor.cursor.startR : (r < 0 ? 0 : r);
+		gameCursor.cursor.setR(r > 2 * gameCursor.cursor.startR ? 2 * gameCursor.cursor.startR : r);
 
-		gameCursor.addCircle();
+		gameCursor.addCircle(1500.0);
 	}
 
 
@@ -88,14 +90,16 @@ void Scene::draw(){
 
 	highlightLock.lock();
 	for (auto it = targetHighlighters.begin(); it != targetHighlighters.end();){
-		
-		if (deadLocations.count(it->first)){
+
+		auto ms = it->second.elapsed();
+
+		if (it->second.exploding && ms >= RotatingMultiCursor::explodeDuration){
 			it = targetHighlighters.erase(it);
 			continue;
 		}
 
-		if (it->second.exploding)
-			it->second.addCircle(6000.0);
+		if (it->second.exploding && ms < RotatingMultiCursor::explodeDuration / 2)
+			it->second.addCircle(RotatingMultiCursor::explodeDuration / 2);
 		
 		it->second.draw();
 		++it;

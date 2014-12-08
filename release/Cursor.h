@@ -71,6 +71,7 @@ public:
 	inline void rotateScheme(){ if (++i == CursorGradients.size()) i = 0; cursor.chColor(*CursorGradients[i]); }
 
 	inline void addCircle() { circles.push_back(cursor.addCircle()); }
+	inline void addCircle(double ms) { circles.push_back(cursor.addCircle(ms)); }
 
 	void draw();
 
@@ -137,7 +138,14 @@ public:
 	void update();
 	void initAngles();
 
+	high_resolution_clock::time_point explodeStart;
+
+
+	inline double elapsed() const { return duration_cast<duration<double, milli>>(high_resolution_clock::now() - explodeStart).count(); }
+
 	bool exploding = false;
+
+	static double explodeDuration;
 
 	void chCursors(const vector<GradientCircleCursor>&);
 };

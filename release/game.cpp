@@ -170,8 +170,6 @@ void Game::runSlideRingMode(int i) {
 			if (loc_it.contains(x, y)) { //if cursor is inside location
 				pressure = frame_data.at((unsigned)(y*MAX_X + x));
 
-				auto forward = initial_buffer.at(MAX_X*y + x) - pressure;
-
 				loc_it.setPressure(pressure);
 				PlaySound(TEXT("bubbles_sfx.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);//play a first sound
 				if (loc_it.exactMatch(pressure)) {
@@ -196,6 +194,7 @@ void Game::runSlideRingMode(int i) {
 						Scene::targetHighlighters[loc_it.id].chCursors(RAINBOW_CURSORS);
 
 						Scene::targetHighlighters[loc_it.id].exploding = true;
+						Scene::targetHighlighters[loc_it.id].explodeStart = high_resolution_clock::now();
 
 						break;
 

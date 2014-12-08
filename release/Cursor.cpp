@@ -78,6 +78,8 @@ void RotatingMultiCursor::chCursors(const vector<GradientCircleCursor>& cs_in){
 	update();
 }
 
+double RotatingMultiCursor::explodeDuration = 1250.0;
+
 // END OF ROTATINGMULTICURSOR
 
 
