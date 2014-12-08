@@ -8,6 +8,8 @@
 
 #include <unordered_map>
 
+extern std::mutex highlightLock;
+
 using std::unordered_map;
 
 //START OF SCENE
@@ -18,7 +20,7 @@ public:
 	static vector<PolygonGL> polys;
 	static vector<ColorSlideRing> rings;
 	static vector<Point> points;
-	static vector<Circle> circles;
+	static list<Circle> circles;
 	static vector<Line> lines;
 	static vector<RotatingMultiCursor> fancyCursors;
 	static CursorContainer cursors;
