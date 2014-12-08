@@ -22,6 +22,7 @@ vector<RotatingMultiCursor> Scene::fancyCursors;
 vector<DebugCursor> Scene::debugCursors;
 unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
 GameCursor Scene::gameCursor;
+vector<Connect> connects;
 
 mutex highlightLock;
 
@@ -62,6 +63,8 @@ void Scene::draw(){
 
 		gameCursor.addCircle(1500.0);
 	}
+
+	for (auto& x : connects) x.draw();
 
 
 	for (auto& x : debugCursors) x.draw();

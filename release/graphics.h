@@ -52,6 +52,20 @@ class Line {
 public:
 	Line(const pair<double, double>& pp1, const pair<double, double>& pp2, const Color& c, double thk) : p1{ pp1 }, p2{ pp2 }, color{ c }, thickness{ thk } {}
 	void draw();
+	inline void set(const pair<double, double>& pp1, const pair<double, double>& pp2) { p1 = pp1, p2 = pp2; }
+};
+
+class LinePair {
+	pair<double, double> p1;
+	pair<double, double> p2;
+	Line l1;
+	Line l2;
+public:
+	LinePair(const pair<double, double>& p1, const pair<double, double>& p2, const Color& c1, const Color& c2) : l1{ p1, p1, c1, 5.0 }, l2{ p1, p2, c2, 5.0 }, p1{ p1 }, p2{ p2 } {}
+
+	inline void setProgress(double prct) { auto mid = between(p1, p2, prct); l1.set(p1, mid), l2.set(mid, p2); }
+
+	inline void draw() { l1.draw(), l2.draw(); }
 };
 //END OF LINE
 

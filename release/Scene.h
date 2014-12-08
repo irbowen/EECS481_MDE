@@ -5,6 +5,7 @@
 #include "Circle.h"
 #include "Cursor.h"
 #include "LocPair.h"
+#include "Connect.h"
 
 #include <unordered_map>
 
@@ -28,6 +29,8 @@ public:
 	static vector<DebugCursor> debugCursors;
 
 	static GameCursor gameCursor;
+
+	static vector<Connect> connects;
 
 	// loc-id -> highlighter
 	static unordered_map<int, RotatingMultiCursor> targetHighlighters;

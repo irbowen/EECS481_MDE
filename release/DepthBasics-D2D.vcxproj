@@ -170,6 +170,7 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="ColorSlideCircle.h" />
+    <ClInclude Include="Connect.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="glDriver.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ColorSlideCircle.cpp" />
+    <ClCompile Include="Connect.cpp" />
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="CursorCircle.cpp" />
     <ClCompile Include="cursor_heuristic.cpp" />
