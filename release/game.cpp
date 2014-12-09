@@ -483,8 +483,8 @@ void Game::createConnectLocations(int n){
 				//std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
 				//std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
 
-				for (int j = 0; j < 50; ++j)
-					Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)j) / 50));
+				for (int m = 0; m < 50; ++m)
+					Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)m) / 50));
 
 				Scene::connects.lines.insert({ Scene::connects.dots[j-1].id, {
 						{ Scene::connects.dots[j-1].getX(), Scene::connects.dots[j-1].getY() },
