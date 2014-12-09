@@ -399,10 +399,35 @@ void Game::select_mode()
 			RED
 	} });
 	
+	double x, y;
+	bool mode_selected = false;
 
+	while (!mode_selected)
+	{
+		for (const auto& pt : getCursorPoints()) {
+			x = pt.first;
+			y = pt.second;
 
+			if (x < 220)
+			{
+				mode = 'c';
+				mode_selected = true;
+				break;
+			}
 
-	//run('k');
+			if (x > 260)
+			{
+				mode = 'k';
+				mode_selected = true;
+				break;
+			}
+				
+		}
+	}
+
+	std::cout << "mode: " << mode << std::endl;
+
+	run(mode);
 }
 void Game::startGame() {
 	select_mode();
