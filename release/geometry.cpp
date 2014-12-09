@@ -16,7 +16,7 @@ std::pair<double, double> jump(const std::pair<double, double>& p, double d, int
 	return{ p.first + d * cos(theta), p.second + d * sin(theta) };
 }
 
-double distance(std::pair<double, double> a, std::pair<double, double> b){
+double distance(const std::pair<double, double>& a, const std::pair<double, double>& b){
 	double dist_x = b.first - a.first;
 	double dist_y = b.second - a.second;
 	return sqrt(dist_x*dist_x + dist_y*dist_y);

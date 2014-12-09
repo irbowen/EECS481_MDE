@@ -134,7 +134,6 @@ void Game::run(char mode) {
 		//Run Slide Ring Target Mode
 		if (mode == 's') {
 			runSlideRingMode(i);
-
 		}
 		//Run Kinect The Dots Mode
 		else if (mode == 'k') {
@@ -234,6 +233,28 @@ void Game::runSlideRingMode(int i) {
 	*/
 
 	LocationLock.unlock();
+}
+
+void Game::runConnectMode(){
+
+	int nDots = connectsCleared < 2 ? 2 : (connectsCleared < 4 ? 3 : 4);
+
+	if (Scene::connects.empty())
+		Scene::connects.push_back(createConnectLocations(nDots));
+
+	auto& connect = Scene::connects.front();
+
+	bool won = false;
+	for (const auto& pt : getCursorPoints()) {
+		if (connect.processCursor(pt))
+			won = true;
+	}
+
+	if (won){
+		++connectsCleared;
+		Scene::connects.pop_back();
+		// do awesome shit with sounds and lights
+	}
 }
 
 Location Game::createRandomLocation(double final_radius) {

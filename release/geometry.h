@@ -10,6 +10,6 @@ std::pair<double, double> jump(const std::pair<double, double>& p, double d, int
 
 std::pair<double, double> between(const std::pair<double, double>& p1, const std::pair<double, double>& p2, double prct);
 
-double distance(std::pair<double, double> a, std::pair<double, double> b);
+double distance(const std::pair<double, double>& a, const std::pair<double, double>& b);
 
 #endif

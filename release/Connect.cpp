@@ -1,5 +1,6 @@
 #include "Connect.h"
 #include "geometry.h"
+#include <iterator>
 
 Connect::Connect(const vector<Location>& in) {
 	dots = in;
@@ -22,31 +23,33 @@ Connect::Connect(const vector<Location>& in) {
 }
 
 
-/*
 bool Connect::processCursor(const pair<double, double>& pt){
+
+	auto nextDotLoc = std::make_pair(next_dot->getX(), next_dot->getY());
+
 	if (::distance(*cur, pt) <= minDistance){
 
 		double prog = ((cur - points.begin() + 1) % resolution) / (double) resolution;
 
-		lines[next_dot->id].setProgress(prog);
+		if (next_dot != dots.begin())
+			lines.at(std::prev(next_dot)->id).setProgress(prog);
 
-		if (*cur == std::make_pair(next_dot->getX(), next_dot->getY())){
-			// got next location, fill in
-
-			// while *cur within radius of next_dot (aka 'this dot' still), increment cur
+		if (*cur++ == nextDotLoc){
+			next_dot->target.setGoalProgress(1.0);
 
 			if (++next_dot == dots.end()){
-				// beat whole thing, return true
+				return true;
 			}
+
+			// while *cur within radius of dot we just got, increment cur
+			while (::distance(*cur, nextDotLoc) <= std::prev(next_dot)->getRadius())
+				++cur;
 		}
-
-
-
 	}
 	// while *cur is within radius of next_dot, increment cur until at next dot
+	while (::distance(*cur, nextDotLoc) <= next_dot->getRadius() && *cur != nextDotLoc)
+		++cur;
 }
-*/
-
 
 double Connect::minDistance = 10;
 
