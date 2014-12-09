@@ -3,7 +3,7 @@
 
 Connect::Connect(const vector<Location>& in) {
 	dots = in;
-	for (int i = 0; i < dots.size() - 1; ++i){
+	for (unsigned i = 0; i < dots.size() - 1; ++i){
 		
 		for (int j = 0; j < resolution; ++j)
 			points.push_back(between({ dots[i].getX(), dots[i].getY() }, { dots[i+1].getX(), dots[i+1].getY()}, ((double)j) / 50));
@@ -21,6 +21,8 @@ Connect::Connect(const vector<Location>& in) {
 
 }
 
+
+/*
 bool Connect::processCursor(const pair<double, double>& pt){
 	if (::distance(*cur, pt) <= minDistance){
 
@@ -43,6 +45,8 @@ bool Connect::processCursor(const pair<double, double>& pt){
 	}
 	// while *cur is within radius of next_dot, increment cur until at next dot
 }
+*/
+
 
 double Connect::minDistance = 10;
 
