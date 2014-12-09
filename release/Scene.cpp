@@ -22,7 +22,7 @@ vector<RotatingMultiCursor> Scene::fancyCursors;
 vector<DebugCursor> Scene::debugCursors;
 unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
 GameCursor Scene::gameCursor;
-vector<Connect> connects;
+vector<Connect> Scene::connects;
 
 mutex highlightLock;
 

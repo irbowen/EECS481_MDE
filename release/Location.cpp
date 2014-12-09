@@ -1,7 +1,6 @@
 #include <gl\glew.h>
 #include <Windows.h>
 #include "location.h"
-#include "Scene.h"
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -36,9 +35,9 @@ Location::Location(double x_in, double y_in, double r_in, double pressure_in) :
 #endif
 	turnOn();
 
-	highlightLock.lock();
-	Scene::targetHighlighters.insert({ id, CREATE_LOCATION_HIGHLIGHTER(x_in, y_in, r_in * 8 / 7) });
-	highlightLock.unlock();
+	//highlightLock.lock();
+	//Scene::targetHighlighters.insert({ id, CREATE_LOCATION_HIGHLIGHTER(x_in, y_in, r_in * 8 / 7) });
+	//highlightLock.unlock();
 }
 
 /*
