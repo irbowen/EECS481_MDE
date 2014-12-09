@@ -2,6 +2,7 @@
 #include "geometry.h"
 #include <iterator>
 
+/*
 Connect::Connect(const vector<Location>& in) {
 	dots = in;
 	for (unsigned i = 0; i < dots.size() - 1; ++i){
@@ -21,7 +22,12 @@ Connect::Connect(const vector<Location>& in) {
 	cur = points.begin();
 
 }
+*/
 
+bool Connect::empty()
+{
+	return dots.empty();
+}
 
 bool Connect::processCursor(const pair<double, double>& pt){
 

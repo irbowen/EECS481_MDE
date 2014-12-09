@@ -240,8 +240,11 @@ void Game::runConnectMode(){
 	int nDots = connectsCleared < 2 ? 2 : (connectsCleared < 4 ? 3 : 4);
 
 	if (Scene::connects.empty())
-		Scene::connects.push_back(createConnectLocations(nDots));
+	{
+		createConnectLocations(nDots);
+	}
 
+	/*
 	auto& connect = Scene::connects.front();
 
 	bool won = false;
@@ -255,6 +258,7 @@ void Game::runConnectMode(){
 		Scene::connects.pop_back();
 		// do awesome shit with sounds and lights
 	}
+	*/
 }
 
 Location Game::createRandomLocation(double final_radius) {
@@ -373,19 +377,32 @@ void Game::startGame() {
 }
 
 
-vector<Location> Game::createConnectLocations(int n){
-	vector<Location> vecs;
+void Game::createConnectLocations(int n){
+	//vector<Location> vecs;
 	for (int i = 0; i < 2; i++)
-		vecs.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	{
+		Scene::connects.dots.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	}
+
+	for (unsigned i = 0; i < Scene::connects.dots.size() - 1; ++i)
+	{
+
+		Scene::connects.lines.insert({ Scene::connects.dots[i].id, {
+				{ Scene::connects.dots[i].getX(), Scene::connects.dots[i].getY() },
+				{ Scene::connects.dots[i + 1].getX(), Scene::connects.dots[i + 1].getY() },
+				GREEN,
+				RED
+		} });
+	}
 
 	if(n > 2){
 		int j = 2;
 		while (j < n){
 			Location new_location = createRandomLocation(Location::MAX_RADIUS - 55);
 			bool valid = true;
-			for (int k = 0; k < vecs.size() - 1 && valid; k++){
-				auto pair_a = std::make_pair(vecs[k].getX(), vecs[k].getY());
-				auto pair_b = std::make_pair(vecs[k + 1].getX(), vecs[k + 1].getY());
+			for (int k = 0; k < Scene::connects.dots.size() - 1 && valid; k++){
+				auto pair_a = std::make_pair(Scene::connects.dots[k].getX(), Scene::connects.dots[k].getY());
+				auto pair_b = std::make_pair(Scene::connects.dots[k + 1].getX(), Scene::connects.dots[k + 1].getY());
 				for (double d = 0.0; d <= 1.0 && valid; d += .01){
 					auto curLoc = between(pair_a, pair_b, d);
 					if (new_location.contains(curLoc.first, curLoc.second)){
@@ -397,11 +414,11 @@ vector<Location> Game::createConnectLocations(int n){
 			if (valid)
 			{
 				new_location.makeSmaller(15);
-				vecs.push_back(new_location);
+				Scene::connects.dots.push_back(new_location);
 			}
 
 			j++;
 		}
 	}
-	return vecs;
+	return ;
 }
