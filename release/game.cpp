@@ -247,7 +247,8 @@ void Game::runConnectMode(){
 	if (Scene::connects.empty())
 	{
 		createConnectLocations(nDots);
-		//***createConnectLocations(4);
+		//TRYME:
+		//createConnectLocations(4);
 	}
 
 	
