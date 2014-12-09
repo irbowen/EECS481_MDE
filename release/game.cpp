@@ -369,19 +369,19 @@ Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
 }
 
 void Game::startGame() {
-	run('s');
+	run('k');
 }
 
 
 vector<Location> Game::createConnectLocations(int n){
 	vector<Location> vecs;
 	for (int i = 0; i < 2; i++)
-		vecs.push_back(createRandomLocation(Location::MAX_RADIUS / ++num_active_spots + 20));
+		vecs.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
 
 	if(n > 2){
 		int j = 2;
 		while (j < n){
-			Location new_location = createRandomLocation(Location::MAX_RADIUS / ++num_active_spots + 20);
+			Location new_location = createRandomLocation(Location::MAX_RADIUS - 55);
 			bool valid = true;
 			for (int k = 0; k < vecs.size() - 1 && valid; k++){
 				auto pair_a = std::make_pair(vecs[k].getX(), vecs[k].getY());
@@ -395,7 +395,11 @@ vector<Location> Game::createConnectLocations(int n){
 				}
 			}
 			if (valid)
+			{
+				new_location.makeSmaller(15);
 				vecs.push_back(new_location);
+			}
+
 			j++;
 		}
 	}
