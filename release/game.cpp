@@ -336,3 +336,28 @@ Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
 void Game::startGame() {
 	run('s');
 }
+
+vector<Location> vecs;
+//determine how many locations to create
+if (vecs.size() == 1 || vecs.size() == 2) {
+	//location is good
+	//call constructor
+}
+bool bad_loc = true;
+while (bad_loc) {
+	if (vecs.size() == 3) {
+		Location _new_location = createRandomLocation(Location::MAX_RADIUS/++num_active_spots + 20);
+		auto first_loc_pair = std::make_pair(vecs.at(0).getX(), vecs.at(0).getY());
+		auto second_loc_pair std::make_pair(vecs.at(1).getX(), vecs.at(1).getY())
+		for (auto i = 0.0; i < 100.0; i++) {
+			auto return_pair = between(first_loc_pair, second_loc_pair, i);
+			if (_new_location.contains(return_pair.first, return_pair.second)) {
+				bad_loc = true;
+				break;
+			}
+		}
+		if (i == 100) {
+			bad_loc = false;
+		}
+	}
+}
