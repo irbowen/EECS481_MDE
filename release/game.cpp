@@ -351,31 +351,35 @@ void Game::startGame() {
 	run('s');
 }
 
-/*
-vector<Location> vecs;
-//determine how many locations to create
-if (vecs.size() == 1 || vecs.size() == 2) {
-	//location is good
-	//call constructor
+void Game::runConnectTheDots() {
+	
 }
 
-
-bool bad_loc = true;
-while (bad_loc) {
-	if (vecs.size() == 3) {
-		Location _new_location = createRandomLocation(Location::MAX_RADIUS/++num_active_spots + 20);
+bool Game::evalulateVector(std::vector<Location>& vec) {
+	if (vec.size() < 2) {
+		return false;
+	}
+	if (vec.size() == 2) {
+		return true;
+	}
+	if (vec.size() == 3 || vec.size() == 4) {
 		auto first_loc_pair = std::make_pair(vecs.at(0).getX(), vecs.at(0).getY());
-		auto second_loc_pair std::make_pair(vecs.at(1).getX(), vecs.at(1).getY())
+		auto second_loc_pair = std::make_pair(vecs.at(1).getX(), vecs.at(1).getY());
 		for (auto i = 0.0; i < 100.0; i++) {
 			auto return_pair = between(first_loc_pair, second_loc_pair, i);
-			if (_new_location.contains(return_pair.first, return_pair.second)) {
-				bad_loc = true;
-				break;
+			if (vec.at(2).contains_lenient(return_pair.first, return_pair.second)) {//contains_lenient adds 20 to radius
+				return false;
 			}
 		}
-		if (i == 100) {
-			bad_loc = false;
+	}
+	if (vec.size() == 4) {
+		auto third_loc_pair = std::make_pair(vecs.at(2).getX(), vecs.at(2).getY());
+		for (auto i = 0.0; i < 100.0; i++) {
+			auto return_pair = between(second_loc_pair, third_loc_pair, i);
+			if (vec.at(3).contains_lenient(return_pair.first, return_pair.second)) {
+				return false;
+			}
 		}
 	}
+	return true;
 }
-*/
