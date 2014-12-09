@@ -18,6 +18,14 @@
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
 
+#define CREATE_LOCATION_HIGHLIGHTER(x,y,r) RotatingMultiCursor{ x, y, r, 5, \
+{\
+	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 },\
+	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 },\
+	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 }\
+}\
+}
+
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 	GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
@@ -267,7 +275,13 @@ Location Game::createRandomLocation(double final_radius) {
 	} while (!valid);
 	//double new_radius = start_radius / radius_scale_factor;
 	//std::cout << "New radius is: " << new_radius << std::endl;
-	return Location(x_location, y_location, final_radius, initial_buffer.at(MAX_X*y_location + x_location));
+	
+	Location temp =  Location(x_location, y_location, final_radius, initial_buffer.at(MAX_X*y_location + x_location));
+	highlightLock.lock();
+	Scene::targetHighlighters.insert({ temp.id, CREATE_LOCATION_HIGHLIGHTER((double)x_location, (double)y_location, final_radius * 8 / 7) });
+	highlightLock.unlock();
+
+	return temp;
 
 	/*while ((x_location <= max_radius || abs(x_location - MAX_X) <= max_radius
 	|| y_location <= max_radius || abs(y_location - MAX_Y) <= max_radius) || valid == false
@@ -337,12 +351,15 @@ void Game::startGame() {
 	run('s');
 }
 
+/*
 vector<Location> vecs;
 //determine how many locations to create
 if (vecs.size() == 1 || vecs.size() == 2) {
 	//location is good
 	//call constructor
 }
+
+
 bool bad_loc = true;
 while (bad_loc) {
 	if (vecs.size() == 3) {
@@ -361,3 +378,4 @@ while (bad_loc) {
 		}
 	}
 }
+*/
