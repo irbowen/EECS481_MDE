@@ -36,6 +36,8 @@ class Game {
 public:
 	Game();
 	Game(CDepthBasics& kinect);
+	void select_mode();
+
 	void run(char mode);						//s = slidering | k = kinect-the-dots
 	void startGame();
 	void startKinect();

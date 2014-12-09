@@ -140,6 +140,11 @@ void Game::run(char mode) {
 			//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 			runConnectMode();
 		}
+
+		else if (mode == 'f')
+		{
+			std::cout << "Couldn't Select Mode" << std::endl;
+		}
 		i++;
 		
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -375,8 +380,13 @@ Location Game::createLocation(int xx, int yy, double final_radius) {
 	return temp;
 }
 
+void Game::select_mode()
+{
+	char mode = 'k';
+	run(mode);
+}
 void Game::startGame() {
-	run('k');
+	select_mode();
 }
 
 
