@@ -63,7 +63,7 @@ bool Location::contains(double x_in, double y_in) {
 	return distance(x_in, y_in) < target.getR();
 }
 
-bool Location::contains_leinent(double x_in, double y_in) {
+bool Location::contains_lenient(double x_in, double y_in) {
 	return distance(x_in, y_in) < target.getR() + 20;
 }
 
