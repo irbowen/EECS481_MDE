@@ -382,8 +382,27 @@ Location Game::createLocation(int xx, int yy, double final_radius) {
 
 void Game::select_mode()
 {
-	char mode = 'k';
-	run(mode);
+	
+	char mode = 'f';
+	//Scene::locations.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	Scene::locations.push_back(createLocation(120, 120, Location::MAX_RADIUS-65));
+	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS - 65));
+	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS - 65));
+
+	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65));
+	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65));
+
+	Scene::connects.lines.insert({ Scene::connects.dots[0].id, {
+			{ Scene::connects.dots[0].getX(), Scene::connects.dots[0].getY() },
+			{ Scene::connects.dots[1].getX(), Scene::connects.dots[1].getY() },
+			GREEN,
+			RED
+	} });
+	
+
+
+
+	//run('k');
 }
 void Game::startGame() {
 	select_mode();
