@@ -241,21 +241,23 @@ void Game::runConnectMode(){
 
 	if (Scene::connects.empty())
 	{
-		createConnectLocations(3);
+		createConnectLocations(nDots);
+		//***createConnectLocations(4);
 	}
 
-	/*
-	auto& connect = Scene::connects.front();
+	
+	//auto& connect = Scene::connects.front();
 
+	/*
 	bool won = false;
 	for (const auto& pt : getCursorPoints()) {
-		if (connect.processCursor(pt))
+		if (Scene::connects.processCursor(pt))
 			won = true;
 	}
 
 	if (won){
 		++connectsCleared;
-		Scene::connects.pop_back();
+		Scene::connects.dots.pop_back();
 		// do awesome shit with sounds and lights
 	}
 	*/
@@ -419,9 +421,12 @@ void Game::createConnectLocations(int n){
 				Location temp = createLocation(new_location.getX(), new_location.getY(), Location::MAX_RADIUS - 40);
 				Scene::connects.dots.push_back(temp);
 
-				std::cout << "what is j: " << j << std::endl;
-				std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
-				std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
+				//std::cout << "what is j: " << j << std::endl;
+				//std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
+				//std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
+
+				for (int j = 0; j < 50; ++j)
+					Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)j) / 50));
 
 				Scene::connects.lines.insert({ Scene::connects.dots[j-1].id, {
 						{ Scene::connects.dots[j-1].getX(), Scene::connects.dots[j-1].getY() },
@@ -436,6 +441,6 @@ void Game::createConnectLocations(int n){
 			
 		}
 	}
-	std::cout << "i'm out" << std::endl;
+	//std::cout << "i'm out" << std::endl;
 	return ;
 }
