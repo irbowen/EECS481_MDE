@@ -34,6 +34,7 @@ public:
 	//void makeBigger(double);
 	void makeSmaller(double);
 	bool contains(double, double);
+	bool contains_leinent(double, double);
 	bool withinPressure(double);
 	bool exactMatch(double);
 	double getPercentage(double);
