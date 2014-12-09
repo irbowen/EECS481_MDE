@@ -410,7 +410,7 @@ void Game::select_mode()
 
 			if (x < 220)
 			{
-				mode = 'c';
+				mode = 's';
 				mode_selected = true;
 				break;
 			}
@@ -424,6 +424,9 @@ void Game::select_mode()
 				
 		}
 	}
+	Scene::locations.clear();
+	Scene::connects.lines.clear();
+	Scene::connects.dots.clear();
 
 	std::cout << "mode: " << mode << std::endl;
 
