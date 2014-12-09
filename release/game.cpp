@@ -372,31 +372,67 @@ void Game::startGame() {
 	run('s');
 }
 
-/*
-vector<Location> vecs;
-//determine how many locations to create
-if (vecs.size() == 1 || vecs.size() == 2) {
-	//location is good
-	//call constructor
+<<<<<<< Updated upstream
+void Game::runConnectTheDots() {
+	
 }
 
-
-bool bad_loc = true;
-while (bad_loc) {
-	if (vecs.size() == 3) {
-		Location _new_location = createRandomLocation(Location::MAX_RADIUS/++num_active_spots + 20);
+bool Game::evalulateVector(std::vector<Location>& vec) {
+	if (vec.size() < 2) {
+		return false;
+	}
+	if (vec.size() == 2) {
+		return true;
+	}
+	if (vec.size() == 3 || vec.size() == 4) {
 		auto first_loc_pair = std::make_pair(vecs.at(0).getX(), vecs.at(0).getY());
-		auto second_loc_pair std::make_pair(vecs.at(1).getX(), vecs.at(1).getY())
+		auto second_loc_pair = std::make_pair(vecs.at(1).getX(), vecs.at(1).getY());
 		for (auto i = 0.0; i < 100.0; i++) {
 			auto return_pair = between(first_loc_pair, second_loc_pair, i);
-			if (_new_location.contains(return_pair.first, return_pair.second)) {
-				bad_loc = true;
-				break;
+			if (vec.at(2).contains_lenient(return_pair.first, return_pair.second)) {//contains_lenient adds 20 to radius
+				return false;
 			}
 		}
-		if (i == 100) {
-			bad_loc = false;
+	}
+	if (vec.size() == 4) {
+		auto third_loc_pair = std::make_pair(vecs.at(2).getX(), vecs.at(2).getY());
+		for (auto i = 0.0; i < 100.0; i++) {
+			auto return_pair = between(second_loc_pair, third_loc_pair, i);
+			if (vec.at(3).contains_lenient(return_pair.first, return_pair.second)) {
+				return false;
+			}
 		}
 	}
+	return true;
 }
-*/
+=======
+
+vector<Location> Game::createConnectLocations(int n){
+	vector<Location> vecs;
+	for (int i = 0; i < 2; i++)
+		vecs.push_back(createRandomLocation(Location::MAX_RADIUS / ++num_active_spots + 20));
+
+	if(n > 2){
+		int j = 2;
+		while (j < n){
+			Location new_location = createRandomLocation(Location::MAX_RADIUS / ++num_active_spots + 20);
+			bool valid = true;
+			for (int k = 0; k < vecs.size() - 1 && valid; k++){
+				auto pair_a = std::make_pair(vecs[k].getX(), vecs[k].getY());
+				auto pair_b = std::make_pair(vecs[k + 1].getX(), vecs[k + 1].getY());
+				for (double d = 0.0; d <= 1.0 && valid; d += .01){
+					auto curLoc = between(pair_a, pair_b, d);
+					if (new_location.contains(curLoc.first, curLoc.second)){
+						j--;
+						valid = false;
+					}
+				}
+			}
+			if (valid)
+				vecs.push_back(new_location);
+			j++;
+		}
+	}
+	return vecs;
+}
+>>>>>>> Stashed changes
