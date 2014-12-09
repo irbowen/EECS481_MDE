@@ -63,6 +63,10 @@ bool Location::contains(double x_in, double y_in) {
 	return distance(x_in, y_in) < target.getR();
 }
 
+bool Location::contains_leinent(double x_in, double y_in) {
+	return distance(x_in, y_in) < target.getR() + 20;
+}
+
 double Location::getPercentage(double input) {
 	double deflection = abs(input - start_pressure);
 	return (deflection / TARGET_PRESSURE <= 1.0 &&
