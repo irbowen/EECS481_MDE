@@ -8,6 +8,7 @@
 
 #define PI 3.14159265
 
+/*
 #define CREATE_LOCATION_HIGHLIGHTER(x,y,r) RotatingMultiCursor{ x, y, r, 5, \
 {\
 	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 },\
@@ -15,6 +16,7 @@
 	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 }\
 }\
 }
+*/
 
 //START OF LOCATION
 
