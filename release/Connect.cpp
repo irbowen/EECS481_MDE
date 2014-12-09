@@ -49,6 +49,8 @@ bool Connect::processCursor(const pair<double, double>& pt){
 	// while *cur is within radius of next_dot, increment cur until at next dot
 	while (::distance(*cur, nextDotLoc) <= next_dot->getRadius() && *cur != nextDotLoc)
 		++cur;
+
+	return false;
 }
 
 double Connect::minDistance = 10;

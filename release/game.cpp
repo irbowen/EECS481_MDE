@@ -372,40 +372,6 @@ void Game::startGame() {
 	run('s');
 }
 
-<<<<<<< Updated upstream
-void Game::runConnectTheDots() {
-	
-}
-
-bool Game::evalulateVector(std::vector<Location>& vec) {
-	if (vec.size() < 2) {
-		return false;
-	}
-	if (vec.size() == 2) {
-		return true;
-	}
-	if (vec.size() == 3 || vec.size() == 4) {
-		auto first_loc_pair = std::make_pair(vecs.at(0).getX(), vecs.at(0).getY());
-		auto second_loc_pair = std::make_pair(vecs.at(1).getX(), vecs.at(1).getY());
-		for (auto i = 0.0; i < 100.0; i++) {
-			auto return_pair = between(first_loc_pair, second_loc_pair, i);
-			if (vec.at(2).contains_lenient(return_pair.first, return_pair.second)) {//contains_lenient adds 20 to radius
-				return false;
-			}
-		}
-	}
-	if (vec.size() == 4) {
-		auto third_loc_pair = std::make_pair(vecs.at(2).getX(), vecs.at(2).getY());
-		for (auto i = 0.0; i < 100.0; i++) {
-			auto return_pair = between(second_loc_pair, third_loc_pair, i);
-			if (vec.at(3).contains_lenient(return_pair.first, return_pair.second)) {
-				return false;
-			}
-		}
-	}
-	return true;
-}
-=======
 
 vector<Location> Game::createConnectLocations(int n){
 	vector<Location> vecs;
@@ -435,4 +401,3 @@ vector<Location> Game::createConnectLocations(int n){
 	}
 	return vecs;
 }
->>>>>>> Stashed changes

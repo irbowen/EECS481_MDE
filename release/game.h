@@ -44,7 +44,10 @@ public:
 	void runSlideRingMode(int);
 
 	//for connectmode
-	void runConnectMode(int);
+	void runConnectMode();
+
+	int connectsCleared = 0;
+
 	bool line(LocPair& locpair);
 	double dist(int x1, int y1, int x2, int y2);
 	bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);

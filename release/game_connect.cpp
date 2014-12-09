@@ -18,7 +18,7 @@
 using std::mutex;
 
 Color palette(Color& c);
-
+/*
 void Game::runConnectMode()
 {
 	//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
@@ -57,6 +57,7 @@ void Game::runConnectMode()
 		}
 	}
 }
+*/
 
 LocPair Game::createRandomLocPair(int opt_x1, int opt_y1, int opt_x2, int opt_y2)
 {
