@@ -36,6 +36,8 @@ class Game {
 public:
 	Game();
 	Game(CDepthBasics& kinect);
+	void select_mode();
+
 	void run(char mode);						//s = slidering | k = kinect-the-dots
 	void startGame();
 	void startKinect();
@@ -51,6 +53,6 @@ public:
 	bool line(LocPair& locpair);
 	double dist(int x1, int y1, int x2, int y2);
 	bool on_line(int x1, int y1, int x2, int y2, int x3, int y3);
-	vector<Location> Game::createConnectLocations(int n);
+	void createConnectLocations(int n);
 };
 #endif

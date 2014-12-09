@@ -30,7 +30,7 @@ public:
 
 	static GameCursor gameCursor;
 
-	static vector<Connect> connects;
+	static Connect connects;
 
 	// loc-id -> highlighter
 	static unordered_map<int, RotatingMultiCursor> targetHighlighters;

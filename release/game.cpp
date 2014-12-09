@@ -140,6 +140,11 @@ void Game::run(char mode) {
 			//Scene::locpairs.push_back(createRandomLocPair(50, 50, 300, 300));
 			runConnectMode();
 		}
+
+		else if (mode == 'f')
+		{
+			std::cout << "Couldn't Select Mode" << std::endl;
+		}
 		i++;
 		
 		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_MILLISECONDS));
@@ -240,21 +245,28 @@ void Game::runConnectMode(){
 	int nDots = connectsCleared < 2 ? 2 : (connectsCleared < 4 ? 3 : 4);
 
 	if (Scene::connects.empty())
-		Scene::connects.push_back(createConnectLocations(nDots));
+	{
+		createConnectLocations(nDots);
+		//TRYME:
+		//createConnectLocations(4);
+	}
 
-	auto& connect = Scene::connects.front();
+	
+	//auto& connect = Scene::connects.front();
 
+	/*
 	bool won = false;
 	for (const auto& pt : getCursorPoints()) {
-		if (connect.processCursor(pt))
+		if (Scene::connects.processCursor(pt))
 			won = true;
 	}
 
 	if (won){
 		++connectsCleared;
-		Scene::connects.pop_back();
+		Scene::connects.dots.pop_back();
 		// do awesome shit with sounds and lights
 	}
+	*/
 }
 
 Location Game::createRandomLocation(double final_radius) {
@@ -322,20 +334,17 @@ Location Game::createRandomLocation(double final_radius) {
 	
 }
 
-Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
-#ifdef DEBUG
-	std::cout << "Scale factor: " << radius_scale_factor << std::endl;
-#endif
+Location Game::createLocation(int xx, int yy, double final_radius) {
 	int x_location, y_location;
 	bool valid = false;
 
 	do {//check to make sure its not off the screen
 		x_location = xx;
 		y_location = yy;
-		if (x_location <= MAX_RADIUS || x_location >= (MAX_X - MAX_RADIUS)) {
+		if (x_location <= final_radius || x_location >= (MAX_X - final_radius)) {
 			continue;//bad location, do the loop again
 		}
-		if (y_location <= MAX_RADIUS || y_location >= (MAX_Y - MAX_RADIUS)) {
+		if (y_location <= final_radius || y_location >= (MAX_Y - final_radius)) {
 			continue;//bad location, do the loop again
 		}
 		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
@@ -352,7 +361,7 @@ Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
 		for (; loc_it != Scene::locations.end(); ++loc_it) {//now check that it doesn't overlap with any already created
 			if (loc_it->isOn()) {
 				double distance = loc_it->distance(x_location, y_location);
-				if (distance < loc_it->getRadius() * 3) {
+				if (distance < loc_it->endRadius * 2) {
 					break;//bad location, times 2 just to be safe
 				}
 			}
@@ -360,48 +369,136 @@ Location Game::createLocation(int xx, int yy, double radius_scale_factor) {
 		if (loc_it == Scene::locations.end()) {
 			valid = true;//if no issues with other locatiosn, location is good
 		}
-	} while (!valid);
-	double new_radius = start_radius / radius_scale_factor;
-#ifdef DEBUG
-	std::cout << "New radius is: " << new_radius << std::endl;
-#endif
-	return Location(x_location, y_location, new_radius, initial_buffer.at(MAX_X*y_location + x_location));
+		} while (!valid);
+	//double new_radius = start_radius / radius_scale_factor;
+	//std::cout << "New radius is: " << new_radius << std::endl;
+
+	Location temp = Location(x_location, y_location, final_radius, initial_buffer.at(MAX_X*y_location + x_location));
+	highlightLock.lock();
+	Scene::targetHighlighters.insert({ temp.id, CREATE_LOCATION_HIGHLIGHTER((double)x_location, (double)y_location, final_radius * 8 / 7) });
+	highlightLock.unlock();
+
+	return temp;
 }
 
+void Game::select_mode()
+{
+	
+	char mode = 'f';
+	//Scene::locations.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	Scene::locations.push_back(createLocation(120, 120, Location::MAX_RADIUS-65));
+	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS - 65));
+	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS - 65));
+
+	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65));
+	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65));
+
+	Scene::connects.lines.insert({ Scene::connects.dots[0].id, {
+			{ Scene::connects.dots[0].getX(), Scene::connects.dots[0].getY() },
+			{ Scene::connects.dots[1].getX(), Scene::connects.dots[1].getY() },
+			GREEN,
+			RED
+	} });
+	
+	double x, y;
+	bool mode_selected = false;
+
+	while (!mode_selected)
+	{
+		for (const auto& pt : getCursorPoints()) {
+			x = pt.first;
+			y = pt.second;
+
+			if (x < 220)
+			{
+				mode = 's';
+				mode_selected = true;
+				break;
+			}
+
+			if (x > 260)
+			{
+				mode = 'k';
+				mode_selected = true;
+				break;
+			}
+				
+		}
+	}
+	Scene::locations.clear();
+	Scene::connects.lines.clear();
+	Scene::connects.dots.clear();
+
+	std::cout << "mode: " << mode << std::endl;
+
+	run(mode);
+}
 void Game::startGame() {
-	run('k');
+	select_mode();
 }
 
 
-vector<Location> Game::createConnectLocations(int n){
-	vector<Location> vecs;
+void Game::createConnectLocations(int n){
+	//vector<Location> vecs;
 	for (int i = 0; i < 2; i++)
-		vecs.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	{
+		Scene::connects.dots.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+	}
+
+	for (unsigned i = 0; i < Scene::connects.dots.size() - 1; ++i)
+	{
+
+		Scene::connects.lines.insert({ Scene::connects.dots[i].id, {
+				{ Scene::connects.dots[i].getX(), Scene::connects.dots[i].getY() },
+				{ Scene::connects.dots[i + 1].getX(), Scene::connects.dots[i + 1].getY() },
+				GREEN,
+				RED
+		} });
+	}
 
 	if(n > 2){
 		int j = 2;
-		while (j < n){
-			Location new_location = createRandomLocation(Location::MAX_RADIUS - 55);
+		while (j < n)
+		{
+			Location new_location = createRandomLocation(Location::MAX_RADIUS - 25);
 			bool valid = true;
-			for (int k = 0; k < vecs.size() - 1 && valid; k++){
-				auto pair_a = std::make_pair(vecs[k].getX(), vecs[k].getY());
-				auto pair_b = std::make_pair(vecs[k + 1].getX(), vecs[k + 1].getY());
+			for (int k = 0; k < Scene::connects.dots.size() - 1 && valid; k++){
+				auto pair_a = std::make_pair(Scene::connects.dots[k].getX(), Scene::connects.dots[k].getY());
+				auto pair_b = std::make_pair(Scene::connects.dots[k + 1].getX(), Scene::connects.dots[k + 1].getY());
 				for (double d = 0.0; d <= 1.0 && valid; d += .01){
 					auto curLoc = between(pair_a, pair_b, d);
 					if (new_location.contains(curLoc.first, curLoc.second)){
-						j--;
+						//j--;
 						valid = false;
 					}
 				}
 			}
 			if (valid)
 			{
-				new_location.makeSmaller(15);
-				vecs.push_back(new_location);
+				//new_location.makeSmaller(100);
+				Location temp = createLocation(new_location.getX(), new_location.getY(), Location::MAX_RADIUS - 40);
+				Scene::connects.dots.push_back(temp);
+
+				//std::cout << "what is j: " << j << std::endl;
+				//std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
+				//std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
+
+				for (int j = 0; j < 50; ++j)
+					Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)j) / 50));
+
+				Scene::connects.lines.insert({ Scene::connects.dots[j-1].id, {
+						{ Scene::connects.dots[j-1].getX(), Scene::connects.dots[j-1].getY() },
+						{ temp.getX(), temp.getY() },
+						GREEN,
+						RED
+				} });
+				
+				j++;
 			}
 
-			j++;
+			
 		}
 	}
-	return vecs;
+	//std::cout << "i'm out" << std::endl;
+	return ;
 }
