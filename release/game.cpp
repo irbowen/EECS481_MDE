@@ -403,36 +403,34 @@ void Game::select_mode()
 	double x, y;
 	bool mode_selected = false;
 
-	while (!mode_selected)
-	{
+	while (!mode_selected) {
 		for (const auto& pt : getCursorPoints()) {
 			x = pt.first;
 			y = pt.second;
-
-			if (x < 220)
-			{
-				mode = 's';
-				mode_selected = true;
-				break;
+			double current_pressure = frame_data.at((unsigned)(y*MAX_X + x));
+			double intial_pressure = initial_buffer.at((unsigned)(y*MAX_X + x));
+			double deflection = abs(current_pressure - intial_pressure);
+			if (deflection > 300) {
+				if (x < 220) {
+					mode = 's';
+					mode_selected = true;
+					break;
+				}
+				if (x > 260) {
+					mode = 'k';
+					mode_selected = true;
+					break;
+				}
 			}
-
-			if (x > 260)
-			{
-				mode = 'k';
-				mode_selected = true;
-				break;
-			}
-				
 		}
 	}
 	Scene::locations.clear();
 	Scene::connects.lines.clear();
 	Scene::connects.dots.clear();
-
 	std::cout << "mode: " << mode << std::endl;
-
 	run(mode);
 }
+
 void Game::startGame() {
 	select_mode();
 }
