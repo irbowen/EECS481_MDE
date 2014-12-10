@@ -31,6 +31,9 @@ bool Connect::empty()
 
 bool Connect::processCursor(const pair<double, double>& pt){
 
+	if (next_dot == dots.size())
+		return true;
+
 	auto nextDotLoc = std::make_pair(dots[next_dot].getX(), dots[next_dot].getY());
 
 	if (::distance(points[cur], pt) <= minDistance){
@@ -52,13 +55,21 @@ bool Connect::processCursor(const pair<double, double>& pt){
 				++cur;
 		}
 	}
+
+	if (cur == points.size())
+		return true;
+
 	// while *cur is within radius of next_dot, increment cur until at next dot
-	while (::distance(points[cur], nextDotLoc) <= dots[next_dot].getRadius() && points[cur] != nextDotLoc)
-		++cur;
+	while (::distance(points[cur], nextDotLoc) <= dots[next_dot].getRadius() && points[cur] != nextDotLoc){
+		if (++cur == points.size()){
+			--cur;
+			break;
+		}
+	}
 
 	return false;
 }
 
-double Connect::minDistance = 20;
+double Connect::minDistance = 50;
 
 int Connect::resolution = 50;

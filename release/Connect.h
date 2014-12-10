@@ -31,7 +31,8 @@ public:
 	bool processCursor(const pair<double, double>&);
 	inline void draw(){ for (auto& x : lines) x.second.draw(); for (auto& x : dots) x.draw(); }
 
-	inline pair<double, double> curGoal() { return points.empty() ? std::make_pair(-50.0, -50.0) : points[cur]; }
+	inline pair<double, double> curGoal() { return points.empty() ? std::make_pair(-50.0, -50.0) : (cur == points.size() ? std::make_pair(-50.0, -50.0) : points[cur]); }
 
+	inline void clear() { dots.clear(), lines.clear(), points.clear(); }
 };
 #endif

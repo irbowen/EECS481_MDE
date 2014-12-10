@@ -265,8 +265,7 @@ void Game::runConnectMode(){
 
 	if (won){
 		++connectsCleared;
-		Scene::connects.dots.clear();
-		Scene::connects.lines.clear();
+		Scene::connects.clear();
 		// do awesome shit with sounds and lights
 	}
 	
@@ -431,8 +430,7 @@ void Game::select_mode()
 		}
 	}
 	Scene::locations.clear();
-	Scene::connects.lines.clear();
-	Scene::connects.dots.clear();
+	Scene::connects.clear();
 	std::cout << "mode: " << mode << std::endl;
 
 	*/
@@ -447,11 +445,9 @@ void Game::startGame() {
 void Game::createConnectLocations(int n){
 	LocationLock.lock();
 	//vector<Location> vecs;
-	for (int i = 0; i < 2; i++)
-	{
-		Scene::connects.dots.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
-	}
+	Scene::connects.dots.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
 
+	/*
 	for (unsigned i = 0; i < Scene::connects.dots.size() - 1; ++i)
 	{
 
@@ -466,54 +462,64 @@ void Game::createConnectLocations(int n){
 
 	if (n == 2)
 	{
-		for (int m = 0; m < 50; ++m)
+		for (int m = 0; m <= 50; ++m)
 			Scene::connects.points.push_back(between({ Scene::connects.dots[0].getX(), Scene::connects.dots[0].getY() }, { Scene::connects.dots[1].getX(), Scene::connects.dots[1].getY() }, ((double)m) / 50));
 
-	}
+	}*/
 
-	if(n > 2){
-		int j = 2;
-		while (j < n)
-		{
-			Location new_location = createRandomLocation(Location::MAX_RADIUS - 25);
-			bool valid = true;
-			for (int k = 0; k < Scene::connects.dots.size() - 1 && valid; k++){
-				auto pair_a = std::make_pair(Scene::connects.dots[k].getX(), Scene::connects.dots[k].getY());
-				auto pair_b = std::make_pair(Scene::connects.dots[k + 1].getX(), Scene::connects.dots[k + 1].getY());
-				for (double d = 0.0; d <= 1.0 && valid; d += .01){
-					auto curLoc = between(pair_a, pair_b, d);
-					if (new_location.contains(curLoc.first, curLoc.second)){
-						//j--;
-						valid = false;
-					}
+	int j = 1;
+	while (j < n)
+	{
+		Location new_location = createRandomLocation(Location::MAX_RADIUS - 25);
+		bool valid = true;
+
+		auto this_pos = std::make_pair(new_location.getX(), new_location.getY());
+
+		for (const auto& placed : Scene::connects.dots){
+			auto that_pos = std::make_pair(placed.getX(), placed.getY());
+			if (::distance(this_pos, that_pos) < 150)
+				valid = false;
+		}
+
+		for (int k = 0; k < Scene::connects.dots.size() - 1 && valid; k++){
+			auto pair_a = std::make_pair(Scene::connects.dots[k].getX(), Scene::connects.dots[k].getY());
+			auto pair_b = std::make_pair(Scene::connects.dots[k + 1].getX(), Scene::connects.dots[k + 1].getY());
+			for (double d = 0.0; d <= 1.0 && valid; d += .01){
+				auto curLoc = between(pair_a, pair_b, d);
+				if (new_location.contains(curLoc.first, curLoc.second)){
+					//j--;
+					valid = false;
 				}
 			}
-			if (valid)
-			{
-				//new_location.makeSmaller(100);
-				Location temp = createLocation(new_location.getX(), new_location.getY(), Location::MAX_RADIUS - 40);
-				Scene::connects.dots.push_back(temp);
+		}
+		if (valid)
+		{
+			//new_location.makeSmaller(100);
+			Location temp = createLocation(new_location.getX(), new_location.getY(), Location::MAX_RADIUS - 40);
+			Scene::connects.dots.push_back(temp);
 
-				//std::cout << "what is j: " << j << std::endl;
-				//std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
-				//std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
+			//std::cout << "what is j: " << j << std::endl;
+			//std::cout << "what is dots.size: " << Scene::connects.dots.size() << std::endl;
+			//std::cout << "what is dots.last (x,y): " << Scene::connects.dots[j].getX() << "," << Scene::connects.dots[j].getY() << std::endl;
 
-				for (int m = 0; m < 50; ++m)
-					Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)m) / 50));
+			for (int m = 0; m < 50; ++m)
+				Scene::connects.points.push_back(between({ Scene::connects.dots[j - 1].getX(), Scene::connects.dots[j - 1].getY() }, { temp.getX(), temp.getY() }, ((double)m) / 50));
 
-				Scene::connects.lines.insert({ Scene::connects.dots[j-1].id, {
-						{ Scene::connects.dots[j-1].getX(), Scene::connects.dots[j-1].getY() },
-						{ temp.getX(), temp.getY() },
-						GREEN,
-						RED
-				} });
+			Scene::connects.lines.insert({ Scene::connects.dots[j-1].id, {
+					{ Scene::connects.dots[j-1].getX(), Scene::connects.dots[j-1].getY() },
+					{ temp.getX(), temp.getY() },
+					GREEN,
+					RED
+			} });
 				
-				j++;
-			}
+			j++;
+		}
 
 			
-		}
 	}
+
+	Scene::connects.points.push_back({Scene::connects.dots.back().getX(), Scene::connects.dots.back().getY()});
+	
 	//std::cout << "i'm out" << std::endl;
 	LocationLock.unlock();
 	return ;
