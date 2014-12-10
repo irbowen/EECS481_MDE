@@ -4,6 +4,8 @@
 #include "graphics.h"
 #include <unordered_map>
 
+extern std::mutex LocationLock;
+
 using std::unordered_map;
 
 class Connect {
@@ -33,6 +35,6 @@ public:
 
 	inline pair<double, double> curGoal() { return points.empty() ? std::make_pair(-50.0, -50.0) : (cur == points.size() ? std::make_pair(-50.0, -50.0) : points[cur]); }
 
-	inline void clear() { dots.clear(), lines.clear(), points.clear(); }
+	inline void clear() { LocationLock.lock(); dots.clear(), lines.clear(), points.clear(); LocationLock.unlock(); }
 };
 #endif

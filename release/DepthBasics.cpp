@@ -452,12 +452,12 @@ void CDepthBasics::ProcessDepth()
 			pStartScan++;
 			i++;
 
-			/*
-			if (checkPull && frame_data[ind] - initial_buffer[ind] >= minDepth * -1){
+			
+			if (checkPull && frame_data[ind] - initial_buffer[ind] >= 150){
 				pulled = true;
 				pull_index = ind;
 			}
-			*/
+			
 
 
 			// discard the portion of the depth that contains only the player index

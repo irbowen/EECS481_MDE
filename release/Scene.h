@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 extern std::mutex highlightLock;
+extern std::mutex LocationLock;
 
 using std::unordered_map;
 

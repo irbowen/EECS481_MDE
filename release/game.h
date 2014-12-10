@@ -26,7 +26,7 @@ class Game {
 	const int SAMPLE_MILLISECONDS = 100;
 	double start_radius = 20;
 	//std::vector<double> intial_buffer;
-	int num_active_spots = 0, num_triggered_spots = 0;
+	int num_triggered_spots = 0;
 	Location createRandomLocation(double radius_scale_factor);
 
 	Location createLocation(int xx, int yy, double radius_scale_factor);
@@ -34,16 +34,19 @@ class Game {
 	double checkPressure(int x, int y, int radius);
 	CDepthBasics* kinect;
 public:
+	static int num_active_spots;
 	Game();
 	Game(CDepthBasics& kinect);
 	void select_mode();
 
-	void run(char mode);						//s = slidering | k = kinect-the-dots
+	void run();						//s = slidering | k = kinect-the-dots
 	void startGame();
 	void startKinect();
 	void printRemainingLocations();
 	void printRemovedLocations();
 	void runSlideRingMode(int);
+
+	static char mode;
 
 	//for connectmode
 	void runConnectMode();

@@ -79,13 +79,20 @@ int glDriver(){
 	
 					if (keys[VK_CONTROL]){
 
-						ctrl_last = keys[VK_CONTROL];
+						if (!ctrl_last && (Game::mode != '!')){
+							Scene::locations.clear();
+							Scene::connects.clear();
+							Game::num_active_spots = 0;
+							Game::mode = Game::mode == 's' ? 'k' : 's';
+						}
+							
+
 
 						
 						auto& cursor = Scene::fancyCursors[0];
 
 
-						cursor.addCircle();
+						//cursor.addCircle();
 
 						if (keys[VK_UP])
 							cursor.chY(-10);
@@ -99,10 +106,13 @@ int glDriver(){
 						
 					}
 
+					ctrl_last = keys[VK_CONTROL];
+
+
 					
-					/*if (keys[VK_SHIFT] && !shift_last)
+					if (keys[VK_SHIFT] && !shift_last)
 						Scene::gameCursor.rotateScheme();
-					*/
+					
 
 
 					shift_last = keys[VK_SHIFT];

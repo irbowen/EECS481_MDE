@@ -14,6 +14,7 @@
 #include <vector>
 #include <queue>
 #include <math.h>
+#include <time.h>
 
 #define MIN_BUBBLE_RADIUS 25
 #define MAX_BUBBLE_RADIUS 50
@@ -25,6 +26,10 @@
 	GradientCircleCursor{ 0, 0, 25, { GREEN, palette(GREEN), palette(GREEN) }, 100 }\
 }\
 }
+
+char Game::mode = '!';
+int Game::num_active_spots = 0;
+
 
 static const vector<GradientCircleCursor> RAINBOW_CURSORS{ 
 	GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
@@ -42,7 +47,16 @@ extern mutex LocationLock;
 Color palette(Color& c);
 
 Game::Game() {
-	srand(5);
+	time_t timer;
+	tm y2k;
+	y2k.tm_hour = 0;   y2k.tm_min = 0; y2k.tm_sec = 0;
+	y2k.tm_year = 100; y2k.tm_mon = 0; y2k.tm_mday = 1;
+
+	time(&timer);
+
+	int seconds = (int)difftime(timer, mktime(&y2k));
+
+	srand(seconds);
 }
 
 Game::Game(CDepthBasics& kinect_in) {
@@ -100,7 +114,7 @@ double Game::checkPressure(int x, int y, int radius){
 	return pressure;
 }
 
-void Game::run(char mode) {
+void Game::run() {
 
 	while (!buffer_valid) {//sleep while kinect boots up
 #ifdef DEBUG
@@ -266,7 +280,7 @@ void Game::runConnectMode(){
 	if (won){
 		++connectsCleared;
 		Scene::connects.clear();
-		// do awesome shit with sounds and lights
+		PlaySound(TEXT("applause3.wav"), NULL, SND_FILENAME || SND_ASYNC || SND_NOSTOP);
 	}
 	
 }
@@ -386,14 +400,14 @@ Location Game::createLocation(int xx, int yy, double final_radius) {
 void Game::select_mode()
 {
 	
-	char mode = 'f';
-	run('k');
+	mode = 'f';
+	//run('k');
 
-	/*
+	
 	//Scene::locations.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
 	Scene::locations.push_back(createLocation(120, 120, Location::MAX_RADIUS-65));
-	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS - 65));
-	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS - 65));
+	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS-65));
+	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS-65));
 
 	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65));
 	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65));
@@ -431,10 +445,8 @@ void Game::select_mode()
 	}
 	Scene::locations.clear();
 	Scene::connects.clear();
-	std::cout << "mode: " << mode << std::endl;
 
-	*/
-	//run('k');
+	run();
 }
 
 void Game::startGame() {
@@ -446,6 +458,7 @@ void Game::createConnectLocations(int n){
 	LocationLock.lock();
 	//vector<Location> vecs;
 	Scene::connects.dots.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
+
 
 	/*
 	for (unsigned i = 0; i < Scene::connects.dots.size() - 1; ++i)
@@ -470,7 +483,7 @@ void Game::createConnectLocations(int n){
 	int j = 1;
 	while (j < n)
 	{
-		Location new_location = createRandomLocation(Location::MAX_RADIUS - 25);
+		Location new_location = createRandomLocation(Location::MAX_RADIUS - 15);
 		bool valid = true;
 
 		auto this_pos = std::make_pair(new_location.getX(), new_location.getY());
@@ -513,6 +526,7 @@ void Game::createConnectLocations(int n){
 			} });
 				
 			j++;
+
 		}
 
 			

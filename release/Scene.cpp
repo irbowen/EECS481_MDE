@@ -42,7 +42,7 @@ void Scene::draw(){
 	debugCursors.clear();
 
 	
-	if (keys[VK_SHIFT] && !shift_last){
+	if (pullRegistered()){
 		int x = 640 / 2;
 		int y = 480 / 2;
 		gameCursor.rotateScheme();

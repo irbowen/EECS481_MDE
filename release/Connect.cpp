@@ -38,12 +38,14 @@ bool Connect::processCursor(const pair<double, double>& pt){
 
 	if (::distance(points[cur], pt) <= minDistance){
 
-		double prog = ((cur + 1) % resolution) / (double) resolution;
+		double prog = ((cur + 1 + 3) % resolution) / (double) resolution;
 
-		if (next_dot != 0)
-			lines.at(dots[next_dot-1].id).setProgress(prog);
+		prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
 
+		bool gotDot = false;
 		if (points[cur++] == nextDotLoc){
+
+			gotDot = true;
 			dots[next_dot].target.setGoalProgress(1.0);
 
 			if (++next_dot == dots.size()){
@@ -54,6 +56,11 @@ bool Connect::processCursor(const pair<double, double>& pt){
 			while (::distance(points[cur], nextDotLoc) <= dots[next_dot-1].getRadius())
 				++cur;
 		}
+
+		if (!gotDot && next_dot != 0)
+			lines.at(dots[next_dot - 1].id).setProgress(prog);
+
+
 	}
 
 	if (cur == points.size())
