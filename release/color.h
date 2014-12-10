@@ -75,5 +75,6 @@ extern vector<Color> colorScheme_rainbow;
 extern vector<vector<Color>*> colorSchemes;
 
 #define WHITE Color{1.0, 1.0, 1.0}
+#define BLACK Color{0, 0, 0}
 
 #endif

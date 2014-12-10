@@ -25,11 +25,11 @@ unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
 GameCursor Scene::gameCursor;
 Connect Scene::connects;
 
-RotatingMultiCursor Scene::connectHighlighter { 0, 0, 15, 5,
+RotatingMultiCursor Scene::connectHighlighter { 0, 0, 20, 5,
 {
-GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
-GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
-GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
+GradientCircleCursor{ 0, 0, 10, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+GradientCircleCursor{ 0, 0, 10, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+GradientCircleCursor{ 0, 0, 10, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
 }
 };
 
@@ -76,6 +76,7 @@ void Scene::draw(){
 	LocationLock.lock();
 	connects.draw();
 	auto hp = connects.curGoal();
+	auto tr = connects.targetRadius();
 	LocationLock.unlock();
 
 
@@ -123,7 +124,11 @@ void Scene::draw(){
 
 	gameCursor.draw();
 
+
+
 	connectHighlighter.setPos(hp);
+	connectHighlighter.setR(tr);
+	connectHighlighter.update();
 	connectHighlighter.addCircle();
 	connectHighlighter.draw();
 }

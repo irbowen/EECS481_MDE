@@ -53,6 +53,7 @@ public:
 	Line(const pair<double, double>& pp1, const pair<double, double>& pp2, const Color& c, double thk) : p1{ pp1 }, p2{ pp2 }, color{ c }, thickness{ thk } {}
 	void draw();
 	inline void set(const pair<double, double>& pp1, const pair<double, double>& pp2) { p1 = pp1, p2 = pp2; }
+	inline double length() { return ::distance(p1, p2); }
 };
 
 class LinePair {
@@ -66,6 +67,8 @@ public:
 	inline void setProgress(double prct) { auto mid = between(p1, p2, prct); l1.set(p1, mid), l2.set(mid, p2); }
 
 	inline void draw() { l1.draw(), l2.draw(); }
+
+	inline double length() { return l1.length() + l2.length(); }
 };
 //END OF LINE
 

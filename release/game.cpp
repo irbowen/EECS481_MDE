@@ -412,6 +412,8 @@ void Game::select_mode()
 	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65));
 	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65));
 
+	Scene::lines.push_back(Line{ { 320, 0 }, {320, 480}, BLACK, 5.0 });
+
 	Scene::connects.lines.insert({ Scene::connects.dots[0].id, {
 			{ Scene::connects.dots[0].getX(), Scene::connects.dots[0].getY() },
 			{ Scene::connects.dots[1].getX(), Scene::connects.dots[1].getY() },
@@ -445,6 +447,7 @@ void Game::select_mode()
 	}
 	Scene::locations.clear();
 	Scene::connects.clear();
+	Scene::lines.pop_back();
 
 	run();
 }

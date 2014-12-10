@@ -110,10 +110,23 @@ int glDriver(){
 
 
 					
-					if (keys[VK_SHIFT] && !shift_last)
+					if (keys[VK_SHIFT] && !shift_last){
+						int x = 640 / 2;
+						int y = 480 / 2;
 						Scene::gameCursor.rotateScheme();
-					
+						auto colors = Scene::gameCursor.cursor.getColors();
 
+						int angle = 0;
+
+						for (const auto& color : colors){
+
+							auto pos = jump({ x, y }, 50, angle += 360 / colors.size());
+
+							Scene::circles.push_back({ pos.first, pos.second, 25, color });
+
+							Scene::circles.back().fade(1000);
+						}
+					}
 
 					shift_last = keys[VK_SHIFT];
 

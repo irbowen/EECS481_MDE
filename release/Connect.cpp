@@ -2,6 +2,12 @@
 #include "geometry.h"
 #include <iterator>
 
+double Connect::minDistance = 50;
+
+int Connect::resolution = 50;
+
+static double startMin = 50;
+
 /*
 Connect::Connect(const vector<Location>& in) {
 	dots = in;
@@ -36,11 +42,11 @@ bool Connect::processCursor(const pair<double, double>& pt){
 
 	auto nextDotLoc = std::make_pair(dots[next_dot].getX(), dots[next_dot].getY());
 
+	bool gotPoint = false;
+
 	if (::distance(points[cur], pt) <= minDistance){
 
-		double prog = ((cur + 1 + 3) % resolution) / (double) resolution;
-
-		prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
+		gotPoint = true;
 
 		bool gotDot = false;
 		if (points[cur++] == nextDotLoc){
@@ -57,14 +63,28 @@ bool Connect::processCursor(const pair<double, double>& pt){
 				++cur;
 		}
 
-		if (!gotDot && next_dot != 0)
-			lines.at(dots[next_dot - 1].id).setProgress(prog);
+		if (!gotDot && next_dot != 0){
+			// dots per detection bubble radius
+			int dotsOffset = (int)(minDistance * (resolution / lines.at(dots[next_dot - 1].id).length()));
 
+			double prog = ((cur + 1 - dotsOffset) % resolution) / (double)resolution;
+
+			prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
+			lines.at(dots[next_dot - 1].id).setProgress(prog);
+		}
 
 	}
 
 	if (cur == points.size())
 		return true;
+
+	auto nxt = std::make_pair(dots[next_dot].getX(), dots[next_dot].getY());
+
+	if (points[cur] == nxt){
+		minDistance = dots[next_dot].getRadius();
+	}
+	else
+		minDistance = startMin;
 
 	// while *cur is within radius of next_dot, increment cur until at next dot
 	while (::distance(points[cur], nextDotLoc) <= dots[next_dot].getRadius() && points[cur] != nextDotLoc){
@@ -77,6 +97,7 @@ bool Connect::processCursor(const pair<double, double>& pt){
 	return false;
 }
 
-double Connect::minDistance = 50;
-
-int Connect::resolution = 50;
+pair<double, double> Connect::curGoal() 
+{ 
+	return points.empty() ? std::make_pair(-50.0, -50.0) : (cur == points.size() ? std::make_pair(-50.0, -50.0) : points[cur]); 
+}
