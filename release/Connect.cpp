@@ -33,6 +33,9 @@ bool Connect::processCursor(const pair<double, double>& pt){
 
 	auto nextDotLoc = std::make_pair(next_dot->getX(), next_dot->getY());
 
+	//next_dot = dots.begin();
+	//cur = points.begin();
+
 	if (::distance(*cur, pt) <= minDistance){
 
 		double prog = ((cur - points.begin() + 1) % resolution) / (double) resolution;

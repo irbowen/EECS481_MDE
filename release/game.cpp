@@ -249,12 +249,14 @@ void Game::runConnectMode(){
 		createConnectLocations(nDots);
 		//TRYME:
 		//createConnectLocations(4);
+		Scene::connects.next_dot = Scene::connects.dots.begin();
+		Scene::connects.cur = Scene::connects.points.begin();
 	}
 
 	
 	//auto& connect = Scene::connects.front();
 
-	/*
+	
 	bool won = false;
 	for (const auto& pt : getCursorPoints()) {
 		if (Scene::connects.processCursor(pt))
@@ -266,7 +268,7 @@ void Game::runConnectMode(){
 		Scene::connects.dots.pop_back();
 		// do awesome shit with sounds and lights
 	}
-	*/
+	
 }
 
 Location Game::createRandomLocation(double final_radius) {
