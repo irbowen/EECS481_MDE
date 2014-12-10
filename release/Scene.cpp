@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "DepthBasics.h"
 #include "cursor_heuristic.h"
+#include "glDriver_share.h"
 #include <unordered_set>
 
 using std::mutex;
@@ -24,6 +25,14 @@ unordered_map<int, RotatingMultiCursor> Scene::targetHighlighters;
 GameCursor Scene::gameCursor;
 Connect Scene::connects;
 
+RotatingMultiCursor Scene::connectHighlighter { 0, 0, 15, 5,
+{
+GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 },
+GradientCircleCursor{ 0, 0, 7, { GREEN, palette(GREEN), palette(GREEN) }, 100 }
+}
+};
+
 mutex highlightLock;
 
 unordered_set<int> deadLocations;
@@ -33,9 +42,9 @@ void Scene::draw(){
 	debugCursors.clear();
 
 	
-	if (pullRegistered()){
-		int x = pull_index % 640;
-		int y = pull_index / 640;
+	if (keys[VK_SHIFT] && !shift_last){
+		int x = 640 / 2;
+		int y = 480 / 2;
 		gameCursor.rotateScheme();
 		auto colors = gameCursor.cursor.getColors();
 
@@ -45,7 +54,7 @@ void Scene::draw(){
 
 			auto pos = jump({ x, y }, 50, angle += 360 / colors.size());
 
-			circles.push_back({pos.first, pos.second, 50, color});
+			circles.push_back({pos.first, pos.second, 25, color});
 
 			circles.back().fade(2000);
 		}
@@ -66,6 +75,7 @@ void Scene::draw(){
 
 	LocationLock.lock();
 	connects.draw();
+	auto hp = connects.curGoal();
 	LocationLock.unlock();
 
 
@@ -113,5 +123,7 @@ void Scene::draw(){
 
 	gameCursor.draw();
 
-
+	connectHighlighter.setPos(hp);
+	connectHighlighter.addCircle();
+	connectHighlighter.draw();
 }

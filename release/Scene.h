@@ -32,6 +32,8 @@ public:
 
 	static Connect connects;
 
+	static RotatingMultiCursor connectHighlighter;
+
 	// loc-id -> highlighter
 	static unordered_map<int, RotatingMultiCursor> targetHighlighters;
 

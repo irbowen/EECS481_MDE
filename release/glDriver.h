@@ -1,5 +1,8 @@
+#ifndef GLDRIVER_H
+#define GLDRIVER_H
 #include <gl\glew.h>
 #include <Windows.h>
+#include "glDriver_share.h"
 #include "Scene.h"
 
 
@@ -17,7 +20,7 @@ extern HINSTANCE hInstance;
 
 
 extern bool active;
-extern bool keys[256];
+
 
 extern bool fullscreen;
 
@@ -306,3 +309,4 @@ int DrawGLScene(GLvoid){
 
 	return TRUE;
 }
+#endif

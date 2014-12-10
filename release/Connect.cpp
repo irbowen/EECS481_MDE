@@ -59,6 +59,6 @@ bool Connect::processCursor(const pair<double, double>& pt){
 	return false;
 }
 
-double Connect::minDistance = 10;
+double Connect::minDistance = 20;
 
 int Connect::resolution = 50;

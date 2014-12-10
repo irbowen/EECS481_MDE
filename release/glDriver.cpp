@@ -4,6 +4,7 @@
 
 #include "graphics.h"
 #include "glDriver.h"
+#include "glDriver_share.h"
 #include "game.h"
 
 using namespace std::chrono;
@@ -23,7 +24,7 @@ bool keys[256];
 
 bool fullscreen = FULLSCREEN;
 
-static bool shift_last = false;
+bool shift_last = false;
 static bool ctrl_last = false;
 
 int glDriver(){

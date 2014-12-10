@@ -29,6 +29,9 @@ bool fabricPulled = false;
 bool fabricPulledLast = false;
 int pull_index;
 
+int frames = 0;
+bool checkPull = false;
+
 bool pullRegistered(){
 	return fabricPulled && !fabricPulledLast;
 }
@@ -449,10 +452,12 @@ void CDepthBasics::ProcessDepth()
 			pStartScan++;
 			i++;
 
-			if (frame_data[ind] - initial_buffer[ind] >= minDepth * -1){
+			/*
+			if (checkPull && frame_data[ind] - initial_buffer[ind] >= minDepth * -1){
 				pulled = true;
 				pull_index = ind;
 			}
+			*/
 
 
 			// discard the portion of the depth that contains only the player index
@@ -490,10 +495,16 @@ void CDepthBasics::ProcessDepth()
 		buffer_valid = true;
 		newFrameReady = true;
 
+		/*
+		if (++frames > 30 * 5)
+			checkPull = true;
+
+
 		if (pulled){
 			fabricPulledLast = fabricPulled;
 			fabricPulled = pulled;
 		}
+		*/
 
 		// Draw the data with Direct2D
 		m_pDrawDepth->Draw(m_depthRGBX, cDepthWidth * cDepthHeight * cBytesPerPixel);

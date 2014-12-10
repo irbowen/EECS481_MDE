@@ -265,7 +265,8 @@ void Game::runConnectMode(){
 
 	if (won){
 		++connectsCleared;
-		Scene::connects.dots.pop_back();
+		Scene::connects.dots.clear();
+		Scene::connects.lines.clear();
 		// do awesome shit with sounds and lights
 	}
 	
