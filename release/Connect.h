@@ -10,12 +10,17 @@ class Connect {
 	//vector<pair<double, double>> points;
 
 	static int resolution;
-	vector<pair<double, double>>::iterator cur;
-	vector<Location>::iterator next_dot;
+	
 	static double minDistance;
 public:
 	//Connect();
 	//Connect(const vector<Location>&);
+
+	//vector<pair<double, double>>::iterator cur;
+	//vector<Location>::iterator next_dot;
+
+	int cur;
+	int next_dot;
 
 	vector<pair<double, double>> points;
 	vector<Location> dots;

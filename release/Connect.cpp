@@ -31,29 +31,29 @@ bool Connect::empty()
 
 bool Connect::processCursor(const pair<double, double>& pt){
 
-	auto nextDotLoc = std::make_pair(next_dot->getX(), next_dot->getY());
+	auto nextDotLoc = std::make_pair(dots[next_dot].getX(), dots[next_dot].getY());
 
-	if (::distance(*cur, pt) <= minDistance){
+	if (::distance(points[cur], pt) <= minDistance){
 
-		double prog = ((cur - points.begin() + 1) % resolution) / (double) resolution;
+		double prog = ((cur + 1) % resolution) / (double) resolution;
 
-		if (next_dot != dots.begin())
-			lines.at(std::prev(next_dot)->id).setProgress(prog);
+		if (next_dot != 0)
+			lines.at(dots[next_dot-1].id).setProgress(prog);
 
-		if (*cur++ == nextDotLoc){
-			next_dot->target.setGoalProgress(1.0);
+		if (points[cur++] == nextDotLoc){
+			dots[next_dot].target.setGoalProgress(1.0);
 
-			if (++next_dot == dots.end()){
+			if (++next_dot == dots.size()){
 				return true;
 			}
 
 			// while *cur within radius of dot we just got, increment cur
-			while (::distance(*cur, nextDotLoc) <= std::prev(next_dot)->getRadius())
+			while (::distance(points[cur], nextDotLoc) <= dots[next_dot-1].getRadius())
 				++cur;
 		}
 	}
 	// while *cur is within radius of next_dot, increment cur until at next dot
-	while (::distance(*cur, nextDotLoc) <= next_dot->getRadius() && *cur != nextDotLoc)
+	while (::distance(points[cur], nextDotLoc) <= dots[next_dot].getRadius() && points[cur] != nextDotLoc)
 		++cur;
 
 	return false;

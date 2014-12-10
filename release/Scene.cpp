@@ -64,7 +64,9 @@ void Scene::draw(){
 		gameCursor.addCircle(1500.0);
 	}
 
+	LocationLock.lock();
 	connects.draw();
+	LocationLock.unlock();
 
 
 	for (auto& x : debugCursors) x.draw();
