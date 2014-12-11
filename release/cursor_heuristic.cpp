@@ -5,6 +5,7 @@
 #include <deque>
 #include <iterator>
 #include <iostream>
+#include "geometry.h"
 
 #define MIN_CURSOR_SEPARATION 250
 #define MAX_CURSORS 4
@@ -192,6 +193,7 @@ static vector<pair<double, double>> getCursorPointsFrame(){
 			}
 		}
 
+
 		if (add)
 			rtn.push_back({cursor.x, cursor.y});
 
@@ -292,8 +294,10 @@ int cursorThread(){
 						}
 					}
 
+					auto shifted = shiftOut({ minimumPoint.index % 640, minimumPoint.index / 640 });
+
 					if (addCursor){
-						sortedCursors.insert({ minimumPoint.index % 640, minimumPoint.index / 640, minimumPoint.depth});
+						sortedCursors.insert({ shifted.first, shifted.second, minimumPoint.depth});
 					}
 				}
 

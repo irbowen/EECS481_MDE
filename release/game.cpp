@@ -350,7 +350,7 @@ Location Game::createRandomLocation(double final_radius) {
 	
 }
 
-Location Game::createLocation(int xx, int yy, double final_radius) {
+Location Game::createLocation(int xx, int yy, double final_radius, bool cosmetic = false) {
 	int x_location, y_location;
 	bool valid = false;
 
@@ -363,7 +363,7 @@ Location Game::createLocation(int xx, int yy, double final_radius) {
 		if (y_location <= final_radius || y_location >= (MAX_Y - final_radius)) {
 			continue;//bad location, do the loop again
 		}
-		if (initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
+		if (!cosmetic && initial_buffer.at(MAX_X*y_location + x_location) <= 0) {
 #ifdef DEBUG
 			std::cout << "The depth is: " << initial_buffer.at(MAX_X*y_location + x_location) << " at " << x_location << ", " << y_location << " " << std::endl;
 #endif
@@ -405,12 +405,12 @@ void Game::select_mode()
 
 	
 	//Scene::locations.push_back(createRandomLocation(Location::MAX_RADIUS - 40));
-	Scene::locations.push_back(createLocation(120, 120, Location::MAX_RADIUS-65));
-	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS-65));
-	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS-65));
+	Scene::locations.push_back(createLocation(120, 120, Location::MAX_RADIUS-65, true));
+	Scene::locations.push_back(createLocation(200, 250, Location::MAX_RADIUS-65, true));
+	Scene::locations.push_back(createLocation(100, 400, Location::MAX_RADIUS-65, true));
 
-	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65));
-	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65));
+	Scene::connects.dots.push_back(createLocation(440, 150, Location::MAX_RADIUS - 65, true));
+	Scene::connects.dots.push_back(createLocation(490, 380, Location::MAX_RADIUS - 65, true));
 
 	Scene::lines.push_back(Line{ { 320, 0 }, {320, 480}, BLACK, 5.0 });
 
@@ -431,7 +431,7 @@ void Game::select_mode()
 			double current_pressure = frame_data.at((unsigned)(y*MAX_X + x));
 			double intial_pressure = initial_buffer.at((unsigned)(y*MAX_X + x));
 			double deflection = abs(current_pressure - intial_pressure);
-			if (deflection > 300) {
+			if (deflection > 150) {
 				if (x < 220) {
 					mode = 's';
 					mode_selected = true;

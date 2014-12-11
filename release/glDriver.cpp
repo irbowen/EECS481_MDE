@@ -47,6 +47,8 @@ int glDriver(){
 	// Line ctor : Line(p1, p2, color, thickness)
 	// Scene::lines.push_back({ {100,100}, {400,400}, BLUE, 5.0 });
 
+
+	//Scene::debugCursors.push_back(DebugCursor{319, 239, 5});
 	
 	Scene::fancyCursors.push_back({ 320, 240, 50, 5, {GradientCircleCursor{ 370, 240, 75, colorScheme_rainbow, 100 },
 														GradientCircleCursor{ 345, 283, 75, { ORANGE, YELLOW, GREEN, BLUE, PURPLE, RED }, 100 },
@@ -80,7 +82,9 @@ int glDriver(){
 					if (keys[VK_CONTROL]){
 
 						if (!ctrl_last && (Game::mode != '!')){
+							LocationLock.lock();
 							Scene::locations.clear();
+							LocationLock.unlock();
 							Scene::connects.clear();
 							Game::num_active_spots = 0;
 							Game::mode = Game::mode == 's' ? 'k' : 's';

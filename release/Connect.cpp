@@ -67,7 +67,7 @@ bool Connect::processCursor(const pair<double, double>& pt){
 			// dots per detection bubble radius
 			int dotsOffset = (int)(minDistance * (resolution / lines.at(dots[next_dot - 1].id).length()));
 
-			double prog = ((cur + 1 - dotsOffset) % resolution) / (double)resolution;
+			double prog = ((cur + 1) % resolution) / (double)resolution;
 
 			prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
 			lines.at(dots[next_dot - 1].id).setProgress(prog);

@@ -22,7 +22,7 @@
 std::vector<int> frame_data;
 std::vector<int> initial_buffer;
 bool buffer_valid;
-const int minDepth = -140;
+const int minDepth = -80;
 atomic<bool> newFrameReady{ true };
 extern std::mutex cursorLock;
 bool fabricPulled = false;

@@ -11,7 +11,7 @@
 
 #define FPS 60
 
-#define FULLSCREEN false
+#define FULLSCREEN true
 
 extern HGLRC hRC;
 extern HDC hDC;

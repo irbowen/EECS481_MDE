@@ -21,3 +21,7 @@ double distance(const std::pair<double, double>& a, const std::pair<double, doub
 	double dist_y = b.second - a.second;
 	return sqrt(dist_x*dist_x + dist_y*dist_y);
 }
+
+std::pair<double, double> shiftOut(const std::pair<double, double>& p){
+	return between({320, 240}, p, 1.5);
+}

@@ -39,8 +39,6 @@ unordered_set<int> deadLocations;
 
 void Scene::draw(){
 
-	debugCursors.clear();
-
 	
 	if (pullRegistered()){
 		int x = 640 / 2;
@@ -127,8 +125,8 @@ void Scene::draw(){
 
 
 	connectHighlighter.setPos(hp);
-	connectHighlighter.setR(tr);
-	connectHighlighter.update();
+	//connectHighlighter.setR(tr);
+	//connectHighlighter.update();
 	connectHighlighter.addCircle();
 	connectHighlighter.draw();
 }
